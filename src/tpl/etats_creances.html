@@ -1,0 +1,334 @@
+<script type="text/ng-template" id="deleteContent.html">
+    <div ng-include="'tpl/modal/modal_delete.html'"></div>
+</script>
+<script type="text/ng-template" id="successContent.html">
+    <div ng-include="'tpl/modal/modal_success.html'"></div>
+</script>
+<script type="text/ng-template" id="rejectContent.html">
+    <div ng-include="'tpl/modal/modal_reject.html'"></div>
+</script>
+<div class="bg-light lter b-b wrapper-md" >
+  <h1 class="m-n font-bold h2 title">Etats des créances clients</h1>
+</div>
+
+
+<div class="panel panel-card">
+    <md-tabs class="md-primary" md-selected="data.selectedIndex">
+  
+      <md-tab id="tab1" aria-controls="tab1-content">
+        STATION
+      </md-tab>
+  
+      <md-tab id="tab2" aria-controls="tab2-content">
+         CLIENT
+      </md-tab>
+     
+      <md-tab id="tab3" aria-controls="tab3-content">
+         AUTRE
+      </md-tab>
+  
+    </md-tabs>
+
+    <ng-switch on="data.selectedIndex">
+   
+        <div 
+           ng-controller="etatCreancesCtrl"
+           role="tabpanel"
+           id="tab1-content"
+           aria-labelledby="tab1"
+           ng-switch-when="0"
+           md-swipe-left="next()"
+           md-swipe-right="previous()"  class="wrapper">
+            <h3>Etat clients par station</h3>
+            <div class="panel card wrapper"  >
+                <div class="row"  ng-init="(role.user == 'ADMINISTRATEUR') ? station(): station_courante() ">
+                    <div class="col-sm-12">
+                        <div class="panel-heading font-bold">
+                        Selectionner la station
+                        </div>
+                        <div class="panel-body">
+                            <div class="panel card wrapper" >
+                                
+                                <div class="row">
+                                        <div class="col-sm-6">
+                                            <label>Station</label>
+                                            <md-input-container>
+                                                <md-select  ng-model="dt.station" placeholder="Station">
+                                                  <md-option ng-repeat="station in stations" value="{{station.nom_station}}">{{station.nom_station}}</md-option>
+                                                </md-select>
+                                              </md-input-container>
+                                        </div>
+                            
+                                        <div class="col-sm-6">
+                                                <label>Date</label>
+                                                <p class="input-group">
+                                                    <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_fin" is-open="opened2"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                                    <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open2($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                    </span>
+                                                </p>
+                                                
+                                        </div>
+                                </div>
+                                
+                                <div class="m-t m-b">
+                                <button class="btn btn-primary btn-rounded" ng-click="creances_station()">VALIDER</button>
+                                </div>
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" >
+                    <div class="col-sm-12">
+                            <div class="wrapper-md">
+                                <h4>Tableau des Créances</h4>
+                                <table  class="table table-bordered table-hover  bg-white-only">
+                                <tr >
+                                    <td ><b>CODE CLIENT</b></td>
+                                    <td ><b>CLIENT</b></td>
+                                    <td ><b>SOLDE M-1</b></td>
+                                    <td ><b>CONSO</b></td>
+                                    <td ><b>MONTANT</b></td>
+                                    <td ><b>REGLEMENT</b></td>
+                                    <td ><b>SOLDE</b></td>
+                        
+                                </tr>  
+                                <tr  ng-repeat="rec in recap_creances  track by $index">
+
+                                    
+                                    <td class="v-middle">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="code_produit" e-form="rowform"  e-required>
+                                        {{ rec.code_client || '' }}
+                                    </span>
+                                    </td>
+
+                                    <td class="v-middle">
+                                        <!-- editable username (text with validation) -->
+                                        <span   e-name="code_produit" e-form="rowform"  e-required>
+                                            {{ rec.client || '' }}
+                                        </span>
+                                        </td>
+
+                                    <td class="v-middle">
+                                        <!-- editable username (text with validation) -->
+                                        <span   e-name="produit.nom_produit" e-form="rowform"  e-required>
+                                            {{ rec.solde_anterieur || 0 }}
+                                        </span>
+                                        </td>
+
+                                    <td class="v-middle">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="type_produit" e-form="rowform"  e-required>
+                                        {{ rec.conso || 0 }}
+                                    </span>
+                                    </td>
+                                    
+                        
+                                    <td class="v-middle">
+                                    <!-- editable username (text with validation) -->
+                                    <span  e-name="produit.station" e-form="rowform"  e-required>
+                                        {{ rec.montant || 0 }}
+                                    </span>
+                                    </td>
+                                    
+                                    <td class="v-middle">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                        {{ rec.reglement || 0 }}
+                                    </span>
+                                    </td>
+                
+                
+                                    <td class="text-center text-danger">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                        <b>{{ rec.solde || 0 }}</b>
+                                    </span>
+                                    </td>
+                                    
+                                </tr>
+                                </table>
+                                <div class="line line-dashed"></div>
+                        
+                                
+                            </div>
+                    </div>
+                </div>
+                          
+                
+            </div>
+        </div>   <!-- ENd TAB 1 STATION -->
+
+        <div 
+           ng-controller="etatCreancesCtrl"
+           role="tabpanel"
+           id="tab2-content"
+           aria-labelledby="tab2"
+           ng-switch-when="1"
+           md-swipe-left="next()"
+           md-swipe-right="previous()"  class="wrapper">
+           <h3>Etat par clients</h3>
+           <div class="panel card wrapper"  >
+
+              <div class="row"  ng-init="(role.user == 'ADMINISTRATEUR') ? client_all(): client() ">
+                <div class="col-sm-12">
+                    <div class="panel-heading font-bold">
+                    Selectionner la période
+                    </div>
+                    <div class="panel-body">
+                      <div class="panel card wrapper" >
+                         
+                          <div class="row">
+                                  <div class="col-sm-6">
+                                          <label>Date Debut</label>
+                                          <p class="input-group">
+                                              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_debut" is-open="opened"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                              <span class="input-group-btn">
+                                              <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                              </span>
+                                          </p>
+                              
+                                          
+                                  </div>
+                      
+                                  <div class="col-sm-6">
+                                          <label>Date Fin</label>
+                                          <p class="input-group">
+                                              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_fin" is-open="opened2"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                              <span class="input-group-btn">
+                                              <button type="button" class="btn btn-default" ng-click="open2($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                              </span>
+                                          </p>
+                              
+                                          
+                                  </div>
+                          </div>
+                          
+                         
+                          <div class="row">
+              
+                              <div class="col-sm-6">
+                                <label>Client</label>
+                                  <ui-select  ng-model="dt.client" theme="bootstrap">
+                                    <ui-select-match placeholder="Selectionner un client">{{$select.selected.nom_client}}</ui-select-match>
+                                    <ui-select-choices repeat="item.nom_client as item in clients | filter: $select.search">
+                                      <div ng-bind-html="item.code_client | highlight: $select.search"></div>
+                                      <small ng-bind-html="item.nom_client | highlight: $select.search"></small>
+                                    </ui-select-choices>
+                                  </ui-select>
+                               </div>
+              
+                          </div>
+                          
+                        
+                          <div class="m-t m-b">
+                            <button class="btn btn-primary btn-rounded" ng-click="creances()">VALIDER</button>
+                          </div>
+                        
+                      </div>
+                    </div>
+                </div>
+              </div>
+              
+              <div class="row" >
+                  <div class="col-sm-12">
+                          <div class="wrapper-md">
+                              <h4>Tableau des Créances</h4>
+                              <table  class="table table-bordered table-hover  bg-white-only">
+                              <tr >
+                                  
+                                  <td ><b>DATE</b></td>
+                                  <td ><b>CLIENT</b></td>
+                                  <td ><b>CONSO</b></td>
+                                  <td ><b>MONTANT</b></td>
+                                  <td ><b>REGLEMENT</b></td>
+                                  <td ><b>STATION</b></td>
+                                  <td ><b>SOLDE PROGRESSIF</b></td>
+                      
+                              </tr>  
+                              <tr  ng-repeat="rec in recap_creances  track by $index">
+                                  <td class="v-middle">
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="produit.nom_produit" e-form="rowform"  e-required>
+                                      {{ rec.date || '' }}
+                                  </span>
+                                  </td>
+                                  <td class="v-middle">
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="code_produit" e-form="rowform"  e-required>
+                                      {{ rec.client || '' }}
+                                  </span>
+                                  </td>
+                                  <td class="v-middle">
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="type_produit" e-form="rowform"  e-required>
+                                      {{ rec.conso || 0 }}
+                                  </span>
+                                  </td>
+                                  
+                      
+                                  <td class="v-middle">
+                                  <!-- editable username (text with validation) -->
+                                  <span  e-name="produit.station" e-form="rowform"  e-required>
+                                      {{ rec.montant || 0 }}
+                                  </span>
+                                  </td>
+                                  
+                                  <td class="v-middle">
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      {{ rec.reglement || 0 }}
+                                  </span>
+                                  </td>
+              
+                                  <td class="v-middle">
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      {{ rec.station || '' }}
+                                  </span>
+                                  </td>
+              
+                                  <td class="text-center text-danger">
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.solde || 0 }}</b>
+                                  </span>
+                                  </td>
+                                  
+                              </tr>
+                              </table>
+                              <div class="line line-dashed"></div>
+                      
+                              
+                          </div>
+                  </div>
+              </div>
+              
+           </div>
+           
+        </div>   <!-- ENd TAB 2 CLIENT -->
+
+        <div 
+           ng-controller="etatCreancesCtrl"
+           role="tabpanel"
+           id="tab2-content"
+           aria-labelledby="tab2"
+           ng-switch-when="2"
+           md-swipe-left="next()"
+           md-swipe-right="previous()"  class="wrapper">
+            
+           
+        </div>   <!-- ENd TAB 3 RESEAU -->
+
+
+    </ng-switch> <!-- ENd Ng-switch  -->
+
+</div>
+
+
+    
+
+    

@@ -1,0 +1,389 @@
+<div class="bg-light lter b-b wrapper-md">
+  <h1 class="m-n font-thin h3">Initialisation Station</h1>
+</div>
+<div class="wrapper-md">
+  <tabset class="tab-container" ng-init="steps={percent:15, step1:true, step2:false, step3:false, step4:false, step5:false, step6:false}">
+    <tab heading="Step 1" active="steps.step1" select="steps.percent=15">
+      <p class="m-b">Enregistrement données de base</p>
+      <progressbar value="steps.percent" class="progress-xs" type="success"></progressbar>
+      <h4>Données de base</h4>
+      <form name="step1" class="form-validation" >
+        <md-input-container>
+          <label for="content"><strong>Nom Station</strong> </label>
+          <input type="text" id="content" name="station.nom_station" ng-model="station.nom_station" required>
+        </md-input-container>
+        <md-input-container>
+          <md-select  ng-model="station.region" required ng-init="regions" placeholder="Regions">
+            <md-option ng-repeat="region in regions" value="{{region.nom_region}}">{{region.nom_region}}</md-option>
+          </md-select>
+        </md-input-container>
+        <md-input-container>
+          <label for="content"><strong>Nom Gerant</strong> </label>
+          <input type="text" id="content" name="station.nom_gerant"  ng-model="station.nom_gerant" required>
+        </md-input-container>
+        <md-input-container>
+          <label for="content"><strong>Email Station</strong> </label>
+          <input type="email" id="content" name="station.email_station" ng-model="station.email_station" required >
+        </md-input-container>
+        <md-input-container>
+          <label for="content"><strong>Telephone Gerant</strong> </label>
+          <input type="number" id="content" min="600000000" max="699999999" name="station.telephone_gerant"  ng-model="station.telephone_gerant" required>
+        </md-input-container>
+        <div class="m-t m-b">
+          <button type="submit" ng-disabled="step1.$invalid" class="btn btn-default btn-rounded" ng-click="steps.step2=true">Next</button>
+        </div>
+      </form>
+    </tab>
+    <tab heading="Step 2" disabled="step1.$invalid" active="steps.step2" select="steps.percent=30">
+      <form name="step2" class="form-validation">
+        <p class="m-b">Enregistrement des cuves</p>
+        <progressbar value="steps.percent" class="progress-xs" type="success"></progressbar>
+         <div class="row">
+            <div class="col-sm-6">
+                <md-input-container>
+                  <label for="content"><strong>Nom Cuve</strong> </label>
+                  <input type="text" id="content" ng-model="cuve.nom_cuve" required>
+                </md-input-container>
+                <md-input-container>
+                  <label for="content"><strong>Capacité (Litres)</strong> </label>
+                  <input type="number" id="content" ng-model="cuve.capacite_cuve" required>
+                </md-input-container>
+                <md-input-container>
+                  <md-select ng-model="cuve.produit" required ng-init="produits" placeholder="Produit">
+                    <md-option ng-repeat="produit in produits" value="{{produit.nom_produit}}">{{produit.nom_produit}}</md-option>
+                  </md-select>
+                </md-input-container>
+                <div class="line line-dashed"></div>
+
+                <div class="panel card wrapper" >
+                  <a class="btn btn-sm btn-info" ng-click="addCuve()">OK</a>
+                </div>
+            </div>
+      </form>
+            <div class="col-sm-6">
+                <table  class="table table-bordered table-hover table-condensed bg-white-only"  ng-init="init_cuves">
+                  <tr style="font-weight: bold">
+                    <td style="width:35%">Nom Cuve</td>
+                    <td style="width:35%">Capacité</td>
+                    <td style="width:35%">Produit</td>
+                    <td style="width:35%">Edit</td>
+                    
+                  </tr>
+                  <tr  ng-repeat="rl in cuves track by $index">
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="nom_cuve" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                        {{ rl.nom_cuve | uppercase  }}
+                      </span>
+                    </td>
+
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="capacite_cuve" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                        {{ rl.capacite_cuve | uppercase }}
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="produit" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                        {{ rl.produit | uppercase  }}
+                      </span>
+                    </td>
+                    <td style="white-space: nowrap">
+                      <!-- form -->
+                      <form editable-form name="rowform" onbeforesave=""  ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == rl">
+                        <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+                          save
+                        </button>
+                        <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+                          cancel
+                        </button>
+                      </form>
+                      <div class="buttons" ng-show="!rowform.$visible">
+                      <button class="btn btn-sm btn-info" ng-click="rowform.$show()">Editer</button>
+                      <a class="btn btn-sm btn-danger" ng-click="removeCuve($index)">Retirer</a>
+                      </div>
+
+                    </td>
+                  </tr>
+                </table>
+            </div>
+         </div>
+        <div class="m-t m-b">
+          <button type="button" class="btn btn-default btn-rounded" ng-click="steps.step1=true">Prev</button>
+          <button type="submit" ng-disabled="step2.$invalid" class="btn btn-default btn-rounded" ng-click="steps.step3=true">Next</button>
+        </div>
+      
+    </tab>
+    <tab heading="Step 3" disabled="step2.$invalid" active="steps.step3" select="steps.percent=45">
+      <p class="m-b">Enregistrement des pompes</p>
+      <progressbar value="steps.percent" class="progress-xs" type="success"></progressbar>
+      <div class="row">
+        <div class="col-sm-6">
+            <md-input-container>
+              <label for="content"><strong>Nom Pompe</strong> </label>
+              <input type="text" id="content" ng-model="pompe.nom_pompe" required>
+            </md-input-container>
+            <md-input-container>
+              <label for="content"><strong>Type Pompe</strong> </label>
+              <input type="text" id="content" ng-model="pompe.type_pompe" required>
+            </md-input-container>
+            <p class="m-t">Date Installation:</p>
+            <input type="text" ng-model="pompe.date_pompe" required="">
+            <div class="line line-dashed"></div>
+
+            <div class="panel card wrapper" >
+              <a class="btn btn-sm btn-info" ng-click="addPompe()">OK</a>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <table  class="table table-bordered table-hover table-condensed bg-white-only"  ng-init="pompes">
+              <tr style="font-weight: bold">
+                <td style="width:35%">Nom Pompe</td>
+                <td style="width:35%">Type Pompe</td>
+                <td style="width:35%">Date installation</td>
+                <td style="width:35%">Edit</td>
+                
+              </tr>
+              <tr  ng-repeat="rl in pompes track by $index">
+                <td class="v-middle">
+                  <!-- editable username (text with validation) -->
+                  <span  e-name="nom_cuve" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                    {{ rl.nom_pompe | uppercase  }}
+                  </span>
+                </td>
+
+                <td class="v-middle">
+                  <!-- editable username (text with validation) -->
+                  <span  e-name="capacite_cuve" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                    {{ rl.type_pompe| uppercase  }}
+                  </span>
+                </td>
+                <td class="v-middle">
+                  <!-- editable username (text with validation) -->
+                  <span  e-name="produit" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                    {{ rl.date_pompe | uppercase  }}
+                  </span>
+                </td>
+                <td style="white-space: nowrap">
+                      <!-- form -->
+                      <form editable-form name="rowform" onbeforesave=""  ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == rl">
+                        <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+                          save
+                        </button>
+                        <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+                          cancel
+                        </button>
+                      </form>
+                      <div class="buttons" ng-show="!rowform.$visible">
+                      <button class="btn btn-sm btn-info" ng-click="rowform.$show()">Editer</button>
+                      <a class="btn btn-sm btn-danger" ng-click="removePompe($index)">Retirer</a>
+                      </div>
+
+                    </td>
+              </tr>
+            </table>
+        </div>
+      </div>
+      <div class="m-t m-b">
+        <button type="button" class="btn btn-default btn-rounded" ng-click="steps.step2=true">Prev</button>
+        <button type="button" ng-disabled="step3.$invalid" class="btn btn-default btn-rounded" ng-click="steps.step4=true">next</button>
+      </div>
+    </tab>
+    <tab heading="Step 4" disabled="step2.$invalid" active="steps.step4" select="steps.percent=60">
+      <p class="m-b">Enregistrement des pistolets</p>
+      <progressbar value="steps.percent" class="progress-xs" type="success"></progressbar>
+      <div class="row">
+        <div class="col-sm-6">
+            <md-input-container>
+              <label for="content"><strong>Nom Pistolet</strong> </label>
+              <input type="text" id="content" ng-model="pistolet.nom_pistolet" required>
+            </md-input-container>
+            <md-input-container>
+              <md-select ng-model="pistolet.pompe" required ng-init="pompes" placeholder="Pompe">
+                <md-option ng-repeat="pompe in pompes" value="{{pompe.nom_pompe}}">{{pompe.nom_pompe}}</md-option>
+              </md-select>
+            </md-input-container>
+            <md-input-container>
+              <md-select ng-model="pistolet.cuve" required ng-init="cuves" placeholder="Cuves">
+                <md-option ng-repeat="cuv in cuves" value="{{cuv.nom_cuve}}">{{cuv.nom_cuve}}</md-option>
+              </md-select>
+            </md-input-container>
+            <p class="m-t">Date Installation:</p>
+            <input type="text" ng-model="pistolet.date_pistolet" required>
+            <div class="line line-dashed"></div>
+
+            <div class="panel card wrapper" >
+              <a class="btn btn-sm btn-info" ng-click="addPistolet()">OK</a>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <table  class="table table-bordered table-hover table-condensed bg-white-only"  ng-init="pistolets">
+              <tr style="font-weight: bold">
+                <td style="width:35%">Nom Pistolet</td>
+                <td style="width:35%">Nom Pompe</td>
+                <td style="width:35%">Nom Cuve</td>
+                <td style="width:35%">Date installation</td>
+                
+              </tr>
+              <tr  ng-repeat="rl in pistolets track by $index">
+                <td class="v-middle">
+                  <!-- editable username (text with validation) -->
+                  <span  e-name="nom_cuve" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                    {{ rl.nom_pistolet | uppercase  }}
+                  </span>
+                </td>
+
+                <td class="v-middle">
+                  <!-- editable username (text with validation) -->
+                  <span  e-name="capacite_cuve" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                    {{ rl.pompe| uppercase  }}
+                  </span>
+                </td>
+                 <td class="v-middle">
+                  <!-- editable username (text with validation) -->
+                  <span  e-name="capacite_cuve" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                    {{ rl.cuve| uppercase  }}
+                  </span>
+                </td>
+                <td class="v-middle">
+                  <!-- editable username (text with validation) -->
+                  <span  e-name="produit" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                    {{ rl.date_pistolet | uppercase  }}
+                  </span>
+                </td>
+              </tr>
+            </table>
+        </div>
+      </div>
+      <div class="m-t m-b">
+        <button type="button" class="btn btn-default btn-rounded" ng-click="steps.step3=true">Prev</button>
+        <button type="button" ng-disabled="step4.$invalid" class="btn btn-default btn-rounded" ng-click="steps.step5=true">next</button>
+      </div>
+    </tab>
+    <tab heading="Step 5" disabled="step2.$invalid" active="steps.step5" select="steps.percent=80">
+      <p class="m-b">Enregistrement du personnel</p>
+      <progressbar value="steps.percent" class="progress-xs" type="success"></progressbar>
+      <div class="row">
+        <div class="col-sm-6">
+            <md-input-container>
+              <label for="content"><strong>Nom Personnel</strong> </label>
+              <input type="text" id="content" ng-model="personnel.nom_personnel" required>
+            </md-input-container>
+            
+            <div class="panel card wrapper" >
+              <a class="btn btn-sm btn-info" ng-click="addPersonnel()">OK</a>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <table  class="table table-bordered table-hover table-condensed bg-white-only"  ng-init="personnels">
+              <tr style="font-weight: bold">
+                <td style="width:35%">Nom pompiste</td>
+                
+              </tr>
+              <tr  ng-repeat="rl in personnels track by $index">
+                <td class="v-middle">
+                  <!-- editable username (text with validation) -->
+                  <span  e-name="nom_cuve" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                    {{ rl.nom_personnel | uppercase  }}
+                  </span>
+                </td>
+              </tr>
+            </table>
+        </div>
+      </div>
+      <div class="m-t m-b">
+        <button type="button" class="btn btn-default btn-rounded" ng-click="steps.step4=true">Prev</button>
+        <button type="button" ng-disabled="step5.$invalid" class="btn btn-default btn-rounded" ng-click="steps.step6=true">next</button>
+      </div>
+    </tab>
+    <tab heading="Step 6" disabled="step2.$invalid" active="steps.step6" select="steps.percent=100">
+      <p class="m-b">Enregistrement des comptes utilisateurs</p>
+      <progressbar value="steps.percent" class="progress-xs" type="success"></progressbar>
+      <div class="row">
+        <div class="col-sm-6">
+            <md-input-container>
+              <label for="content"><strong>Nom Utilisateur</strong> </label>
+              <input type="text" id="content" ng-model="compte.nom_utilisateur" required>
+            </md-input-container>
+            <md-input-container>
+              <label for="content"><strong>Email Utilisateur</strong> </label>
+              <input type="email" id="content" ng-model="compte.email_utilisateur" required>
+            </md-input-container>
+            <md-input-container>
+              <label for="content"><strong>Mot de passe</strong> </label>
+              <input type="password"  name="compte.password" required ng-model="compte.password">
+            </md-input-container>
+            <md-input-container>
+              <label for="content"><strong>Confirmer Mot de passe</strong> </label>
+              <input type="password"  name="compte.confirm_password" required ng-model="compte.confirm_password" ui-validate=" '$value==compte.password' " ui-validate-watch=" 'compte.password' ">
+            </md-input-container>
+            <span ng-show='form.confirm_password.$error.validator'>Attention! Pas de correspondance</span>
+            <md-input-container>
+              <md-select  ng-model="compte.role" required ng-init="roles" placeholder="Role">
+                <md-option ng-repeat="role in roles" value="{{role.nom_role}}">{{role.nom_role}}</md-option>
+              </md-select>
+            </md-input-container>
+            
+            <div class="panel card wrapper" >
+              <a class="btn btn-sm btn-info" ng-click="addCompte()">OK</a>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <table  class="table table-bordered table-hover table-condensed bg-white-only"  ng-init="comptes">
+              <tr style="font-weight: bold">
+                <td style="width:35%">Nom Utilisateur</td>
+                <td style="width:35%">Email Utilisateur</td>
+                <td style="width:35%">Mot de passe</td>
+                <td style="width:35%">Role</td>
+                
+              </tr>
+              <tr  ng-repeat="rl in comptes track by $index">
+                <td class="v-middle">
+                  <!-- editable username (text with validation) -->
+                  <span  e-name="nom_cuve" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                    {{ rl.nom_utilisateur }}
+                  </span>
+                </td>
+                 <td class="v-middle">
+                  <!-- editable username (text with validation) -->
+                  <span  e-name="nom_cuve" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                    {{ rl.email_utilisateur }}
+                  </span>
+                </td>
+                 <td class="v-middle">
+                  <!-- editable username (text with validation) -->
+                  <span  e-name="nom_cuve" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                    {{ rl.password || 'empty' }}
+                  </span>
+                </td>
+                 <td class="v-middle">
+                  <!-- editable username (text with validation) -->
+                  <span  e-name="nom_cuve" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                    {{ rl.role || 'empty' }}
+                  </span>
+                </td>
+              </tr>
+               <form editable-form name="rowform" onbeforesave="savePlaylist_song($data, play.id)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == play">
+          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+            save
+          </button>
+          <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+            cancel
+          </button>
+        </form>
+        <div class="buttons" ng-show="!rowform.$visible">
+          <button class="btn btn-sm btn-info" ng-click="rowform.$show()">edit</button>
+          <button class="btn btn-sm btn-danger" ng-click="RemoveUser($index)">del</button>
+
+        </div>
+            </table>
+        </div>
+      </div>
+      <div class="m-t m-b">
+        <button type="button" class="btn btn-default btn-rounded" ng-click="steps.step5=true">Prev</button>
+        <button type="button" ng-disabled="step6.$invalid" class="btn btn-primary btn-rounded" ng-click="Envoyer()">ENVOYER</button>
+      </div>
+    </tab>
+  </tabset>
+</div>

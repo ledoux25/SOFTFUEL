@@ -1,0 +1,1061 @@
+<script type="text/ng-template" id="deleteContent.html">
+    <div ng-include="'tpl/modal/modal_delete.html'"></div>
+</script>
+<script type="text/ng-template" id="successContent.html">
+    <div ng-include="'tpl/modal/modal_success.html'"></div>
+</script>
+<script type="text/ng-template" id="rejectContent.html">
+    <div ng-include="'tpl/modal/modal_reject.html'"></div>
+</script>
+<div class="bg-light lter b-b wrapper-md" >
+  <h1 class="m-n font-thin h3">DECOUVERT | {{dt.client.nom_client}} </h1>
+</div>
+
+
+<div class="panel panel-card"  ng-init="(role.user == 'ADMINISTRATEUR') ? client_all(): client() ">
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="wrapper-md">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="row">
+                                <div class="col-sm-6">
+                                   <label>Client</label>
+                                    <ui-select  ng-model="dt.client" theme="bootstrap">
+                                    <ui-select-match placeholder="Selectionner un client">{{$select.selected.nom_client}}</ui-select-match>
+                                    <ui-select-choices repeat="item as item in clients | filter: $select.search">
+                                        <div ng-bind-html="item.code_client | highlight: $select.search"></div>
+                                        <small ng-bind-html="item.nom_client | highlight: $select.search"></small>
+                                    </ui-select-choices>
+                                    </ui-select>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="m-t m-b">
+                                        <button class="btn btn-primary btn-rounded" ng-click="today()">VALIDER</button>
+                                    </div>
+                                </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                    <label>Date Debut</label>
+                                    <p class="input-group">
+                                        <input type="text" ng-disabled="true"  class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_debut"   datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                        <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ><i class="glyphicon glyphicon-calendar"></i></button>
+                                        </span>
+                                    </p>
+                            </div>
+                
+                            <div class="col-sm-6">
+                                    <label>Date Fin</label>
+                                    <p class="input-group">
+                                        <input type="text" ng-disabled="true" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_fin" is-open="opened2"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                        <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click=""><i class="glyphicon glyphicon-calendar"></i></button>
+                                        </span>
+                                    </p>
+                            </div>
+                        </div>
+                        
+                        <div class="m-t m-b">
+                        <button class="btn btn-primary btn-rounded" ng-click="decouvert()">DECOUVERT</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-heading font-bold">
+                    Rechercher une correspondance
+                </div>
+
+                <div class="panel-body">
+                    <form  class="form-inline" role="form"  ng-submit="" >
+                
+                        <div class="form-group">
+                            <label class="sr-only" for="Nom">Reference</label>
+                            <input type="text" class="form-control" id="Nom" placeholder="facture" ng-model="pla.facture">
+                        </div>
+                
+                        <div class="form-group">
+                        <label class="sr-only" for="Produit">Produit</label>
+                        <input type="text" class="form-control" id="produit" placeholder="produit" ng-model="pla.produit">
+                        </div>
+                
+                        <div class="form-group">
+                            <label class="sr-only" for="Montant">Montant</label>
+                            <input type="text" class="form-control" id="montant" placeholder="montant" ng-model="pla.montant">
+                        </div>
+                    </form>
+                </div>
+
+                <div class="row">
+
+                    <h4>Tableau du decouvert | Derniere Validation le : {{date_cloture}} </h4>
+
+                    <table  class="table table-bordered table-hover  bg-white-only">
+                    <tr >
+                        <td ><b>STOCK</b></td>
+                        <td ><b>QUANTITE</b></td>
+                        <td ><b>PRIX UNITAIRE</b></td>
+                        <td ><b>VALEUR</b></td>
+                    </tr>  
+
+                    <tr  ng-repeat="rec in decouvert.recap_stock_carb  track by $index">
+
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="produit" e-form="rowform"  e-required>
+                            {{ rec.produit || '' }}
+                        </span>
+                        </td>
+
+                        <td class="v-middle">
+                            <!-- editable username (text with validation) -->
+                            <span   e-name="quantite" e-form="rowform"  e-required>
+                                {{ rec.quantite | number  }}
+                            </span>
+                            </td>
+
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="prix_unitaire" e-form="rowform"  e-required>
+                            {{ rec.montant/rec.quantite | number }}
+                        </span>
+                        </td>
+                        
+            
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="montant" e-form="rowform"  e-required>
+                            {{ rec.montant| number  }}
+                        </span>
+                        </td>
+                    </tr>
+
+                    <tr  ng-repeat="rec in decouvert.recap_stock_lub  track by $index">
+
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="produit" e-form="rowform"  e-required>
+                            {{ rec.produit || '' }}
+                        </span>
+                        </td>
+
+                        <td class="v-middle">
+                            <!-- editable username (text with validation) -->
+                            <span   e-name="quantite" e-form="rowform"  e-required>
+                                {{ rec.quantite | number  }}
+                            </span>
+                            </td>
+
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="prix_unitaire" e-form="rowform"  e-required>
+                            {{ rec.prix_unitaire | number }}
+                        </span>
+                        </td>
+                        
+            
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="montant" e-form="rowform"  e-required>
+                            {{ rec.montant| number  }}
+                        </span>
+                        </td>
+                    </tr>
+
+                    <tr>
+
+                        <td colspan="3"  class="text-center">
+                            <span >
+                                <b>TOTAL STOCK</b>
+                            </span>
+                        </td>
+                        <td><b>{{decouvert.recap_stock | number}}</b></td>
+                        
+                    </tr> <!-- TOTAL STOCK -->
+
+                    <tr>
+                            <td colspan="4"  class="text-center">
+                                    
+                            </td>
+                    </tr>
+
+                    <tr  ng-repeat="rec in decouvert.recap_livraison | filter: pla.facture | filter: pla.produit | filter: pla.montant track by $index" ng-if="rec.status_affichage">
+
+                        <td class="v-middle">
+                        <span   e-name="produit" e-form="rowform"  e-required>
+                            {{ rec.date || '' }} <b>{{ rec.num_bon || '' }}</b>
+                        </span>
+                        </td>
+
+                        <td class="v-middle">
+                            <span   e-name="" e-form="rowform"  e-required>
+                                {{ rec.quantite | number}}
+                            </span>
+                        </td>
+
+                        <td class="v-middle">
+                        <span   e-name="" e-form="rowform"  e-required>
+                            {{ rec.produit}} | <b>{{ rec.montant_initial}}</b>
+                        </span>
+                        </td>
+                        
+                        <td class="v-middle">
+                        <span  e-name="" e-form="rowform"  e-required>
+                            {{ rec.montant| number  }}
+                        </span>
+                        </td>
+
+                        <td style="white-space: nowrap" ng-if="!rec.status">
+                        
+                            <div class="buttons" ng-show="!rowform.$visible">
+                            <button class="btn btn-sm btn-danger" ng-click="nettoyer_livraison(rec, $index)">Nettoyer</button>
+                            </div>
+                    
+                        </td>
+
+                        <td style="white-space: nowrap" ng-if="rec.status">
+                        
+                            <div class="buttons" ng-show="!rowform.$visible">
+                            <button class="btn btn-sm btn-info" ng-click="restaurer_livraison(rec, $index)">Restaurer</button>
+                            </div>
+                    
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td colspan="3"  class="text-center">
+                            <span >
+                                <b>TOTAL LIVRAISON</b>
+                            </span>
+                        </td>
+                        <td><b>{{decouvert.recap_livraison_total | number}}</b></td>
+
+                    </tr> <!-- TOTAL LIVRAISON -->
+
+                    <tr  ng-repeat="rec in decouvert.recap_versement | filter: pla.facture | filter: pla.produit | filter: pla.montant track by $index" ng-if="rec.status_affichage">
+
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="produit" e-form="rowform"  e-required>
+                            {{ rec.date || '' }}
+                        </span>
+                        </td>
+
+                        <td class="v-middle">
+                            <span   e-name="" e-form="rowform"  e-required>
+                                {{ rec.libelle}}
+                            </span>
+                        </td>
+
+                        <td class="v-middle">
+                        <span   e-name="" e-form="rowform"  e-required>
+                           <b> {{ rec.montant_initial | number  }}</b>
+                        </span>
+                        </td>
+                        
+                        <td class="v-middle">
+                        <span  e-name="" e-form="rowform"  e-required>
+                            {{ rec.montant | number  }}
+                        </span>
+                        </td>
+
+                        <td style="white-space: nowrap" ng-if="!rec.status">
+                        
+                            <div class="buttons" ng-show="!rowform.$visible">
+                            <button class="btn btn-sm btn-danger" ng-click="nettoyer_versement(rec, $index)">Nettoyer</button>
+                            </div>
+                    
+                        </td>
+
+                        <td style="white-space: nowrap" ng-if="rec.status">
+                        
+                            <div class="buttons" ng-show="!rowform.$visible">
+                            <button class="btn btn-sm btn-info" ng-click="restaurer_versement(rec, $index)">Restaurer</button>
+                            </div>
+                    
+                        </td>
+                    </tr>
+
+                    <tr>
+
+                        <td colspan="3"  class="text-center">
+                            <span >
+                                <b>TOTAL VERSEMENT</b>
+                            </span>
+                        </td>
+                        <td><b>{{decouvert.recap_versement_total | number }}</b></td>
+
+                    </tr> <!-- TOTAL VERSEMENT -->
+
+                    <tr  ng-repeat="rec in decouvert.recap_creances | filter: pla.facture | filter: pla.produit | filter: pla.montant track by $index">
+
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="produit" e-form="rowform"  e-required>
+                            {{ rec.client}}
+                        </span>
+                        </td>
+
+                        <td class="v-middle">
+                            <!-- editable username (text with validation) -->
+                            <span   e-name="quantite" e-form="rowform"  e-required>
+                                    {{ rec.solde_anterieur | number }} 
+                            </span>
+                            </td>
+
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="prix_unitaire" e-form="rowform"  e-required>
+                            {{ rec.montant | number }} | <b>{{ rec.reglement | number }}</b>
+                        </span>
+                        </td>
+                        
+            
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="montant" e-form="rowform"  e-required>
+                            {{ rec.solde | number  }}
+                        </span>
+                        </td>
+
+                       
+
+                    </tr>
+
+                    <tr>
+
+                        <td colspan="3"  class="text-center">
+                            <span >
+                                <b>TOTAL CREANCES</b>
+                            </span>
+                        </td>
+                        <td><b>{{decouvert.recap_creances_total | number}}</b></td>
+                        
+                    </tr> <!-- TOTAL CREANCES -->
+
+                    <tr  ng-repeat="rec in decouvert.recap_manquant  track by $index">
+
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="produit" e-form="rowform"  e-required>
+                            {{ rec.nom || '' }}
+                        </span>
+                        </td>
+
+                        <td class="v-middle">
+                            <!-- editable username (text with validation) -->
+                            <span   e-name="quantite" e-form="rowform"  e-required>
+                                
+                            </span>
+                            </td>
+
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="prix_unitaire" e-form="rowform"  e-required>
+                            {{ rec.montant_initial| number  }}
+                        </span>
+                        </td>
+                        
+            
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="montant" e-form="rowform"  e-required>
+                            {{ rec.montant| number  }}
+                        </span>
+                        </td>
+
+                        <td style="white-space: nowrap" ng-if="!rec.status">
+                        
+                            <div class="buttons" ng-show="!rowform.$visible">
+                            <button class="btn btn-sm btn-danger" ng-click="nettoyer_manquant(rec, $index)">Nettoyer</button>
+                            </div>
+                    
+                        </td>
+                    </tr>
+
+                    <tr>
+
+                        <td colspan="3"  class="text-center">
+                            <span >
+                                <b>TOTAL MANQUANTS</b>
+                            </span>
+                        </td>
+                        <td><b>{{decouvert.recap_manquant_total | number}}</b></td>
+
+                    </tr> <!-- TOTAL MANQUANTS -->
+
+                    <tr  ng-repeat="rec in decouvert.recap_coulage_carb  track by $index">
+
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="produit" e-form="rowform"  e-required>
+                            {{ rec.produit || '' }}
+                        </span>
+                        </td>
+
+                        <td class="v-middle">
+                            <!-- editable username (text with validation) -->
+                            <span   e-name="quantite" e-form="rowform"  e-required>
+                                {{ rec.quantite | number  }}
+                            </span>
+                            </td>
+
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="prix_unitaire" e-form="rowform"  e-required>
+                            {{ rec.montant_initial | number }}
+                        </span>
+                        </td>
+                        
+            
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="montant" e-form="rowform"  e-required>
+                            {{ rec.montant| number  }}
+                        </span>
+                        </td>
+
+                        <td style="white-space: nowrap" ng-if="!rec.status">
+                        
+                            <div class="buttons" ng-show="!rowform.$visible">
+                            <button class="btn btn-sm btn-danger" ng-click="nettoyer_coulage(rec, $index)">Nettoyer</button>
+                            </div>
+                    
+                        </td>
+
+                        <td style="white-space: nowrap" ng-if="rec.status">
+                        
+                            <div class="buttons" ng-show="!rowform.$visible">
+                            <button class="btn btn-sm btn-info" ng-click="restaurer_coulage(rec, $index)">Restaurer</button>
+                            </div>
+                    
+                        </td>
+                    </tr>
+                
+                    <tr>
+
+                        <td colspan="3"  class="text-center">
+                            <span >
+                                <b>TOTAL COULAGES</b>
+                            </span>
+                        </td>
+                        <td><b>{{decouvert.recap_coulage | number}}</b></td>
+
+                    </tr> <!-- TOTAL COULAGES -->
+
+                    <tr  ng-repeat="rec in decouvert.recap_depenses  track by $index" ng-if="rec.status_affichage">
+
+                            <td class="v-middle">
+                            <!-- editable username (text with validation) -->
+                            <span   e-name="produit" e-form="rowform"  e-required>
+                                {{ rec.date || '' }}
+                            </span>
+                            </td>
+    
+                            <td class="v-middle">
+                                <!-- editable username (text with validation) -->
+                                <span   e-name="quantite" e-form="rowform"  e-required>
+                                    {{ rec.nature_depense}}
+                                </span>
+                                </td>
+    
+                            <td class="v-middle">
+                            <!-- editable username (text with validation) -->
+                            <span   e-name="prix_unitaire" e-form="rowform"  e-required>
+                                {{ rec.montant_initial | number }}
+                            </span>
+                            </td>
+                            
+                
+                            <td class="v-middle">
+                            <!-- editable username (text with validation) -->
+                            <span  e-name="montant" e-form="rowform"  e-required>
+                                {{ rec.montant| number  }}
+                            </span>
+                            </td>
+
+                            <td style="white-space: nowrap" ng-if="!rec.status">
+                        
+                                <div class="buttons" ng-show="!rowform.$visible">
+                                <button class="btn btn-sm btn-danger" ng-click="nettoyer_depense(rec, $index)">Nettoyer</button>
+                                </div>
+                        
+                            </td>
+
+                            <td style="white-space: nowrap" ng-if="rec.status">
+                        
+                                <div class="buttons" ng-show="!rowform.$visible">
+                                <button class="btn btn-sm btn-info" ng-click="restaurer_depense(rec, $index)">Restaurer</button>
+                                </div>
+                        
+                            </td>
+                        </tr>
+    
+                        <tr>
+                            <td colspan="3"  class="text-center">
+                                <span >
+                                    <b>TOTAL DEPENSES</b>
+                                </span>
+                            </td>
+                            <td><b>{{decouvert.recap_depenses_total | number}}</b></td>
+    
+                        </tr> <!-- TOTAL DEPENSES -->
+
+                    <tr>
+
+                        <td colspan="3"  class="text-center">
+                            <span >
+                                <b>TOTAL GENERAL</b>
+                            </span>
+                        </td>
+                        <td><b>{{decouvert.recap_manquant_total - decouvert.recap_coulage + decouvert.recap_creances_total + decouvert.recap_versement_total - decouvert.recap_livraison_total + decouvert.recap_stock + decouvert.recap_depenses_total| number}}</b></td>
+
+
+                        </td>
+
+                    </tr> <!-- TOTAL GENERAL -->
+
+                    <tr>
+
+                        <td colspan="3"  class="text-center">
+                            <span >
+                                <b>SOLDE GESCOM</b>
+                            </span>
+                        </td>
+                        <td><b>{{decouvert.solde_gescom | number}}</b></td>
+
+                    </tr> <!-- DECOUVERT GESCOM -->
+
+                    <tr>
+
+                        <td colspan="3"  class="text-center">
+                            <span >
+                                <b>ECART DECOUVERT</b>
+                            </span>
+                        </td>
+                        <td><b>{{(decouvert.recap_manquant_total - decouvert.recap_coulage + decouvert.recap_creances_total + decouvert.recap_versement_total - decouvert.recap_livraison_total + decouvert.recap_stock + decouvert.recap_depenses_total - decouvert.solde_gescom ) | number }}</b></td>
+
+                    </tr> <!-- ECART -->
+
+
+                    </table>
+                    <div class="line line-dashed"></div>
+                    <button class="btn btn-danger" ng-click="cloturer()">CLOTURER DECOUVERT</button>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="panel card wrapper"  >
+
+                <div class="row">
+        
+                        <div class="col-sm-6">
+                            <label>Client</label>
+                            <ui-select  ng-model="dt.client" disabled theme="bootstrap">
+                            <ui-select-match placeholder="Selectionner un client">{{$select.selected.nom_client}}</ui-select-match>
+                            <ui-select-choices repeat="item as item in clients | filter: $select.search">
+                                <div ng-bind-html="item.code_client | highlight: $select.search"></div>
+                                <small ng-bind-html="item.nom_client | highlight: $select.search"></small>
+                            </ui-select-choices>
+                            </ui-select>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="m-t m-b">
+                          <!--     <button class="btn btn-primary btn-rounded" ng-click="today()">VALIDER</button> --> 
+                            </div>
+                        </div>
+        
+                </div>
+               
+                <div class="row">
+                        <div class="col-sm-6">
+                                <label>Date Debut</label>
+                                <p class="input-group">
+                                    <input type="text" ng-disabled="true"  class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_debut" is-open="opened"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                    <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click=""><i class="glyphicon glyphicon-calendar"></i></button>
+                                    </span>
+                                </p>
+                        </div>
+            
+                        <div class="col-sm-6">
+                                <label>Date Fin</label>
+                                <p class="input-group">
+                                    <input type="text" ng-disabled="true"  class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_fin" is-open="opened2"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                    <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click=""><i class="glyphicon glyphicon-calendar"></i></button>
+                                    </span>
+                                </p>
+                        </div>
+                </div>
+                <div class="m-t m-b">
+                    <button class="btn btn-primary btn-rounded" ng-click="creances()">RELEVE D'ECHEANCE</button>
+                </div>
+
+                <div class="panel-heading font-bold">
+                    Rechercher une correspondance
+                </div>
+
+                <div class="panel-body">
+                    <form  class="form-inline" role="form"  ng-submit="" >
+                
+                        <div class="form-group">
+                            <label class="sr-only" for="Nom">Reference</label>
+                            <input type="text" class="form-control" id="Nom" placeholder="facture" ng-model="pl.facture">
+                        </div>
+                
+                        <div class="form-group">
+                        <label class="sr-only" for="Produit">Produit</label>
+                        <input type="text" class="form-control" id="produit" placeholder="produit" ng-model="pl.produit">
+                        </div>
+                
+                        <div class="form-group">
+                            <label class="sr-only" for="Montant">Montant</label>
+                            <input type="text" class="form-control" id="montant" placeholder="montant" ng-model="pl.montant">
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="row">
+                    <h4>Relévé d'échéance  | Solde Initial au <b>{{date_cloture}}</b> : <b>{{ancien_solde | number}}</b></h4>
+                    <table  class="table table-bordered table-hover  bg-white-only">
+                        <tr >
+                            <td ><b>STOCK</b></td>
+                            <td ><b>QUANTITE</b></td>
+                            <td ><b>PRIX UNITAIRE</b></td>
+                            <td ><b>VALEUR</b></td>
+                        </tr>  
+    
+                        <tr  ng-repeat="rec in decouvert.recap_stock_carb  track by $index">
+    
+                            <td class="v-middle">
+                            <!-- editable username (text with validation) -->
+                            <span   e-name="produit" e-form="rowform"  e-required>
+                                {{ rec.produit || '' }}
+                            </span>
+                            </td>
+    
+                            <td class="v-middle">
+                                <!-- editable username (text with validation) -->
+                                <span   e-name="quantite" e-form="rowform"  e-required>
+                                    {{ rec.quantite | number  }}
+                                </span>
+                                </td>
+    
+                            <td class="v-middle">
+                            <!-- editable username (text with validation) -->
+                            <span   e-name="prix_unitaire" e-form="rowform"  e-required>
+                                {{ rec.prix_unitaire | number }}
+                            </span>
+                            </td>
+                            
+                
+                            <td class="v-middle">
+                            <!-- editable username (text with validation) -->
+                            <span  e-name="montant" e-form="rowform"  e-required>
+                                {{ rec.montant| number  }}
+                            </span>
+                            </td>
+                        </tr>
+    
+                        <tr  ng-repeat="rec in decouvert.recap_stock_lub  track by $index">
+    
+                            <td class="v-middle">
+                            <!-- editable username (text with validation) -->
+                            <span   e-name="produit" e-form="rowform"  e-required>
+                                {{ rec.produit || '' }}
+                            </span>
+                            </td>
+    
+                            <td class="v-middle">
+                                <!-- editable username (text with validation) -->
+                                <span   e-name="quantite" e-form="rowform"  e-required>
+                                    {{ rec.quantite | number  }}
+                                </span>
+                                </td>
+    
+                            <td class="v-middle">
+                            <!-- editable username (text with validation) -->
+                            <span   e-name="prix_unitaire" e-form="rowform"  e-required>
+                                {{ rec.prix_unitaire | number }}
+                            </span>
+                            </td>
+                            
+                
+                            <td class="v-middle">
+                            <!-- editable username (text with validation) -->
+                            <span  e-name="montant" e-form="rowform"  e-required>
+                                {{ rec.montant| number  }}
+                            </span>
+                            </td>
+                        </tr>
+    
+                        <tr>
+    
+                            <td colspan="3"  class="text-center">
+                                <span >
+                                    <b>TOTAL STOCK</b>
+                                </span>
+                            </td>
+                            <td><b>{{decouvert.recap_stock | number}}</b></td>
+                            
+                       </tr> <!-- TOTAL STOCK -->
+                    </table>
+                </div>
+
+               <div class="row">
+                   <div class="col-sm-12">
+
+                    <table  class="table table-bordered table-hover  bg-white-only">
+                    
+                    <tr >
+                        
+                        <td ><b>DATE</b></td>
+                        <td ><b>FACTURE</b></td>
+                        <td ><b>QTE</b></td>
+                        <td ><b>PRODUIT</b></td>
+                        <td ><b>MONTANT</b></td>
+                        <td ><b>REGLEMENT</b></td>
+                        <td ><b>SOLDE</b></td>
+        
+                    </tr>  
+                    <tr  ng-repeat="rec in recap_creances | filter: pl.facture | filter: pl.produit | filter: pl.montant  track by $index">
+
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="produit.nom_produit" e-form="rowform"  e-required>
+                            {{ rec.date || '' }}
+                        </span>
+                        </td>
+                        
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="type_produit" e-form="rowform"  e-required>
+                            <b>{{ rec.facture || '' }}</b>
+                        </span>
+                        </td>
+
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="type_produit" e-form="rowform"  e-required>
+                            {{ rec.quantite | number }}
+                        </span>
+                        </td>
+                        
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="type_produit" e-form="rowform"  e-required>
+                            {{ rec.produit || '' }}
+                        </span>
+                        </td>
+
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="produit.station" e-form="rowform"  e-required>
+                            {{ rec.montant | number }}
+                        </span>
+                        </td>
+                        
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="prix_produit" e-form="rowform"  e-required>
+                            {{ rec.reglement | number }}
+                        </span>
+                        </td>
+    
+                        <td class="text-center text-danger">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="prix_produit" e-form="rowform"  e-required>
+                            <b>{{ rec.solde | number }}</b>
+                        </span>
+                        </td>
+                        
+                    </tr>
+                    </table>
+
+                    <div class="line line-dashed"></div>
+                    
+                   </div>
+               </div>
+            </div>
+        </div>
+    </div>
+
+    
+        
+
+            <h4>FICHE DE PASSATION DE COMMANDE : {{dt.client.nom_client}} </h4>
+
+            <table  class="table table-bordered table-hover  bg-white-only">
+
+                <tr>
+                    <td colspan="3"  class="text-center"><b>SOLDE GESCOM</b></td>
+                    
+                    <td ><b>{{decouvert.solde_gescom | number}}</b></td>
+
+                </tr> <!-- SOLDE GESCOM -->
+
+                <tr>
+
+                    <td colspan="3"  class="text-center">
+                        <span >
+                            <b>TOTAL STOCK</b>
+                        </span>
+                    </td>
+                    <td><b>{{decouvert.recap_stock | number}}</b></td>
+                    
+                </tr> <!-- TOTAL STOCK -->
+
+                <tr>
+
+                    <td colspan="3"  class="text-center">
+                        <span class="text-danger">
+                            <b>SOLDE INTERMEDIAIRE 1</b>
+                        </span>
+                    </td>
+                    <td><b>{{decouvert.solde_gescom - decouvert.recap_stock  | number}}</b></td>
+                    
+                </tr> <!-- SOLDE INTERMEDIAIRE 1 -->
+
+                <tr>
+                        <td colspan="4"  class="text-center">
+                                
+                        </td>
+                </tr>
+
+                <tr>
+
+                    <td colspan="3"  class="text-center">
+                        <span >
+                            <b>TOTAL LIVRAISON NON PRIS EN COMPTE</b>
+                        </span>
+                    </td>
+                    <td><b>{{decouvert.recap_livraison_total | number}}</b></td>
+
+                </tr> <!-- TOTAL LIVRAISON -->
+
+                <tr>
+
+                    <td colspan="3"  class="text-center">
+                        <span >
+                            <b>TOTAL VERSEMENT NON PRIS EN COMPTE</b>
+                        </span>
+                    </td>
+                    <td><b>{{decouvert.recap_versement_total | number }}</b></td>
+
+                </tr> <!-- TOTAL VERSEMENT -->
+
+                <tr>
+
+                    <td colspan="3"  class="text-center">
+                        <span class="text-danger">
+                            <b>SOLDE INTERMEDIAIRE 2</b>
+                        </span>
+                    </td>
+                    <td><b>{{decouvert.solde_gescom - decouvert.recap_stock - decouvert.recap_livraison_total - decouvert.recap_versement_total  | number}}</b></td>
+                    
+                </tr> <!-- SOLDE INTERMEDIAIRE 2 -->
+
+                <tr>
+
+                    <td colspan="3"  class="text-center">
+                        <span >
+                            <b>TOTAL CREANCES</b>
+                        </span>
+                    </td>
+                    <td><b>{{decouvert.recap_creances_total | number}}</b></td>
+                    
+                </tr> <!-- TOTAL CREANCES -->
+
+                <tr>
+
+                    <td colspan="3"  class="text-center">
+                        <span class="text-danger">
+                            <b>SOLDE INTERMEDIAIRE 3</b>
+                        </span>
+                    </td>
+                    <td><b>{{decouvert.solde_gescom - decouvert.recap_stock - decouvert.recap_livraison_total - decouvert.recap_versement_total - decouvert.recap_creances_total | number}}</b></td>
+                    
+                </tr> <!-- SOLDE INTERMEDIAIRE 3 -->
+
+                <tr>
+
+                    <td colspan="3"  class="text-center">
+                        <span >
+                            <b>TOTAL MANQUANTS</b>
+                        </span>
+                    </td>
+                    <td><b>{{decouvert.recap_manquant_total | number}}</b></td>
+
+                </tr> <!-- TOTAL MANQUANTS -->
+
+                <tr>
+
+                    <td colspan="3"  class="text-center">
+                        <span >
+                            <b>TOTAL COULAGES</b>
+                        </span>
+                    </td>
+                    <td><b>{{decouvert.recap_coulage | number}}</b></td>
+
+                </tr> <!-- TOTAL COULAGES -->
+            
+                <tr>
+                    <td colspan="3"  class="text-center">
+                        <span >
+                            <b>TOTAL DEPENSES</b>
+                        </span>
+                    </td>
+                    <td><b>{{decouvert.recap_depenses_total | number}}</b></td>
+
+                </tr> <!-- TOTAL DEPENSES -->
+
+                <tr>
+
+                    <td colspan="3"  class="text-center">
+                        <span class="text-danger">
+                            <b>SOLDE INTERMEDIAIRE 4</b>
+                        </span>
+                    </td>
+                    <td><b>{{decouvert.solde_gescom - decouvert.recap_stock - decouvert.recap_livraison_total - decouvert.recap_versement_total - decouvert.recap_creances_total - decouvert.recap_manquant_total - decouvert.recap_coulage - decouvert.recap_depenses_total | number}}</b></td>
+                    
+                </tr> <!-- SOLDE INTERMEDIAIRE 4 -->
+
+                <tr>
+
+                    <td colspan="3"  class="text-primary">
+                        <span class="text-primary">
+                            <b>SOLDE AJUSTE</b>
+                        </span>
+                    </td>
+                    <td><b>{{decouvert.solde_gescom - decouvert.recap_livraison_total - decouvert.recap_versement_total - decouvert.recap_creances_total - decouvert.recap_manquant_total  - decouvert.recap_depenses_total + decouvert.recap_coulage | number}}</b></td>
+                    
+                </tr> <!-- SOLDE AJUSTE -->
+
+
+            </table>
+
+           
+            <form  class="form-inline" role="form"  ng-submit="" >
+                
+                <div class="form-group">
+                    <label  for="Nom">Commande Super</label>
+                    <input type="number" class="form-control" id="Nom" placeholder="Commande Super" ng-model="qte.super">
+                </div>
+        
+                <div class="form-group">
+                <label class="sr-only" for="Produit">Prix Unitaire</label>
+                <input type="number" class="form-control" id="produit" disabled placeholder="Prix Unitaire" ng-model="prix.super">
+                </div>
+        
+                <div class="form-group">
+                    <label class="sr-only" for="Montant">Montant</label>
+                    {{qte.super*prix.super | number}}
+                </div>
+            </form>
+
+            <form  class="form-inline" role="form"  ng-submit="" >
+                
+                <div class="form-group">
+                    <label  for="Nom">Commande Gasoil</label>
+                    <input type="number" class="form-control" id="Nom" placeholder="Commande Gasoil" ng-model="qte.gasoil">
+                </div>
+        
+                <div class="form-group">
+                <label class="sr-only" for="Produit">Prix Unitaire</label>
+                <input type="number" class="form-control" id="produit" disabled placeholder="Prix Unitaire" ng-model="prix.gasoil">
+                </div>
+        
+                <div class="form-group">
+                    <label class="sr-only" for="Montant">Montant</label>
+                    {{qte.gasoil*prix.gasoil | number}}
+                </div>
+            </form>
+
+            <form  class="form-inline" role="form"  ng-submit="" >
+                
+                <div class="form-group">
+                    <label  for="Nom">Commande Petrole</label>
+                    <input type="number" class="form-control" id="Nom" placeholder="Commande Petrole" ng-model="qte.petrole">
+                </div>
+        
+                <div class="form-group">
+                <label class="sr-only" for="Produit">Prix Unitaire</label>
+                <input type="number" class="form-control" id="produit" disabled placeholder="Prix Unitaire" ng-model="prix.petrole">
+                </div>
+        
+                <div class="form-group">
+                    <label class="sr-only" for="Montant">Montant</label>
+                    {{qte.petrole*prix.petrole | number}}
+                </div>
+            </form>
+
+           
+            
+            <table  class="table table-bordered table-hover  bg-white-only">
+
+                <tr>
+
+                    <td colspan="3"  class="text-center">
+                        <span >
+                            <b>COMMANDE VALORISE</b>
+                        </span>
+                    </td>
+                    <td><b>{{ qte.super*prix.super  + qte.gasoil*prix.gasoil + qte.petrole*prix.petrole | number}}</b></td> 
+
+                </tr> <!-- COMMANDE VALORISE -->
+
+                <tr>
+
+                    <td colspan="3"  class="text-center">
+                        <span >
+                            <b>SOLDE APRES LIVRAISON</b>
+                        </span>
+                    </td>
+                    <td><b>{{decouvert.solde_gescom - decouvert.recap_livraison_total - decouvert.recap_versement_total - decouvert.recap_creances_total - decouvert.recap_manquant_total  - decouvert.recap_depenses_total + decouvert.recap_coulage + (qte.super*prix.super  + qte.gasoil*prix.gasoil + qte.petrole*prix.petrole) | number}}</b></td>
+
+                </tr> <!-- SOLDE APRES LIVRAISON -->
+            
+                <tr>
+                    <td colspan="3"  class="text-center">
+                        <span >
+                            <b>PLAFOND DE CREDIT VALORISE</b>
+                        </span>
+                    </td>
+                    <td><b>{{decouvert.recap_depenses_total | number}}</b></td>
+
+                </tr> <!-- PLAFOND DE CREDIT VALORISE -->
+
+                <tr>
+
+                    <td colspan="3"  class="text-center">
+                        <span class="text-danger">
+                            <b>ECART</b>
+                        </span>
+                    </td>
+                    <td><b>{{decouvert.solde_gescom - decouvert.recap_stock - decouvert.recap_livraison_total - decouvert.recap_versement_total - decouvert.recap_creances_total - decouvert.recap_manquant_total - decouvert.recap_coulage - decouvert.recap_depenses_total | number}}</b></td>
+                    
+                </tr> <!-- ECART -->
+
+            </table>
+           
+
+            <button class="btn btn-danger" ng-click="commander()">ENVOYER MA COMMANDE</button>
+
+        
+    
+
+</div>
+
+    
+
+    

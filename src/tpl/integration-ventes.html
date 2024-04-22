@@ -1,0 +1,136 @@
+<script type="text/ng-template" id="deleteContent.html">
+    <div ng-include="'tpl/modal/modal_delete.html'"></div>
+</script>
+<script type="text/ng-template" id="successContent.html">
+    <div ng-include="'tpl/modal/modal_success.html'"></div>
+</script>
+<script type="text/ng-template" id="rejectContent.html">
+    <div ng-include="'tpl/modal/modal_reject.html'"></div>
+</script>
+<div class="bg-light lter b-b wrapper-md" >
+  <h1 class="m-n font-bold h2 title">Intégration des ventes</h1>
+</div>
+
+<!---------------------------------------------------------------------------------------------------->
+
+<div ng-controller="integration-ventesCtrl"  ng-init="(role.user == 'ADMINISTRATEUR') ? station(): station_courante() " class="panel card wrapper">
+
+    <div class="col-sm-4" ng-init="heure()">
+        <label>Date</label>
+          <p class="input-group">
+              <input type="text" ng-disabled="false"  class="form-control" datepicker-popup="{{format}}" ng-model="date.date_ouverture2" is-open="opened"    datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+              <span class="input-group-btn">
+              <button type="button" class="btn btn-default" ng-click="open_quart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+          </p>
+      </div>
+
+      <div class="col-sm-4">
+
+            <md-select  ng-model="date.quart" placeholder="Quart" >
+            <md-select-label></md-select-label>
+            <md-option value="quart 1" >QUART 1</md-option>
+            <md-option value="quart 2" >QUART 2</md-option>
+            </md-select>
+
+        </div>
+      <!--
+     <div class="col-sm-4">
+
+            <md-select  ng-model="date.station" placeholder="Station">
+              <md-option ng-repeat="station in stations" value="{{station.nom_station}}">{{station.nom_station}}</md-option>
+            </md-select>
+
+     </div>
+     -->
+
+    <div class="hbox hbox-auto-xs hbox-auto-sm" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
+        <div class="col w-lg bg-light b-r bg-auto">
+          <div class="wrapper-md dker b-b">
+            <h3 class="m-n font-thin">Joindre Fichiers</h3>
+          </div>
+          <div class="wrapper-md">      
+            <div ng-show="uploader.isHTML5" class="m-b-md">
+                <!-- 3. nv-file-over uploader="link" over-class="className" -->
+    
+            </div>
+    
+            <!-- Example: nv-file-select="" uploader="{Object}" options="{Object}" filters="{String}" -->
+          
+            <p class="m-t-md">Choisir un fichier</p>
+            <input type="file" nv-file-select="" uploader="uploader" />
+          </div>
+          </div>
+          <div class="col">
+            <div class="wrapper-md bg-light dk b-b">
+              <span class="pull-right m-t-xs">Nbre fichiers: <b class="badge bg-info"></b></span>
+              <h3 class="m-n font-thin">File d'attente</h3>      
+            </div>
+            <div class="wrapper-md">
+              <table class="table bg-white-only b-a">
+                  <thead>
+                      <tr>
+                          <th width="50%">Nom</th>
+                          <th ng-show="uploader.isHTML5">Taille</th>
+                          <th ng-show="uploader.isHTML5">Progression</th>
+                          <th>Status</th>
+                          <th>Actions</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr ng-repeat="item in uploader.queue">
+                          <td><strong>{{ item.file.name }}</strong></td>
+                          <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                          <td ng-show="uploader.isHTML5">
+                              <div class="progress progress-sm m-b-none m-t-xs">
+                                  <div class="progress-bar bg-info" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                              </div>
+                          </td>
+                          <td class="text-center">
+                              <span ng-show="item.isSuccess" class="text-success"><i class="glyphicon glyphicon-ok"></i></span>
+                              <span ng-show="item.isCancel" class="text-warning"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                              <span ng-show="item.isError" class="text-danger"><i class="glyphicon glyphicon-remove"></i></span>
+                          </td>
+                          <td nowrap>
+                              <button type="button" class="btn btn-default btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                                  Upload
+                              </button>
+                              <button type="button" class="btn btn-default btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
+                                  Annuler
+                              </button>
+                              <button type="button" class="btn btn-default btn-xs" ng-click="item.remove()">
+                                  Retirer
+                              </button>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+              <div>
+                <div>
+                  <p>progression:</p>
+                  <div class="progress bg-light dker" style="">
+                      <div class="progress-bar progress-bar-striped bg-info" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-addon btn-success" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
+                  <i class="fa fa-arrow-circle-o-up"></i> Envoyer
+                </button>
+                <button type="button" class="btn btn-addon btn-warning" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
+                  <i class="fa fa-ban"></i> Annuler
+                </button>
+                <button type="button" class="btn btn-addon btn-danger" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
+                    <i class="fa fa-trash-o"></i> Retirer
+                </button>
+                <p class="text-muted m-t-xl">NB: Veuillez vérifier que votre fichier a été correctement renseigné .</p>
+              </div>
+            </div>
+          </div>
+    </div>
+    
+</div>
+
+
+
+
+</div>
+

@@ -1,0 +1,358 @@
+<div class="bg-light lt b-b wrapper-md">
+    <div class="row">
+      <div class="col-sm-6 col-xs-12">
+        <h1 class="m-n font-bold h2 title">Tableau de Bord</h1>
+        
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="hbox hbox-auto-xs hbox-auto-sm" >
+  
+    <!-- main -->
+    <div class="col">
+      <!-- / main header -->
+      <div class="wrapper-md" >
+        
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button type="button" ng-click='jour()' class="btn btn-default">JOUR</button>
+          <button type="button" ng-click='mois()' class="btn btn-default">MOIS</button>
+          <button type="button" ng-click='annee()' class="btn btn-default">ANNEE</button>
+        </div>
+        <hr>
+        <!-- stats -->
+        <div class="row">
+
+            <div class="col-md-6">
+              <div class="row row-sm text-center">
+                <div class="col-xs-6">
+                  <div class="panel padder-v item card">
+                    <div class="h1 text-info font-thin h1">{{ventes[(ventes.length-1)].gasoil | number }}</div>
+                    <span class="text-muted text-xs">Litres Gasoil</span>
+                    <div class="top text-right w-full">
+                      <i class="fa fa-caret-down text-warning m-r-sm"></i>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xs-6">
+                  <a href class="block panel padder-v item card">
+                    <span class="text-success font-thin h1 block">{{ventes[(ventes.length-1)].super | number}}</span>
+                    <span class="text-muted text-xs">Litres Super</span>
+                    <span class="bottom text-right w-full">
+                      <i class="fa fa-caret-up text-warning m-l-sm"></i>
+                    </span>
+                  </a>
+                </div>
+                <div class="col-xs-6">
+                  <a href class="block panel padder-v item card">
+                    <span class="text-primary font-thin h1 block">{{ventes[(ventes.length-1)].petrole | number}}</span>
+                    <span class="text-muted text-xs">Litres Petrole</span>
+                    <span class="top text-left">
+                      <i class="fa fa-caret-up text-warning m-l-sm"></i>
+                    </span>
+                  </a>
+                </div>
+                <div class="col-xs-6">
+                  <div class="panel padder-v item card">
+                    <div class="font-thin h1">{{ventes[(ventes.length-1)].tpc | number}}</div>
+                    <span class="text-muted text-xs">Litres TPC</span>
+                    <div class="bottom text-left">
+                      <i class="fa fa-caret-up text-warning m-l-sm"></i>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xs-12 m-b-md">
+                  <div class="r blue-600 item hbox no-border md-whiteframe-z0">
+                    
+                    <div class="col blue padder-v r-r">
+                      <div class="font-thin h1"><span>{{recap_coulages[(recap_coulages.length-1)].cou + recap_coulages[(recap_coulages.length-2)].cou + recap_coulages[(recap_coulages.length-3)].cou | number}} Litres</span></div>
+                      <span class="text-xs">Coulage J-1</span>
+                    </div>
+                    <div class="col dark padder-v r-r">
+                      <div class="font-thin h1"><span>{{ventes[(ventes.length-1)].versement | number }} FCFA</span></div>
+                      <span class="text-xs">Recette J-1</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+    
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="panel panel-default">
+                    <div class="panel-heading font-bold text-center">
+                      Ventes
+                    </div> 
+                    <div class="panel-body text-center">
+                      <h4>{{ objectif_carburant | number : 0}}<small> Litres</small></h4>
+                      <small class="text-muted block text-danger"><b>Objectif</b></small>
+                      <div class="inline">
+                        <div ui-jq="easyPieChart" ui-options="{
+                                  percent: {{pourcentage_carburant }},
+                                  lineWidth: 10,
+                                  trackColor: '{{app.color.light}}',
+                                  barColor: '{{app.color.warning}}',
+                                  scaleColor: '{{app.color.light}}',
+                                  size: 188,
+                                  lineCap: 'butt'
+                                }">
+                          <div>
+                            <span class="h2 m-l-sm step">{{pourcentage_carburant | number : 0}}</span>%
+                            <div class="text text-sm">réalisé</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="panel-footer text-center"><small text-center>Réalisation : <b>{{ventes[(ventes.length-1)].tpc | number}}</b> Litres</small></div>
+                  </div>
+                </div>
+                
+                <div class="col-lg-6">
+                  <div class="panel panel-default">
+                    <div class="panel-heading font-bold text-center">
+                     Coulages
+                    </div>
+                    <div class="panel-body text-center">
+                      <h4>{{objectif_coulage | number : 0}}<small> Litres</small></h4>
+                      <small class="text-muted block" text-danger><b>Freinte</b></small>
+                      <div class="inline m-t m-b">
+                        <div ui-jq="easyPieChart" ui-options="{
+                                  percent: {{pourcentage_coulage}},
+                                  lineWidth: 10,
+                                  trackColor: '{{app.color.light}}',
+                                  barColor: '{{color}}',
+                                  scaleColor: false,
+                                  size: 158,
+                                  rotate: 90,
+                                  lineCap: 'butt'
+                                }">
+                          <div>
+                            <span class="h2 m-l-sm step">{{pourcentage_coulage | number : 0}}</span>%
+                            <div class="text text-sm">évolution</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="panel-footer text-center"><small>Réalisation : <b>{{ (recap_coulages[(recap_coulages.length-1)].cou + recap_coulages[(recap_coulages.length-2)].cou + recap_coulages[(recap_coulages.length-3)].cou) | number }}</b> Litres</small></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+    
+        </div>
+    
+          <div class="row" >
+            
+            <div class="col-md-6">
+              <div class="panel panel-default">
+                <div class="panel-heading font-bold">Repartition Ventes</div>
+                <div class="panel-body">
+                  <div ui-jq="plot" ui-options="
+                    {{repartition_ventes}},
+                    {
+                      series: { pie: { show: true, innerRadius: 0.5, stroke: { width: 0 }, label: { show: true, threshold: 0.05 } } },
+                      colors: ['{{app.color.primary}}','{{app.color.info}}','{{app.color.success}}','{{app.color.warning}}','{{app.color.danger}}'],
+                      grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#ccc' },   
+                      tooltip: true,
+                      tooltipOpts: { content: '%s: %p.0%' }
+                    }
+                  " style="height:240px"></div>
+                </div>
+              </div>
+            </div>
+    
+            <div class="col-md-6">
+              <div class="panel panel-default">
+                <div class="panel-heading font-bold">Repartition Coulages</div>
+                <div class="panel-body">
+                  <div ui-jq="plot" ui-options="
+                    {{repartition_coulages}},
+                    {
+                      series: { pie: { show: true, innerRadius: 0.5, stroke: { width: 0 }, label: { show: true, threshold: 0.05 } } },
+                      colors: ['{{app.color.primary}}','{{app.color.info}}','{{app.color.success}}','{{app.color.warning}}','{{app.color.danger}}'],
+                      grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#ccc' },   
+                      tooltip: true,
+                      tooltipOpts: { content: '%s: %p.0%' }
+                    }
+                  " style="height:240px"></div>
+                </div>
+              </div>
+            </div>
+    
+          </div>
+        <!-- / stats -->
+  
+        <div class="row">
+
+            <h2>Ventes | Versements</h2>
+            
+            <div class="panel wrapper" ng-init="(role.user == 'ADMINISTRATEUR') ? ventes_reseau(): ventes_station() ">
+              <table class="table table-bordered table-hover table-condensed bg-white-only">
+                <tr >
+                  <td ><b>STATION</b></td>
+                  <td ><b>SUPER</b></td>
+                  <td ><b>GASOIL</b></td>
+                  <td ><b>PETROLE</b></td>
+                  <td ><b>TPC</b></td>
+                  <td >RECETTE CARB</td>
+                  <td >RECETTE LUB</td>
+                  <td ><b>RECETTE ATTENDU</b></td>
+                  <td ><b>VERSEMENT</b></td>
+                  <td ><b>ECART</b></td>
+                  <td >VENTES A TERME</td>
+                  <td >MQTS POMPISTES</td>
+                  <td >DEPENSES</td>
+                  <td >ECART GERANT</td>
+      
+                </tr>
+                <tr  ng-repeat="rec in ventes  track by $index">
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="produit.nom_produit" e-form="rowform"  e-required>
+                      {{ rec.station || '' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="code_produit" e-form="rowform"  e-required>
+                      {{ rec.super || 0 | number}}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="type_produit" e-form="rowform"  e-required>
+                      {{ rec.gasoil || 0 | number}}
+                    </span>
+                  </td>
+                  
+      
+                   <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="produit.station" e-form="rowform"  e-required>
+                      {{ rec.petrole || 0 | number}}
+                    </span>
+                  </td>
+                  
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                      {{ rec.tpc || 0 | number}}
+                    </span>
+                  </td>
+    
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                      {{ rec.total_carb || 0 | number}}
+                    </span>
+                  </td>
+    
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                      {{ rec.total_lub || 0 | number}}
+                    </span>
+                  </td>
+    
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                      {{ rec.total_attendu || 0 | number}}
+                    </span>
+                  </td>
+    
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                      {{ rec.versement || 0 | number}}
+                    </span>
+                  </td>
+    
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                      {{ rec.ecart || 0 | number}}
+                    </span>
+                  </td>
+    
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                      {{ rec.vte_client || 0 | number}}
+                    </span>
+                  </td>
+    
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                      {{ rec.manquant_pompiste || 0 | number}}
+                    </span>
+                  </td>
+    
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                      {{ rec.depense || 0 | number}}
+                    </span>
+                  </td>
+    
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                      {{ rec.ecart_gerant || 0 | number}}
+                    </span>
+                  </td>
+      
+                 
+                </tr>
+              </table>
+            </div>
+    
+          </div>
+  
+          <h2>Stocks</h2>
+  
+        <!-- service -->
+        <div class="panel wrapper" ng-init="(role.user == 'ADMINISTRATEUR') ? coulages_reseau(): coulages_station() ">
+             
+             <table  class="table table-bordered table-hover table-condensed bg-white-only" >
+                      <tr >
+                        <td></td>
+                        <td></td>
+                        <td>Stock Initial</td>
+                        <td>Livraison</td>
+                        <td>Ventes</td>
+                        <td>Stock Théorique</td>
+                        <td>Stock Physique</td>
+                        <td>Coulages</td>
+                        <td>Freinte</td>
+                        <td>Appréciation</td>
+                      </tr>
+                      <tr ng-repeat="rl in recap_coulages track by $index">
+                        <td><b>{{rl.station}} </b></td>
+                        <td>{{rl.produit}}  </td>                
+                        <td>{{rl.si | number}}  </td>                 
+                        <td>{{rl.liv | number}}  </td>                 
+                        <td>{{rl.vte | number}}  </td>                 
+                        <td>{{rl.st | number}}  </td>                
+                        <td>{{rl.sf | number}}  </td>             
+                        <td><b>{{rl.cou | number}} </b> </td>                 
+                        <td>{{rl.freinte | number}} </td>              
+                        <td class="text-danger">{{rl.appreciation}} </td>            
+                       
+                      </tr>
+                     
+  
+             </table>
+        </div>
+        <!-- / service -->
+  
+       
+        
+      </div>
+    </div>
+  
+  </div>
+  

@@ -1,0 +1,323 @@
+<script type="text/ng-template" id="manquantContent.html">
+    <div ng-include="'tpl/modal/modal_manquant.html'"></div>
+</script>
+<script type="text/ng-template" id="successContent.html">
+    <div ng-include="'tpl/modal/modal_success.html'"></div>
+</script>
+<script type="text/ng-template" id="rejectContent.html">
+    <div ng-include="'tpl/modal/modal_reject.html'"></div>
+</script>
+<div class="bg-light lter b-b wrapper-md" >
+  <h1 class="m-n font-bold h2 title">Suivi des manquants pompistes</h1>
+</div>
+
+<div  class="panel panel-default">
+<div ng-show="vue" ng-init="pompiste_all()"> 
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel-heading font-bold">
+                Selectionner la période
+                </div>
+                <div class="panel-body">
+                  <div class="panel card wrapper">
+                     
+                      <div class="row">
+                              <div class="col-sm-6">
+                                      <label>Date Debut</label>
+                                      <p class="input-group">
+                                          <input type="text" ng-disabled="true" class="form-control" show-weeks="false" datepicker-popup="{{format}}" ng-model="dt.date_debut" is-open="opened"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                          <span class="input-group-btn">
+                                          <button type="button" class="btn btn-default" ng-click=""><i class="glyphicon glyphicon-calendar"></i></button>
+                                          </span>
+                                      </p>
+                          
+                                      
+                              </div>
+                  
+                              <div class="col-sm-6">
+                                      <label>Date Fin</label>
+                                      <p class="input-group">
+                                          <input type="text" class="form-control" min-date="minDate" show-weeks="false" datepicker-popup="{{format}}" ng-model="dt.date_fin" is-open="opened2"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                          <span class="input-group-btn">
+                                          <button type="button" class="btn btn-default" ng-click="open2($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                          </span>
+                                      </p>
+                          
+                                      
+                              </div>
+                      </div>
+                      
+                     
+                      <div class="m-t m-b">
+                        <button class="btn btn-primary btn-rounded" ng-click="manquant()">VALIDER</button>
+                      </div>
+                    
+                  </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+           
+            <div class="col-sm-12">
+                <div class="panel-heading font-bold">
+                  MANQUANTS EXCEPTIONEL POMPISTES
+                </div>
+                <div class="panel-body">
+                  <div class="panel card wrapper">
+                     
+                      <div class="row">
+                          <form  class="form-inline" role="form"  ng-submit="" >
+
+                            <div class="col-sm-3 ">
+                                    <label>Date</label>
+                                    <p class="input-group">
+                                        <input type="text"  class="form-control" show-weeks="false" datepicker-popup="{{format}}" ng-model="manq.date" is-open="opened_manquant"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                        <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click="open_manquant($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                        </span>
+                                    </p>
+                                    
+                            </div>
+                                    
+                             <div class="col-sm-3">
+                                <label class="sr-only" for="exampleInputPassword2">description</label>
+                                <ui-select  ng-model="manq.pompiste" theme="bootstrap">
+                                  <ui-select-match placeholder="Selectionner un pompiste">{{$select.selected.id_pompiste}}</ui-select-match>
+                                  <ui-select-choices repeat="item.id_pompiste as item in pompistes | filter: $select.search">
+                                    <div ng-bind-html="item.matricule | highlight: $select.search"></div>
+                                    <small ng-bind-html="item.nom_pompiste | highlight: $select.search"></small>
+                                  </ui-select-choices>
+                                </ui-select>
+                             </div>
+      
+                            <div class="col-sm-3">
+                                    
+                              <md-input-container>
+                                <label for="content"><strong>Manquant</strong> </label>
+                                <input type="number" id="content" ng-model="manq.montant">
+                              </md-input-container>
+                                    
+                            </div>
+
+                            <div class="col-sm-3">
+                                    
+                              <md-input-container>
+                                <label for="content"><strong>Commentaire</strong> </label>
+                                <input type="text" id="content" ng-model="manq.commentaire">
+                              </md-input-container>
+                                    
+                            </div>
+
+                          </form>
+      
+                            <div class="m-t m-b">
+                              <button class="btn btn-primary btn-rounded" ng-click="manquant_exceptionel()">VALIDER</button>
+                            </div>
+      
+                      </div>
+                      
+                     
+                     
+                    
+                  </div>
+                </div>
+            </div>
+          <!--
+            <div class="col-sm-6">
+              <div class="panel-heading font-bold">
+                RETENUE POMPISTES
+              </div>
+              <div class="panel-body">
+                <div class="panel card wrapper">
+                    
+                    <div class="row">
+                          
+                    <div class="col-sm-4">
+                        <label>Date</label>
+                        <p class="input-group">
+                            <input type="text"  class="form-control" show-weeks="false" datepicker-popup="{{format}}" ng-model="ret.date" is-open="opened_retenue"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                            <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="open_retenue($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </p>
+                            
+                    </div>
+        
+                    <div class="col-sm-4">
+                            
+                      <md-input-container>
+                        <md-select  ng-model="ret.pompiste" placeholder="pompiste">
+                          <md-option ng-repeat="pompiste in pompistes" value="{{pompiste.id_pompiste}}">{{pompiste.nom}}</md-option>
+                        </md-select>
+                      </md-input-container>
+                            
+                    </div>
+    
+                    <div class="col-sm-4">
+                            
+                      <md-input-container>
+                        <label for="content"><strong>Retenue</strong> </label>
+                        <input type="number" id="content" ng-model="ret.montant">
+                      </md-input-container>
+                            
+                    </div>
+    
+    
+                    </div>
+                    
+                    
+                    <div class="m-t m-b">
+                      <button class="btn btn-primary btn-rounded" ng-click="retenue()">VALIDER</button>
+                    </div>
+                  
+                </div>
+              </div>
+            </div>
+          -->
+        </div>
+
+    <div class="panel-heading font-bold">
+      Rechercher un Pompiste
+    </div>
+    <div class="panel-body">
+      <form  class="form-inline" role="form"  ng-submit="" >
+        <div class="form-group">
+          <label class="sr-only" for="Nom">Name</label>
+          <input type="text" class="form-control" id="Nom" placeholder="Matricule" ng-model="pl.matricule">
+        </div>
+
+        <div class="form-group">
+            <label class="sr-only" for="Station">Station</label>
+            <input type="text" class="form-control" id="Station" placeholder="Station" ng-model="pl.station">
+        </div>
+      </form>
+    </div>
+</div>
+<div ng-show="vue" class="panel panel-default">
+    <div class="panel-heading font-bold">
+      Liste des pompistes
+    </div>
+  <table  ng-init="pompistes_all" class="table table-bordered table-hover table-condensed bg-white-only">
+
+    <tr style="font-weight: bold">
+      <td >Matricule</td>
+      <td >Nom</td>
+      <td >Prenom</td>
+      <td >Ancien solde</td>
+      <td >Manquant</td>
+      <td >Manquant Exceptionel</td>
+      <td >Total Manquant</td>
+      <td >Retenue</td>
+      <td >Nouveau solde</td>
+      <td >Station</td>
+
+      <td >Edit</td>
+    </tr>
+    <tr  ng-repeat="pompiste in pompistes_all | filter: pl.station | filter: pl.matricule  track by $index">
+      <td class="v-middle">
+       
+        <span>
+          {{ pompiste.matricule || '' }}
+        </span>
+      </td>
+
+      <td class="v-middle">
+       
+        <span>
+          {{ pompiste.nom || '' }}
+        </span>
+      </td>
+
+      <td class="v-middle">
+       
+        <span>
+          {{ pompiste.prenom || '' }}
+        </span>
+      </td>
+
+      <td class="v-middle">
+       
+        <span class="text-center text-danger">
+         <b> {{ pompiste.ancien_solde || 0 }}</b>
+        </span>
+      </td>
+      <td class="v-middle">
+      
+        <span >
+          {{ pompiste.manquant || 0 }}
+        </span>
+      </td>
+
+      <td class="text-center text-danger">
+        <span editable-number="pompiste.manquant_exceptionel"   e-name="manquant_exceptionel" e-form="rowform"  e-required>
+            <b>{{ pompiste.manquant_exceptionel || 0 }}</b>
+        </span>
+      </td>
+
+       <td class="v-middle">
+        <span>
+          {{ pompiste.total_manquant || 0 }}
+        </span>
+      </td>
+
+
+      <td class="text-center text-danger">
+        <!-- editable group (select-remote) -->
+        <span editable-number="pompiste.retenue"   e-name="retenue" e-form="rowform"  e-required>
+           <b> {{ pompiste.retenue || 0 }}</b>
+        </span>
+
+      </td>
+
+      <td class="v-middle">
+       
+        <span >
+            <b>{{ pompiste.nouveau_solde || 0 }}</b>
+        </span>
+
+      </td>
+
+      <td class="v-middle">
+            
+            <span>
+              {{ pompiste.station || '' }}
+            </span>
+    
+          </td>
+
+      <td style="white-space: nowrap">
+        <!-- form -->
+        <form editable-form name="rowform" onaftersave="before_save(pompiste.matricule, pompiste.ancien_solde, pompiste.manquant, pompiste.manquant_exceptionel, pompiste.retenue)"  ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == pompiste">
+          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+            save
+          </button>
+          <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+            cancel
+          </button>
+        </form>
+        <div class="buttons" ng-show="!rowform.$visible">
+          <button class="btn btn-sm btn-info" ng-click="rowform.$show()">edit</button>
+        </div>
+
+      </td>
+    </tr>
+  </table>     
+
+  <button class="btn btn-danger" ng-click="open()">CLOTURER LA PERIODE</button>
+
+
+</div>
+    <div class="text-center" ng-show="spinner">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+<!--***************************************************************************************-->
+
+<!--************************************************************************************-->
+
+<!--******************************************************************-->
+
+</div>
+

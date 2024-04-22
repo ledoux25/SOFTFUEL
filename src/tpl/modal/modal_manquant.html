@@ -1,0 +1,22 @@
+<div class="modal-header">
+    <h3 class="modal-title text-center"><span class="label bg-danger ">Attention Monsieur !</span></h3>
+</div>
+<div class="modal-body">
+   <h3 class="text-center">Voulez-vous réellement cloturer cette periode ?</h3>
+</div>
+
+    <div class="wrapper">
+
+        <div class="form-group">
+            <label for="comment">Laisser un Commentaire:</label>
+            <textarea class="form-control" rows="5" id="comment" ng-model="dt.comment"></textarea>
+        </div>
+
+    </div>
+    
+
+
+<div class="modal-footer">                  
+    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-danger" ng-click="OK()">OK</button>
+</div>

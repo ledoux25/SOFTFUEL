@@ -1,0 +1,314 @@
+<!-- list -->
+<ul class="nav sidebar">
+  <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+    <span>Gestion Station</span>
+  </li>
+  <li class="sidenav-item">
+    <a ui-sref="app.quart1" md-ink-ripple class="auto">
+      <i class="glyphicon glyphicon-list "></i>
+      <span  > Ventes Quart</span>
+    </a>
+  </li>
+  <li ui-sref-active="active" class="sidenav-item">
+    <a ui-sref="app.analyse-ventes" md-ink-ripple>
+      <i class="glyphicon glyphicon-list"></i>
+      <span >Analyse Ventes</span>
+    </a>
+  </li>
+
+   <li ui-sref-active="active" class="sidenav-item">
+    <a ui-sref="app.balance-agee" md-ink-ripple>
+      <i class="glyphicon glyphicon-list"></i>
+      <span  >Balance Agée</span>
+    </a>
+   </li>
+
+    <li ui-sref-active="active" class="sidenav-item">
+    <a ui-sref="app.decouvert" md-ink-ripple>
+      <i class="glyphicon glyphicon-list"></i>
+      <span  >Decouvert</span>
+    </a>
+   </li>
+
+   <li ui-sref-active="active" class="sidenav-item">
+    <a ui-sref="app.reglementClient" md-ink-ripple>
+      <i class="glyphicon glyphicon-list"></i>
+      <span  >Reglement Clients</span>
+    </a>
+   </li>
+
+   <li ui-sref-active="active" class="sidenav-item">
+    <a href="http://192.168.1.3/gescom/web/lignes-documents" target="_blank" md-ink-ripple>
+      <i class="glyphicon glyphicon-list"></i>
+      <span >Etat Enlèvements</span>
+    </a>
+   </li>
+
+   
+
+   <li ui-sref-active="active" class="sidenav-item">
+    <a ui-sref="app.integration-ventes" md-ink-ripple>
+      <i class="glyphicon glyphicon-list"></i>
+      <span >Integration Ventes</span>
+    </a>
+   </li>
+
+   <li ui-sref-active="active" class="sidenav-item">
+    <a ui-sref="app.suppression-quart" md-ink-ripple>
+      <i class="glyphicon glyphicon-list"></i>
+      <span  >Suppression Quart</span>
+    </a>
+   </li>
+  
+  <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+    <span >Gestion Pompistes</span>
+  </li>
+
+
+  <li>
+    <a href md-ink-ripple class="auto">
+      <span class="pull-right text-muted">
+        <i class="fa fa-fw fa-angle-right text"></i>
+        <i class="fa fa-fw fa-angle-down text-active"></i>
+      </span>
+      <i class="glyphicon glyphicon-stats icon"></i>
+      <span>Gestion Pompistes</span>
+    </a>
+
+    <ul class="nav nav-sub dk ">
+      <div class="droplist">
+        <li class="nav-sub-header sidenav-item droplist-item" >
+          <a href md-ink-ripple>
+            <span>Gestion Pompiste</span>
+          </a>
+        </li>
+        
+        <li ui-sref-active="active" class="droplist-item">
+          <a ui-sref="app.pompistes">
+            <span md-ink-ripple>Pompistes</span>
+          </a>
+        </li>
+        <li ui-sref-active="active" class="droplist-item">
+          <a ui-sref="app.etatManquants">
+            <span md-ink-ripple>Manquants</span>
+          </a>
+        </li>
+        <li ui-sref-active="active" class="droplist-item">
+          <a ui-sref="app.suiviManquants">
+            <span md-ink-ripple>Suivi Manquants</span>
+          </a>
+        </li>
+        <li ui-sref-active="active" class="droplist-item">
+          <a ui-sref="">
+            <span md-ink-ripple>Suivi Affectations</span>
+          </a>
+        </li>
+      </div>
+    </ul>
+  </li>
+  <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+    <span >Gestion Lubrifiant</span>
+  </li>
+  <li>
+    <a href md-ink-ripple class="auto">
+      <span class="pull-right text-muted">
+        <i class="fa fa-fw fa-angle-right text"></i>
+        <i class="fa fa-fw fa-angle-down text-active"></i>
+      </span>
+      <i class="glyphicon glyphicon-stats icon"></i>
+      <span>Gestion Lubrifiant</span>
+    </a>
+
+    <ul class="nav nav-sub dk ">
+      <div class="droplist">
+        <li class="nav-sub-header sidenav-item droplist-item" >
+          <a href md-ink-ripple>
+            <span>Gestion Lubrifiant</span>
+          </a>
+        </li>
+        
+        <li ui-sref-active="active" class="droplist-item">
+          <a ui-sref="app.lubrifiants">
+            <span md-ink-ripple>Nouveau Lubrifiant</span>
+          </a>
+        </li>
+      </div>
+    </ul>
+  </li>
+
+
+  <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+    <span>Etats Station</span>
+  </li>
+
+  <li>
+    <a href md-ink-ripple class="auto">
+      <span class="pull-right text-muted">
+        <i class="fa fa-fw fa-angle-right text"></i>
+        <i class="fa fa-fw fa-angle-down text-active"></i>
+      </span>
+      <i class="glyphicon glyphicon-stats icon"></i>
+      <span>Etats Station</span>
+    </a>
+    
+      <ul class="nav nav-sub dk">
+
+        <div class="droplist">
+          <li class="nav-sub-header sidenav-item droplist-item">
+            <a href md-ink-ripple>
+              <span>Etats Station</span>
+            </a>
+          </li>
+          
+          <li ui-sref-active="active" class="droplist-item">
+            <a ui-sref="app.etatVentes">
+              <span md-ink-ripple>Ventes Carburant</span>
+            </a>
+          </li>
+    
+          <li ui-sref-active="active" class="droplist-item">
+            <a ui-sref="app.etatLubrifiants">
+              <span md-ink-ripple>Ventes lubrifiant</span>
+            </a>
+          </li>
+    
+          <li ui-sref-active="active" class="droplist-item">
+            <a ui-sref="app.etatGaz">
+              <span md-ink-ripple>Ventes Gaz</span>
+            </a>
+          </li>
+          
+          <li ui-sref-active="active" class="droplist-item">
+            <a ui-sref="app.etatCreances">
+              <span md-ink-ripple>Créances Clients</span>
+            </a>
+          </li>
+          <li ui-sref-active="active" class="droplist-item">
+            <a ui-sref="app.etatCoulages">
+              <span md-ink-ripple>Coulages et Manquants Lub</span>
+            </a>
+          </li>
+    
+          <li ui-sref-active="active" class="droplist-item">
+            <a ui-sref="app.etatStocks">
+              <span md-ink-ripple>Equation des stocks</span>
+            </a>
+          </li>
+    
+          <li ui-sref-active="active" class="droplist-item">
+            <a ui-sref="app.etatManquants">
+              <span md-ink-ripple>Manquants Pompistes</span>
+            </a>
+          </li>
+        </div>
+      </ul>
+  </li>
+
+  
+
+
+  <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+    <span>Etats Consolidés</span>
+  </li>
+
+  <li>
+    <a href md-ink-ripple class="auto">
+      <span class="pull-right text-muted">
+        <i class="fa fa-fw fa-angle-right text"></i>
+        <i class="fa fa-fw fa-angle-down text-active"></i>
+      </span>
+      <i class="glyphicon glyphicon-stats icon sidenav-item droplist-item"></i>
+      <span>Etats Consolidés</span>
+    </a>
+    <ul class="nav nav-sub dk">
+      <div class="droplist">
+        <li class="nav-sub-header sidenav-item">
+          <a href md-ink-ripple>
+            <span>Etats Consolidés</span>
+          </a>
+        </li>
+        
+        <li ui-sref-active="active "class="droplist-item">
+          <a ui-sref="app.etatVentesConso">
+            <span md-ink-ripple>Ventes</span>
+          </a>
+        </li>
+        <li ui-sref-active="active" class="droplist-item">
+          <a ui-sref="">
+            <span md-ink-ripple>Créances</span>
+          </a>
+        </li>
+        <li ui-sref-active="active" class="droplist-item">
+          <a ui-sref="app.etatCoulagesConso">
+            <span md-ink-ripple>Coulages</span>
+          </a>
+        </li>
+        <li ui-sref-active="active" class="droplist-item">
+          <a ui-sref="">
+            <span md-ink-ripple>Manquants</span>
+          </a>
+        </li>
+  
+        <li ui-sref-active="active" class="droplist-item">
+          <a ui-sref="app.etatVersements">
+            <span md-ink-ripple>Versement Gérant</span>
+          </a>
+        </li>
+      </div>
+    </ul>
+  </li>
+
+
+
+  <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+    <span>Controles Softfuel</span>
+  </li>
+
+
+  <li>
+    <a href md-ink-ripple class="auto sidenav-item">
+      <span class="pull-right text-muted sidenav-item">
+        <i class="fa fa-fw fa-angle-right text sidenav-item"></i>
+        <i class="fa fa-fw fa-angle-down text-active sidenav-item"></i>
+      </span>
+      <i class="glyphicon glyphicon-stats icon sidenav-item"></i>
+      <span class=" sidenav-item">Controleuel</span>
+    </a>
+    <ul class="nav nav-sub dk sidenav-item">
+      <div class="droplist">
+        <li class="nav-sub-header sidenav-item">
+          <a href>
+            <span>Controles Softfuel</span>
+          </a>
+        </li>
+        
+        <li ui-sref-active="active" class="droplist-item">
+          <a ui-sref="">
+            <span md-ink-ripple>Controle Versement Banques</span>
+          </a>
+        </li>
+        <li ui-sref-active="active" class="droplist-item">
+          <a ui-sref="app.controleMobileMoney">
+            <span md-ink-ripple>Controle Ventes Mobile Money</span>
+          </a>
+        </li>
+        <li ui-sref-active="active" class="droplist-item">
+          <a ui-sref="">
+            <span md-ink-ripple>Controle DIGIPAY</span>
+          </a>
+        </li>
+        <li ui-sref-active="active" class="droplist-item">
+          <a ui-sref="">
+            <span md-ink-ripple>Controle Livraisons</span>
+          </a>
+        </li>
+      </div>
+    </ul>
+  </li>
+
+ 
+
+
+  
+</ul>
+<!-- / list -->

@@ -1,0 +1,174 @@
+
+            <tr>
+                <td><b>STATIONS</b></td>
+
+                                        <td><b>SUPER</b></td>
+                                        <td><b>GASOIL</b></td>
+                                        <td><b>PETROLE</b></td>
+                                        <td><b>TPC</b></td>
+                                        <td>REC CARB</td>
+                                        <td>REC LUB</td>
+                                        <td>VERS. CLT</td>
+                                        <td><b>REC AT</b></td>
+                                        <td><b>VERSE</b></td>
+                                        <td><b>ECART</b></td>
+                                        <td>VTE A TER</td>
+                                        <td>MQTS POMP</td>
+                                        <td>DEPENSES</td>
+                                        <td>ECART GE</td>
+    
+            </tr>'; 
+
+                
+    <td class="v-middle">
+    '.$value->tpc.'
+        </span>
+    </td>
+
+    <td class="v-middle">
+    '.$value->total_carb.'
+        </span>
+    </td>
+
+    <td class="v-middle">
+    '.$value->total_lub.'
+    </td>
+
+    <td class="v-middle">
+    '.$value->total_vers_clients.'
+    </td>
+
+    <td class="v-middle">
+    '.$value->total_attendu.'
+    </td>
+
+    <td class="v-middle">
+    '.$value->versement.'
+    </td>
+
+    <td class="v-middle">
+    '.$value->ecart.'
+    </td>
+
+    <td class="v-middle">
+    '.$value->vte_client.'
+    
+    </td>
+
+
+
+
+
+function get_produit_lubrifiant() {
+
+     $host_name = 'localhost';
+     $database = 'station';
+     $user_name = 'station';
+     $password = 'station';
+   
+     $id_station = $_SESSION['id_station'];
+     $id_region = $_SESSION['id_region'];
+     $userId = $_SESSION['id_user'];
+   
+    // connect DB
+        $conn=mysqli_connect($host_name, $user_name, $password, $database);
+   
+      /*initial  $res=mysqli_query($conn, "
+        SELECT
+        produit_station.prix_produit,
+        produit_station.stock_initial,
+        produit.id_produit,
+        produit.type_produit,
+        produit.nom_produit,
+        produit.code_produit,
+        produit.conditionnement
+        From
+        produit Inner Join
+        produit_station On produit_station.id_produit = produit.id_produit And
+        produit_station.id_station = $id_station
+        Where
+        
+        produit.type_produit = 'LUBRIFIANT' 
+   
+        ");
+        */
+
+        //moi
+        $res=mysqli_query($conn, "
+      
+        SELECT 
+        produit_quart.id_quart,produit_quart.id_produit,
+        produit_quart.qte_vendu,produit_quart.stock_ouverture,
+        produit_quart.stock_fermerture,
+        
+        produit.type_produit,
+        produit.nom_produit,
+        produit.code_produit,
+        produit.conditionnement,
+        produit_station.prix_produit
+        FROM 
+        quart 
+        INNER JOIN 
+        produit_quart on produit_quart.id_quart=quart.id_quart 
+        INNER JOIN produit on produit.id_produit=produit_quart.id_produit 
+        INNER JOIN produit_station On produit_station.id_produit = produit.id_produit AND
+          produit_station.id_station = $id_station
+        WHERE quart.id_quart= (SELECT MAX(id_quart) FROM quart WHERE id_station=$id_station)
+        AND
+        produit.type_produit = 'LUBRIFIANT' ");
+        
+   
+        $data = array();
+   
+       
+        if (is_object($res)) {
+   
+           while($rows = mysqli_fetch_array($res))
+   
+         {
+           /* $data[] = array(
+   
+                   "id_produit"  => $rows['id_produit'],
+                   "nom_produit"  => $rows['nom_produit'],
+                   "code_produit"  => $rows['code_produit'],
+                   "type_produit"  => $rows['type_produit'],
+                   "conditionnement"  => $rows['conditionnement'],
+                   "stock_ouverture"  => floatval($rows['stock_initial']),
+                   "stock_fermerture"  => floatval($rows['stock_initial']),
+                   "prix_produit"  => floatval($rows['prix_produit']),
+                   "qte_vendu"  => 0 ,
+                   "livraison"  => 0 ,
+                   
+                      ) ;
+                      */
+
+                      $data[] = array(
+   
+                         "id_produit"  => $rows['id_produit'],
+                         "nom_produit"  => $rows['nom_produit'],
+                         "code_produit"  => $rows['code_produit'],
+                         "type_produit"  => $rows['type_produit'],
+                         "conditionnement"  => $rows['conditionnement'],
+                         "stock_ouverture"  => floatval($rows['stock_fermerture']),
+                       //  "stock_ouverture"  => floatval($rows['stock_initial']),
+                       //  "stock_fermerture"  => floatval($rows['stock_initial']),
+                         "stock_fermerture"  => floatval($rows['stock_fermerture']),
+                         "prix_produit"  => floatval($rows['prix_produit']),
+                         "qte_vendu"  => 0 ,
+                         "livraison"  => 0 ,
+                         
+                            ) ;
+        }
+        print_r(json_encode($data));
+        return json_encode($data);  
+       }
+       else {
+           $arr = array('msg' =>  mysqli_error($conn) , 'error' => 'Error In inserting record');
+            $jsn = json_encode($arr);
+            print_r($jsn);
+        return json_encode($jsn);  
+   
+       }
+      
+   
+}

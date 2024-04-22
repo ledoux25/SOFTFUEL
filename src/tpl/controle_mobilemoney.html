@@ -1,0 +1,360 @@
+
+
+
+<script type="text/ng-template" id="deleteContent.html">
+    <div ng-include="'tpl/modal/modal_delete.html'"></div>
+  </script>
+  <script type="text/ng-template" id="successContent.html">
+    <div ng-include="'tpl/modal/modal_success.html'"></div>
+  </script>
+  <script type="text/ng-template" id="rejectContent.html">
+    <div ng-include="'tpl/modal/modal_reject.html'"></div>
+  </script>
+  <div class="bg-light lter b-b wrapper-md" >
+  <h1 class="m-n font-bold h2 title">Controle Mobile Money</h1>
+  </div>
+  
+  <div class="panel panel-card"  ng-controller="controleMobileMoneyCtrl" > 
+  
+    <md-tabs class="md-primary" md-selected="data.selectedIndex">
+  
+      <md-tab id="tab1" aria-controls="tab1-content">
+        ORANGE MARCHAND
+      </md-tab>
+  
+      <md-tab id="tab2" aria-controls="tab2-content">
+         MTN MARCHAND
+      </md-tab>
+     
+     
+    </md-tabs>
+  
+    <ng-switch on="data.selectedIndex">
+   
+        <div 
+           ng-controller="controleMobileMoneyCtrl"
+           role="tabpanel"
+           id="tab1-content"
+           aria-labelledby="tab1"
+           ng-switch-when="0"
+           md-swipe-left="next()"
+           md-swipe-right="previous()"  class="wrapper">
+          
+            <div class="hbox hbox-auto-xs hbox-auto-sm">
+                    <div class="col">
+  
+                        <div class="wrapper-md" >
+                            <div class="panel-heading font-bold">
+                            Selectionner la période
+                            </div>
+                            <div class="panel-body">
+                              <div class="panel card wrapper" >
+                                  
+                                  <div class="row">
+                                          <div class="col-sm-6">
+                                                  <label>Date Debut</label>
+                                                  <p class="input-group">
+                                                      <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_debut" is-open="opened"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                                      <span class="input-group-btn">
+                                                      <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                      </span>
+                                                  </p>
+                                      
+                                                  
+                                          </div>
+                              
+                                          <div class="col-sm-6">
+                                                  <label>Date Fin</label>
+                                                  <p class="input-group">
+                                                      <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_fin" is-open="opened2"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                                      <span class="input-group-btn">
+                                                      <button type="button" class="btn btn-default" ng-click="open2($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                      </span>
+                                                  </p>
+                                      
+                                                  
+                                          </div>
+                                  </div>
+                                  
+                      
+                                  <md-input-container>
+                                    <md-select  ng-model="dt.quart"   placeholder="Quart" ng-click="date()">
+                                      <md-option ng-repeat="quart in quarts" value="{{quart.quart}}">{{quart.quart}}</md-option>
+                                    </md-select>
+                                  </md-input-container>
+                                  
+                                 
+                                  
+                                
+                                  <div class="m-t m-b">
+                                    <button class="btn btn-primary btn-rounded" ng-click="versement()">VALIDER</button>
+                                  </div>
+                                
+                              </div>
+                            </div>
+                        </div>
+                          
+                        <div class="wrapper-md">
+                          <div class="panel wrapper">
+                                
+                              <table   class="table table-bordered table-hover table-condensed table-striped bg-white-only"  ng-init="recap_versement" >
+                      
+                                  <tr>
+  
+                                      <td class="v-middle">
+                                          <span style="position:absolute; height:22px;" ><b>STATIONS</b></span>
+                                      </td>
+  
+                                      <td></td>
+                                      <td></td>
+                                      <td></td>
+                                      <td></td>
+                      
+                                      <td class="v-middle"  ng-repeat="date in dates  track by $index">
+                                          <span>
+                                         <b> {{ date }}</b>
+                                          </span>
+                                      </td>
+                      
+                                      <td class="v-middle">
+                                          <span>
+                                          <b>TOTAL</b>
+                                          </span>
+                                      </td>
+  
+                                  </tr>
+  
+                                  <tr ng-repeat="rec in recap_versement  track by $index">
+                      
+                                      <td ng-if= "rec.station.substr(0, 5) == 'TOTAL'" class="v-middle">
+                                          <span style="position:absolute; height:22px; color:#ff3b14;"  ><b>{{rec.station}}</b></span>
+                                      </td>
+
+                                      <td ng-if= "rec.station.substr(0, 5) != 'TOTAL'" class="v-middle">
+                                        <span style="position:absolute; height:22px; "  ><b>{{rec.station}}</b></span>
+                                      </td>
+  
+                                      <td></td>
+                                      <td></td>
+                                      <td></td>
+                                      <td></td>
+                      
+
+                                      <td ng-if= "rec.station.substr(0, 5) == 'TOTAL'" class="v-middle" ng-repeat="vers in rec.versement  track by $index">
+                                        <span><b>{{ vers | number }}</b></span>
+                                      </td>
+
+                                      <td ng-if= "rec.station.substr(0, 5) != 'TOTAL'" class="v-middle" ng-repeat="vers in rec.versement  track by $index">
+                                        <span>{{ vers | number }}</span>
+                                      </td>
+                                      
+
+                                      <td ng-if= "rec.station.substr(0, 5) == 'TOTAL'" class="v-middle">
+                                        <span style= "color:#ff3b14;"  ><b>{{ rec.total | number }}</b></span>
+                                      </td>
+
+                                      <td ng-if= "rec.station.substr(0, 5) != 'TOTAL'" class="v-middle">
+                                        <span ><b>{{ rec.total | number }}</b></span>
+                                      </td>
+                      
+                                  </tr>
+  
+                                  
+                              </table>
+                                    
+                          </div>
+                        </div>
+  
+                    </div>
+            </div>
+            
+            
+            <div class="line line-dashed"></div>
+
+          <!--  <p>Selectionner le format d'export</p>
+
+            <div class="row">
+                <md-input-container>
+                    <md-select  ng-model="dt.format"   placeholder="Selectionner le format d\'export">
+                        <md-option ng-repeat="format in formats_export" value="{{format.format}}">{{format.nom_format}}</md-option>
+                      </md-select>
+                </md-input-container>
+            </div>
+          --> 
+            <div class="m-t m-b">
+              <button class="btn btn-primary btn-rounded" ng-click="export_excel()">EXPORT EXCEL</button>
+            </div>
+  
+  
+        </div>   <!-- ENd TAB 1 VERSEMENTS -->
+  
+        <div 
+        ng-controller="controleMobileMoneyCtrl"
+        role="tabpanel"
+        id="tab2-content"
+        aria-labelledby="tab2"
+        ng-switch-when="1"
+        md-swipe-left="next()"
+        md-swipe-right="previous()"  class="wrapper">
+  
+          <div class="hbox hbox-auto-xs hbox-auto-sm">
+            <div class="col">
+
+                <div class="wrapper-md" >
+                    <div class="panel-heading font-bold">
+                    Selectionner la période
+                    </div>
+                    <div class="panel-body">
+                      <div class="panel card wrapper" >
+                          
+                          <div class="row">
+                                  <div class="col-sm-6">
+                                          <label>Date Debut</label>
+                                          <p class="input-group">
+                                              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_debut" is-open="opened"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                              <span class="input-group-btn">
+                                              <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                              </span>
+                                          </p>
+                              
+                                          
+                                  </div>
+                      
+                                  <div class="col-sm-6">
+                                          <label>Date Fin</label>
+                                          <p class="input-group">
+                                              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_fin" is-open="opened2"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                              <span class="input-group-btn">
+                                              <button type="button" class="btn btn-default" ng-click="open2($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                              </span>
+                                          </p>
+                              
+                                          
+                                  </div>
+                          </div>
+                          
+              
+                          <md-input-container>
+                            <md-select  ng-model="dt.quart"   placeholder="Quart" ng-click="date()">
+                              <md-option ng-repeat="quart in quarts" value="{{quart.quart}}">{{quart.quart}}</md-option>
+                            </md-select>
+                          </md-input-container>
+                          
+                        
+                          
+                        
+                          <div class="m-t m-b">
+                            <button class="btn btn-primary btn-rounded" ng-click="versement_me()">VALIDER</button>
+                          </div>
+                        
+                      </div>
+                    </div>
+                </div>
+                  
+                <div class="wrapper-md">
+                  <div class="panel wrapper">
+                        
+                      <table   class="table table-bordered table-hover table-condensed table-striped bg-white-only"  ng-init="recap_versement_me" >
+              
+                          <tr>
+
+                              <td class="v-middle">
+                                  <span style="position:absolute; height:22px;" ><b>STATIONS</b></span>
+                              </td>
+
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+              
+                              <td class="v-middle"  ng-repeat="date in dates  track by $index">
+                                  <span>
+                                <b> {{ date }}</b>
+                                  </span>
+                              </td>
+              
+                              <td class="v-middle">
+                                  <span>
+                                  <b>TOTAL</b>
+                                  </span>
+                              </td>
+
+                          </tr>
+
+                          <tr ng-repeat="rec in recap_versement_me  track by $index">
+              
+                              <td ng-if= "rec.station.substr(0, 5) == 'TOTAL'" class="v-middle">
+                                  <span style="position:absolute; height:22px; color:#ff3b14;"  ><b>{{rec.station}}</b></span>
+                              </td>
+
+                              <td ng-if= "rec.station.substr(0, 5) != 'TOTAL'" class="v-middle">
+                                <span style="position:absolute; height:22px; "  ><b>{{rec.station}}</b></span>
+                              </td>
+
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+              
+
+                              <td ng-if= "rec.station.substr(0, 5) == 'TOTAL'" class="v-middle" ng-repeat="vers in rec.versement  track by $index">
+                                <span><b>{{ vers | number }}</b></span>
+                              </td>
+
+                              <td ng-if= "rec.station.substr(0, 5) != 'TOTAL'" class="v-middle" ng-repeat="vers in rec.versement  track by $index">
+                                <span>{{ vers | number }}</span>
+                              </td>
+              
+                              
+
+                              <td ng-if= "rec.station.substr(0, 5) == 'TOTAL'" class="v-middle">
+                                <span style= "color:#ff3b14;"  ><b>{{ rec.total | number }}</b></span>
+                              </td>
+
+                              <td ng-if= "rec.station.substr(0, 5) != 'TOTAL'" class="v-middle">
+                                <span ><b>{{ rec.total | number }}</b></span>
+                              </td>
+              
+                          </tr>
+
+                          
+                      </table>
+                            
+                  </div>
+                </div>
+
+            </div>
+          </div>
+          
+          
+          <div class="line line-dashed"></div>
+
+          <p>Selectionner le format d'export</p>
+
+          <div class="row">
+              <md-input-container>
+                  <md-select  ng-model="dt.format"   placeholder="Selectionner le format d\'export">
+                      <md-option ng-repeat="format in formats_export_me" value="{{format.format}}">{{format.nom_format}}</md-option>
+                    </md-select>
+              </md-input-container>
+          </div>
+          
+          <div class="m-t m-b">
+            <button class="btn btn-primary btn-rounded" ng-click="export_me()">EXPORTER</button>
+          </div>
+         
+        
+        </div>   <!-- ENd TAB 2 MONAIE ELECTRONIQUE -->
+  
+  
+    </ng-switch> <!-- ENd Ng-switch  -->
+  
+    
+  
+  </div>
+  
+  
+  
+  
+    
+  

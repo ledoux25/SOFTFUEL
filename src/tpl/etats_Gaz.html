@@ -1,0 +1,337 @@
+
+
+
+<script type="text/ng-template" id="deleteContent.html">
+    <div ng-include="'tpl/modal/modal_delete.html'"></div>
+  </script>
+  <script type="text/ng-template" id="successContent.html">
+    <div ng-include="'tpl/modal/modal_success.html'"></div>
+  </script>
+  <script type="text/ng-template" id="rejectContent.html">
+    <div ng-include="'tpl/modal/modal_reject.html'"></div>
+  </script>
+  <div class="bg-light lter b-b wrapper-md" >
+  <h1 class="m-n font-bold h2 title">Etats des Ventes Gaz</h1>
+  </div>
+  
+  <div class="panel panel-card"  ng-controller="etatGazCtrl" > 
+  
+    <md-tabs class="md-primary" md-selected="data.selectedIndex">
+  
+      <md-tab id="tab1" aria-controls="tab1-content">
+       VENTES
+      </md-tab>
+  
+      <md-tab id="tab2" aria-controls="tab2-content">
+         STOCKS
+      </md-tab>
+     
+     <!--  <md-tab id="tab3" aria-controls="tab3-content">
+         MANQUANTS
+      </md-tab> -->
+  
+    </md-tabs>
+  
+    <ng-switch on="data.selectedIndex">
+   
+        <div 
+           ng-controller="etatGazCtrl"
+           role="tabpanel"
+           id="tab1-content"
+           aria-labelledby="tab1"
+           ng-switch-when="0"
+           md-swipe-left="next()"
+           md-swipe-right="previous()"  class="wrapper">
+          
+            <div class="hbox hbox-auto-xs hbox-auto-sm">
+                    <div class="col"   ng-init="(role.user == 'ADMINISTRATEUR') ? station(): station_courante() ">
+  
+                        <div class="wrapper-md" >
+                            <div class="panel-heading font-bold">
+                            Selectionner la période
+                            </div>
+                            <div class="panel-body">
+                              <div class="panel card wrapper" >
+                                  
+                                  <div class="row">
+                                          <div class="col-sm-6">
+                                                  <label>Date Debut</label>
+                                                  <p class="input-group">
+                                                      <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_debut" is-open="opened"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                                      <span class="input-group-btn">
+                                                      <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                      </span>
+                                                  </p>
+                                      
+                                                  
+                                          </div>
+                              
+                                          <div class="col-sm-6">
+                                                  <label>Date Fin</label>
+                                                  <p class="input-group">
+                                                      <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_fin" is-open="opened2"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                                      <span class="input-group-btn">
+                                                      <button type="button" class="btn btn-default" ng-click="open2($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                      </span>
+                                                  </p>
+                                      
+                                                  
+                                          </div>
+                                  </div>
+                                  
+                      
+                                  <md-input-container>
+                                    <md-select  ng-model="dt.quart"   placeholder="Quart" ng-click="date()">
+                                      <md-option ng-repeat="quart in quarts" value="{{quart.quart}}">{{quart.quart}}</md-option>
+                                    </md-select>
+                                  </md-input-container>
+                                  
+                                  <md-input-container>
+                                    <md-select  ng-model="dt.station" placeholder="Station" >
+                                      <md-option ng-repeat="station in stations" value="{{station.nom_station}}">{{station.nom_station}}</md-option>
+                                    </md-select>
+                                  </md-input-container>
+                                  
+                                
+                                  <div class="m-t m-b">
+                                    <button class="btn btn-primary btn-rounded" ng-click="ventes()">VALIDER</button>
+                                  </div>
+                                
+                              </div>
+                            </div>
+                        </div>
+                          
+                        <div class="wrapper-md">
+                          <div class="panel wrapper">
+                                
+                              <table   class="table table-bordered table-hover table-condensed bg-white-only"  ng-init="recap_ventes" >
+                      
+                                  <tr>
+  
+                                      <td class="v-middle">
+                                          <span style="position:absolute; height:22px;" ><b>PRODUITS</b></span>
+                                      </td>
+  
+                                      <td></td>
+                                      <td></td>
+                                      <td></td>
+                                      <td></td>
+                      
+                                      <td class="v-middle"  ng-repeat="date in dates  track by $index">
+                                          <span><b></b>
+                                         Qté vendus le: {{ date }}
+                                          </b></span>
+                                      </td>
+                      
+                                      <td class="v-middle">
+                                          <span>
+                                          <b>TOTAL</b>
+                                          </span>
+                                      </td>
+
+                                      <td class="v-middle">
+                                        <span>
+                                        <b>PRIX UNITAIRE</b>
+                                        </span>
+                                       </td>
+
+                                       <td class="v-middle">
+                                        <span>
+                                        <b>MONTANT</b>
+                                        </span>
+                                       </td>
+  
+                                  </tr>
+  
+                                  <tr ng-repeat="rec in recap_ventes  track by $index">
+                      
+                                      <td class="v-middle">
+                                          <span style="position:absolute; height:22px;" ><b>  {{rec.produit}} </b></span>
+                                      </td>
+  
+                                      <td></td>
+                                      <td></td>
+                                      <td></td>
+                                      <td></td>
+                      
+                                      <td class="v-middle"  ng-repeat="manq in rec.ventes  track by $index">
+                                          <span>
+                                          {{ manq }}
+                                          </span>
+                                      </td>
+                      
+                                      <td class="v-middle">
+                                          <span>
+                                          <b>{{ rec.total }}</b>
+                                          </span>
+                                      </td>
+
+                                      <td class="v-middle">
+                                        <span>
+                                        <b>{{ rec.prix_unitaire }}</b>
+                                        </span>
+                                      </td>
+
+                                      <td class="v-middle">
+                                        <span>
+                                        <b>{{ rec.montant }}</b>
+                                        </span>
+                                      </td>
+                      
+                                  </tr>
+  
+                                  
+                                  
+                              </table>
+  
+  
+  
+                                    
+                          </div>
+                        </div>
+  
+                    </div>
+            </div>
+        </div>   <!-- ENd TAB 1 VENTES -->
+  
+        <div 
+        ng-controller="etatGazCtrl"
+        role="tabpanel"
+        id="tab2-content"
+        aria-labelledby="tab2"
+        ng-switch-when="1"
+        md-swipe-left="next()"
+        md-swipe-right="previous()"  class="wrapper">
+  
+        <h3>Etat stock Gaz</h3>
+        <div class="panel card wrapper"  >
+            <div class="row"  ng-init="(role.user == 'ADMINISTRATEUR') ? station(): station_courante() ">
+                <div class="col-sm-12">
+                    <div class="panel-heading font-bold">
+                    Selectionner la periode
+                    </div>
+                    <div class="panel-body">
+                        <div class="panel card wrapper" >
+                            
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label>Date Debut</label>
+                                    <p class="input-group">
+                                        <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_debut" is-open="opened"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                        <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                        </span>
+                                    </p>
+                                    
+                                </div>
+                        
+                                <div class="col-sm-6">
+                                        <label>Date Fin</label>
+                                        <p class="input-group">
+                                            <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_fin" is-open="opened2"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                            <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" ng-click="open2($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                            </span>
+                                        </p>
+                                        
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-sm-6">
+                                    <label>Station</label>
+                                    <md-input-container>
+                                        <md-select  ng-model="dt.station" placeholder="Station">
+                                          <md-option ng-repeat="station in stations" value="{{station.nom_station}}">{{station.nom_station}}</md-option>
+                                        </md-select>
+                                      </md-input-container>
+                                </div>
+
+                            </div>
+                            
+                            <div class="m-t m-b">
+                            <button class="btn btn-primary btn-rounded" ng-click="stock()">VALIDER</button>
+                            </div>
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" >
+                <div class="col-sm-12">
+                        <div class="wrapper-md">
+                            <h4>Tableau des stocks</h4>
+                            <table  class="table table-bordered table-hover table-condensed bg-white-only" >
+                              <tr >
+                                <td>STATION</td>
+                                <td>PRODUITS</td>
+                                <td>Stock Initial</td>
+                                <td>Livraison</td>
+                                <td>Ventes</td>
+                                <td>Stock Théorique</td>
+                                <td>Stock Physique</td>
+                                <td>Ecart</td>
+                                <td>Prix unitaire</td>
+                                <td>Montant</td>
+                                <td>Valeur si</td>
+                                <td>Valeur liv</td>
+                                <td>Valeur vte</td>
+                              </tr>
+                              <tr ng-repeat="rl in recap_stock track by $index">
+                                <td>{{rl.station}}</td>
+                                <td>{{rl.produit}}</td>
+                                <td>{{rl.si}}</td>                 
+                                <td>{{rl.liv}}</td>                 
+                                <td>{{rl.vte}}</td>                 
+                                <td>{{rl.st}}</td>                
+                                <td>{{rl.sf}}</td>            
+                                <td>{{rl.cou}}</td>               
+                                <td>{{rl.prix_unitaire}}</td>              
+                                <td>{{rl.montant}}</td> 
+                                <td>{{rl.valeur_si}}</td>
+                                <td>{{rl.valeur_liv}}</td>
+                                <td>{{rl.valeur_vte}}</td>           
+                               
+                              </tr>
+                             
+          
+                     </table>
+                            <div class="line line-dashed"></div>
+                    
+                            
+                        </div>
+                </div>
+            </div>
+                      
+            
+        </div>
+        
+        </div>   <!-- ENd TAB 2 STOCK -->
+  
+        <div 
+           ng-controller="etatGazCtrl"
+           role="tabpanel"
+           id="tab2-content"
+           aria-labelledby="tab2"
+           ng-switch-when="2"
+           md-swipe-left="next()"
+           md-swipe-right="previous()"  class="wrapper">
+            
+            
+        
+        </div>   <!-- ENd TAB 3 MANQUANT -->
+  
+  
+    </ng-switch> <!-- ENd Ng-switch  -->
+  
+    
+  
+  </div>
+  
+  
+  
+  
+    
+  

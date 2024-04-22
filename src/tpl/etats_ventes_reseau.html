@@ -1,0 +1,225 @@
+<script type="text/ng-template" id="deleteContent.html">
+    <div ng-include="'tpl/modal/modal_delete.html'"></div>
+  </script>
+
+
+<script type="text/ng-template" id="successContent.html">
+    <div ng-include="'tpl/modal/modal_success.html'"></div>
+  </script>
+<script type="text/ng-template" id="rejectContent.html">
+    <div ng-include="'tpl/modal/modal_reject.html'"></div>
+  </script>
+
+
+<script>
+
+    function printPage(id) {
+        var html = "<html>";
+        html += document.getElementById(id).innerHTML;
+
+        html += "</html>";
+
+        var printWin = window.open('', '', 'left=0,top=0,width=1000,height=1000,toolbar=0,scrollbars=0,status  =0');
+        printWin.document.write(html);
+        printWin.document.close();
+        printWin.focus();
+        printWin.print();
+        printWin.close();
+    }
+
+</script>
+<div class="bg-light lter b-b wrapper-md">
+    <h1 class="m-n font-bold h2 title">Etats des ventes réseau</h1>
+</div>
+
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-init="(role.user == 'ADMINISTRATEUR') ? station(): station_courante() ">
+    <div class="col">
+
+        <div class="panel-heading font-bold">
+            Selectionner la période
+        </div>
+        <div class="panel-body">
+            <div class="panel card wrapper">
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label>Date Debut</label>
+                        <p class="input-group">
+                            <input type="text" class="form-control" datepicker-popup="{{format}}"
+                                ng-model="dt.date_debut" is-open="opened" datepicker-options="dateOptions"
+                                ng-required="true" close-text="Close" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="open($event)"><i
+                                        class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </p>
+
+
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label>Date Fin</label>
+                        <p class="input-group">
+                            <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_fin"
+                                is-open="opened2" datepicker-options="dateOptions" ng-required="true"
+                                close-text="Close" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="open2($event)"><i
+                                        class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </p>
+
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <md-input-container>
+                        <md-select ng-model="dt.quart" placeholder="Quart">
+                            <md-option ng-repeat="quart in quarts" value="{{quart.quart}}">{{quart.quart}}</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <!--  
+                  <md-input-container>
+                    <md-select  ng-model="dt.station" placeholder="Station">
+                      <md-option ng-repeat="station in stations" value="{{station.nom_station}}">{{station.nom_station}}</md-option>
+                    </md-select>
+                  </md-input-container>
+                -->
+                </div>
+
+                <div class="m-t m-b">
+                    <button class="btn btn-primary btn-rounded" ng-click="ventes()">VALIDER</button>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-sm-12">
+                        <div id="block1">
+                            <div class="wrapper-md">
+                                <h4>Tableau des Ventes</h4>
+
+                                <table class="table table-bordered table-hover table-condensed bg-white-only">
+
+                                    <tr>
+                                        <td><b>STATION</b></td>
+                                        <td><b>SUPER</b></td>
+                                        <td><b>GASOIL</b></td>
+                                        <td><b>PETROLE</b></td>
+                                        <td><b>TPC</b></td>
+                                        <td>RECETTE CARB</td>
+                                        <td>RECETTE LUB</td>
+                                        <td>VERS. CLIENT</td>
+                                        <td><b>RECETTE ATTENDU</b></td>
+                                        <td><b>VERSEMENT</b></td>
+                                        <td><b>ECART</b></td>
+                                        <td>VENTES A TERME</td>
+                                        <td>MQTS POMPISTES</td>
+                                        <td>DEPENSES</td>
+                                        <td>ECART GERANT</td>
+
+                                    </tr>
+
+                                    <tr ng-repeat="rec in recap_ventesCarb  track by $index">
+                                        <td class="v-middle">
+                                            {{ rec.station || '' }}
+                                            </span>
+                                        </td>
+
+                                        <td class="v-middle">
+                                            {{ rec.super || 0 | number}}
+                                            </span>
+                                        </td>
+
+                                        <td class="v-middle">
+                                            {{ rec.gasoil || 0 | number}}
+                                            </span>
+                                        </td>
+
+                                        <td class="v-middle">
+                                            {{ rec.petrole || 0 | number}}
+                                            </span>
+                                        </td>
+
+                                        <td class="v-middle">
+                                            {{ rec.tpc || 0 | number}}
+                                            </span>
+                                        </td>
+
+                                        <td class="v-middle">
+                                            {{ rec.total_carb || 0 | number}}
+                                            </span>
+                                        </td>
+
+                                        <td class="v-middle">
+                                            {{ rec.total_lub || 0 | number}}
+                                            </span>
+                                        </td>
+
+                                        <td class="v-middle">
+                                            {{ rec.total_vers_clients || 0 | number}}
+                                            </span>
+                                        </td>
+
+                                        <td class="v-middle">
+                                            {{ rec.total_attendu || 0 | number}}
+                                            </span>
+                                        </td>
+
+                                        <td class="v-middle">
+                                            {{ rec.versement || 0 | number}}
+                                            </span>
+                                        </td>
+
+                                        <td class="v-middle">
+                                            <b>{{ rec.ecart || 0 | number}}</b>
+                                            </span>
+                                        </td>
+
+                                        <td class="v-middle">
+                                            <b>{{ rec.vte_client || 0 | number}}</b>
+                                            </span>
+                                        </td>
+
+                                        <td class="v-middle">
+                                            {{ rec.manquant_pompiste || 0 | number}}
+                                            </span>
+                                        </td>
+
+                                        <td class="v-middle">
+                                            {{ rec.depense || 0 | number}}
+                                            </span>
+                                        </td>
+
+                                        <td class="text-center text-danger">
+                                            <b>{{ rec.ecart_gerant || 0 | number}}</b>
+                                            </span>
+                                        </td>
+
+                                    </tr>
+
+                                </table>
+
+                                <div class="line line-dashed"></div>
+
+                                <button class="btn btn-primary btn-rounded"
+                                    onclick="printPage('block1');">Imprimer</button>
+                                <button class="btn btn-primary btn-rounded"
+                                    ng-click="export_ventes_conso_pdf();">Exporter
+                                    PDF</button>
+                                <button class="btn btn-primary btn-rounded"
+                                    ng-click="export_ventes_conso_excel();">Exporter
+                                    Excel</button>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

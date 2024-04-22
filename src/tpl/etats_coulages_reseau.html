@@ -1,0 +1,356 @@
+<script type="text/ng-template" id="deleteContent.html">
+    <div ng-include="'tpl/modal/modal_delete.html'"></div>
+</script>
+<script type="text/ng-template" id="successContent.html">
+    <div ng-include="'tpl/modal/modal_success.html'"></div>
+</script>
+<script type="text/ng-template" id="rejectContent.html">
+    <div ng-include="'tpl/modal/modal_reject.html'"></div>
+</script>
+
+<script>
+
+    function printPageIM(id) {
+        var html = "<html>";
+        html += document.getElementById(id).innerHTML;
+
+        html += "</html>";
+
+        var printWin = window.open('', '', 'left=0,top=0,width=1000,height=1000,toolbar=0,scrollbars=0,status  =0');
+        printWin.document.write(html);
+        printWin.document.close();
+        printWin.focus();
+        printWin.print();
+        printWin.close();
+    }
+
+</script>
+
+<div class="bg-light lter b-b wrapper-md">
+    <h1 class="m-n font-bold h2 title">Etats des coulages du réseau</h1>
+</div>
+
+
+<div class="panel panel-card">
+    <md-tabs class="md-primary" md-selected="data.selectedIndex">
+
+        <md-tab id="tab1" aria-controls="tab1-content">
+            COULAGES
+        </md-tab>
+
+        <md-tab id="tab2" aria-controls="tab2-content">
+            DETAILS COULAGES
+        </md-tab>
+
+        <md-tab id="tab3" aria-controls="tab3-content">
+            CONTROLE COULAGES
+        </md-tab>
+
+    </md-tabs>
+
+    <ng-switch on="data.selectedIndex">
+
+        <div ng-controller="etatCoulagesReseauCtrl" role="tabpanel" id="tab1-content" aria-labelledby="tab1"
+            ng-switch-when="0" md-swipe-left="next()" md-swipe-right="previous()" class="wrapper">
+            <h3>Etat Coulages Réseau</h3>
+
+            <div class="panel card wrapper">
+                <div class="row" ng-init="(role.user == 'ADMINISTRATEUR') ? station(): station_courante() ">
+                    <div class="col-sm-12">
+                        <div class="panel-heading font-bold">
+                            Selectionner la periode
+                        </div>
+                        <div class="panel-body">
+                            <div class="panel card wrapper">
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label>Date Debut</label>
+                                        <p class="input-group">
+                                            <input type="text" class="form-control" datepicker-popup="{{format}}"
+                                                ng-model="dt.date_debut" is-open="opened"
+                                                datepicker-options="dateOptions" ng-required="true"
+                                                close-text="Close" />
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-default" ng-click="open($event)"><i
+                                                        class="glyphicon glyphicon-calendar"></i></button>
+                                            </span>
+                                        </p>
+
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label>Date Fin</label>
+                                        <p class="input-group">
+                                            <input type="text" class="form-control" datepicker-popup="{{format}}"
+                                                ng-model="dt.date_fin" is-open="opened2"
+                                                datepicker-options="dateOptions" ng-required="true"
+                                                close-text="Close" />
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-default"
+                                                    ng-click="open2($event)"><i
+                                                        class="glyphicon glyphicon-calendar"></i></button>
+                                            </span>
+                                        </p>
+
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <!--
+                                    <div class="col-sm-6">
+                                        <label>Station</label>
+                                        <md-input-container>
+                                            <md-select  ng-model="dt.station" placeholder="Station">
+                                              <md-option ng-repeat="station in stations" value="{{station.nom_station}}">{{station.nom_station}}</md-option>
+                                            </md-select>
+                                          </md-input-container>
+                                    </div>
+                                -->
+                                </div>
+
+                                <div class="m-t m-b">
+                                    <button class="btn btn-primary btn-rounded" ng-click="coulages()">VALIDER</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div id="block1">
+                            <div class="wrapper-md">
+                                <h4>Tableau des Coulages</h4>
+                                <table class="table table-bordered table-hover  bg-white-only">
+                                    <tr>
+                                        <td><b>STATION</b></td>
+                                        <td><b>SUPER(L)</b></td>
+                                        <td><b>GASOIL(L)</b></td>
+                                        <td><b>PETROLE(L)</b></td>
+                                        <td><b>TOTAL(L)</b></td>
+                                        <td><b>SUPER(M)</b></td>
+                                        <td><b>GASOIL(M)</b></td>
+                                        <td><b>PETROLE(M)</b></td>
+                                        <td><b>TOTAL(M)</b></td>
+
+
+                                    </tr>
+                                    <tr ng-repeat="rec in recap_coulages  track by $index">
+
+
+                                        <td class="v-middle">
+                                            <!-- editable username (text with validation) -->
+                                            <span e-name="code_produit" e-form="rowform" e-required>
+                                                {{ rec.station || '' }}
+                                            </span>
+                                        </td>
+
+                                        <td class="v-middle">
+                                            <!-- editable username (text with validation) -->
+                                            <span e-name="produit.nom_produit" e-form="rowform" e-required>
+                                                {{ rec.cou_super_l | number }}
+                                            </span>
+                                        </td>
+
+                                        <td class="v-middle">
+                                            <!-- editable username (text with validation) -->
+                                            <span e-name="type_produit" e-form="rowform" e-required>
+                                                {{ rec.cou_gasoil_l | number }}
+                                            </span>
+                                        </td>
+
+
+                                        <td class="v-middle">
+                                            <!-- editable username (text with validation) -->
+                                            <span e-name="produit.station" e-form="rowform" e-required>
+                                                {{ rec.cou_petrole_l | number }}
+                                            </span>
+                                        </td>
+
+                                        <td class="v-middle">
+                                            <!-- editable username (text with validation) -->
+                                            <span e-name="prix_produit" e-form="rowform" e-required>
+                                                <b>{{ rec.cou_total_l || 0 | number }}</b>
+                                            </span>
+                                        </td>
+
+
+                                        <td class="v-middle">
+                                            <!-- editable username (text with validation) -->
+                                            <span e-name="produit.nom_produit" e-form="rowform" e-required>
+                                                {{ rec.cou_super_m | number }}
+                                            </span>
+                                        </td>
+
+                                        <td class="v-middle">
+                                            <!-- editable username (text with validation) -->
+                                            <span e-name="type_produit" e-form="rowform" e-required>
+                                                {{ rec.cou_gasoil_m | number }}
+                                            </span>
+                                        </td>
+
+
+                                        <td class="v-middle">
+                                            <!-- editable username (text with validation) -->
+                                            <span e-name="produit.station" e-form="rowform" e-required>
+                                                {{ rec.cou_petrole_m | number }}
+                                            </span>
+                                        </td>
+
+                                        <td class="v-middle">
+                                            <!-- editable username (text with validation) -->
+                                            <span e-name="prix_produit" e-form="rowform" e-required>
+                                                <b>{{ rec.cou_total_m || 0 | number }}</b>
+                                            </span>
+                                        </td>
+
+                                    </tr>
+                                </table>
+                                <div class="line line-dashed"></div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-rounded" onclick="printPageIM('block1');">Imprimer</button>
+                <button class="btn btn-primary btn-rounded" ng-click="export_coulage_reseau();">Exporter PDF</button>
+                <button class="btn btn-primary btn-rounded" ng-click="export_excel();">Exporter Excel</button>
+
+
+            </div>
+
+        </div> <!-- ENd TAB 1 COULAGES -->
+
+        <div ng-controller="etatCoulagesReseauCtrl" role="tabpanel" id="tab2-content" aria-labelledby="tab2"
+            ng-switch-when="1" md-swipe-left="next()" md-swipe-right="previous()" class="wrapper">
+            <h3>Etat Détails Coulages Réseau</h3>
+
+            <div class="panel card wrapper">
+                <div class="row" ng-init="(role.user == 'ADMINISTRATEUR') ? station(): station_courante() ">
+                    <div class="col-sm-12">
+                        <div class="panel-heading font-bold">
+                            Selectionner la periode
+                        </div>
+                        <div class="panel-body">
+                            <div class="panel card wrapper">
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label>Date Debut</label>
+                                        <p class="input-group">
+                                            <input type="text" class="form-control" datepicker-popup="{{format}}"
+                                                ng-model="dt.date_debut" is-open="opened"
+                                                datepicker-options="dateOptions" ng-required="true"
+                                                close-text="Close" />
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-default" ng-click="open($event)"><i
+                                                        class="glyphicon glyphicon-calendar"></i></button>
+                                            </span>
+                                        </p>
+
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label>Date Fin</label>
+                                        <p class="input-group">
+                                            <input type="text" class="form-control" datepicker-popup="{{format}}"
+                                                ng-model="dt.date_fin" is-open="opened2"
+                                                datepicker-options="dateOptions" ng-required="true"
+                                                close-text="Close" />
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-default"
+                                                    ng-click="open2($event)"><i
+                                                        class="glyphicon glyphicon-calendar"></i></button>
+                                            </span>
+                                        </p>
+
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <!--
+                                <div class="col-sm-6">
+                                    <label>Station</label>
+                                    <md-input-container>
+                                        <md-select  ng-model="dt.station" placeholder="Station">
+                                          <md-option ng-repeat="station in stations" value="{{station.nom_station}}">{{station.nom_station}}</md-option>
+                                        </md-select>
+                                      </md-input-container>
+                                </div>
+                            -->
+                                </div>
+
+                                <div class="m-t m-b">
+                                    <button class="btn btn-primary btn-rounded"
+                                        ng-click="details_coulages()">VALIDER</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="block1" class="panel wrapper"
+                ng-init="(role.user == 'ADMINISTRATEUR') ? coulages_reseau(): coulages_station() ">
+
+                <table class="table table-bordered table-hover table-condensed bg-white-only">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Stock Initial</td>
+                        <td>Livraison</td>
+                        <td>Ventes</td>
+                        <td>Stock Théorique</td>
+                        <td>Stock Physique</td>
+                        <td>Coulages</td>
+
+                        <td>Prix</td>
+                        <td>Valeur Coulage</td>
+                        <td>Freinte</td>
+                        <td>Dépassement</td>
+                        <td>valeur Dépassement</td>
+
+                    </tr>
+                    <tr ng-repeat="rl in recap_coulages track by $index">
+                        <td><b>{{rl.station}} </b></td>
+                        <td>{{rl.produit}} </td>
+                        <td>{{rl.si | number}} </td>
+                        <td>{{rl.liv | number}} </td>
+                        <td>{{rl.vte | number:0}} </td>
+                        <td>{{rl.st | number}} </td>
+                        <td>{{rl.sf | number}} </td>
+                        <td><b>{{rl.cou | number:0}} </b> </td>
+                        <td><b>{{rl.prix_produit | number:0}} </b> </td>
+                        <td><b>{{rl.cou_m | number:0}} </b> </td>
+                        <td>{{rl.freinte | number: 0}} </td>
+                        <td>{{ (rl.cou-rl.freinte) | number:0}} </td>
+                        <td>{{ (rl.cou-rl.freinte)*rl.prix_produit | number:0}} </td>
+
+                    </tr>
+
+
+                </table>
+            </div>
+
+            <button class="btn btn-primary btn-rounded" onclick="printPage('block1');">Imprimer</button>
+            <button class="btn btn-primary btn-rounded" ng-click="export_pdf();">Exporter PDF</button>
+            <button class="btn btn-primary btn-rounded" ng-click="export_excel();">Exporter Excel</button>
+
+
+        </div> <!-- ENd TAB 2 DETAIL COULAGES -->
+
+        <div ng-controller="etatCoulagesReseauCtrl" role="tabpanel" id="tab2-content" aria-labelledby="tab2"
+            ng-switch-when="2" md-swipe-left="next()" md-swipe-right="previous()" class="wrapper">
+
+
+        </div> <!-- ENd TAB 3 CONTROLE COULAGES -->
+
+
+    </ng-switch> <!-- ENd Ng-switch  -->
+
+</div>

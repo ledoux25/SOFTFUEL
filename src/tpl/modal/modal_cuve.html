@@ -1,0 +1,39 @@
+
+<div class="modal-header">
+    <h3 class="modal-title text-center"><span class=" info ">Jauges  {{items.nom_cuve}}</span></h3>
+</div>
+<div class="modal-body">
+	
+   <div class="panel card wrapper" >
+                <div class="row">
+                  <div class="col-sm-4" >
+                      <md-input-container>
+                        <label for="label"> <strong>Jauge Depart ( Cm )</strong> </label>
+                        <input type="text" id="label" ng-model="jauge.jauge_depart">
+                      </md-input-container>
+                      <md-input-container>
+                        <label for="content"><strong>Volume ( Litres )</strong> </label>
+                        <input type="text" id="content" ng-model="volume.volume_depart">
+                      </md-input-container>
+                  </div>
+                  <div class="col-sm-4" >
+                    <md-input-container>
+                        <label for="label"> <strong>Jauge Fin ( Cm )</strong> </label>
+                        <input type="text" id="label" ng-model="jauge.jauge_fin">
+                      </md-input-container>
+                      <md-input-container>
+                        <label for="content"><strong>Volume ( Litres )</strong> </label>
+                        <input type="text" id="content" ng-model="volume.volume_fin">
+                      </md-input-container>
+                 </div>
+                 <div class="col-sm-4">
+                   
+                 </div>
+                </div>
+   </div>
+</div>
+<div class="modal-footer">  
+      <button class="btn btn-info" ng-click="OK()">OK</button>           
+    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+   
+</div>

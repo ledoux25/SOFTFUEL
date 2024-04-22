@@ -1,0 +1,3032 @@
+<script type="text/ng-template" id="cuve.html">
+  <div ng-include="'tpl/modal/modal_cuve.html'"></div>
+</script>
+<div class="alert alert-info none ie-show">
+  Some components not working on IE9.
+</div>
+
+<div class="bg-light lter b-b wrapper-md" >
+<h1 class="m-n font-bold h2 title">Enregistrement des données du Quart </h1>
+</div>
+
+<div class="panel panel-card">
+<md-tabs class="md-primary" md-selected="data.selectedIndex">
+
+  <md-tab id="tab1" aria-controls="tab1-content">
+     Initialisation
+  </md-tab>
+
+  <md-tab id="tab2" aria-controls="tab2-content">
+     Stock 
+  </md-tab>
+ 
+  <md-tab id="tab3" aria-controls="tab3-content">
+    Livraisons
+  </md-tab>
+
+  <md-tab id="tab4" aria-controls="tab4-content">
+    Ventes directe
+  </md-tab>
+
+   <md-tab id="tab5" aria-controls="tab5-content">
+    Remise Cuves
+  </md-tab>
+
+  <md-tab id="tab6" aria-controls="tab6-content">
+    Ventes à terme
+  </md-tab>
+
+  <md-tab id="tab7" aria-controls="tab7-content">
+   Boutique
+  </md-tab>
+
+  <md-tab id="tab8" aria-controls="tab8-content">
+   Laverie
+  </md-tab>
+
+  <md-tab id="tab9" aria-controls="tab9-content">
+    Orange Money
+  </md-tab>
+
+  <md-tab id="tab10" aria-controls="tab10-content">
+    Reglements
+  </md-tab>
+
+  <md-tab id="tab11" aria-controls="tab11-content">
+    Versement
+  </md-tab>
+  <md-tab id="tab12" aria-controls="tab12-content">
+    Caisse
+  </md-tab>
+  <md-tab id="tab13" aria-controls="tab13-content">
+    Depenses
+  </md-tab>
+  <md-tab id="tab14" aria-controls="tab14-content">
+    Commentaire
+  </md-tab>
+  <md-tab id="tab15" aria-controls="tab15-content">
+    Recapitulatif
+  </md-tab>
+</md-tabs>
+ <ng-switch on="data.selectedIndex">
+ 
+      <div 
+         ng-controller="quart1Ctrl"
+         role="tabpanel"
+         id="tab1-content"
+         aria-labelledby="tab1"
+         ng-switch-when="0"
+         md-swipe-left="next()"
+         md-swipe-right="previous()"  class="wrapper">
+          <h5 class="font-bold">Données de base</h5>
+          <div class="line line-dashed"></div>
+          <div class="panel card wrapper"  >
+            <div class="row" ng-init="heure()">
+
+              <div class="col-sm-4">
+                <label>Date Ouverture</label>
+                  <p class="input-group">
+                      <input type="text" ng-disabled="false"  class="form-control" datepicker-popup="{{format}}" ng-model="date.date_ouverture2" is-open="opened"    datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                      <span class="input-group-btn">
+                      <button type="button" class="btn btn-default" ng-click="open_quart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                      </span>
+                  </p>
+              </div>
+
+              <div class="col-sm-4">
+                <md-select  ng-model="date.quart" >
+                  <md-select-label></md-select-label>
+                  <md-option value="quart 1" >QUART 1</md-option>
+                  <md-option value="quart 2" >QUART 2</md-option>
+                </md-select>
+                <p class="result">Quart</p>
+             </div>
+
+             <div class="col-sm-4">
+               <div  ng-init="pompiste()"> 
+                 <md-select  ng-model="chef.nom_pompiste" placeholder="Chef de Piste" md-on-open="loadPompistes()", style="min-width: 200px;">
+                  <md-select-label></md-select-label>
+                  <md-option ng-value="chef.nom_pompiste" ng-repeat="chef in pompistes">{{chef.nom_pompiste}}</md-option>
+                    </md-select>
+                  <p class="result">Chef de piste</p>
+               </div>
+             </div>
+            </div>
+          </div>
+          <h5 class="font-bold">Affectation pompistes</h5>
+          <div class="line line-dashed"></div>
+           <div class="panel card wrapper" >
+              <div class="row">
+                <div class="col-sm-6"  ng-init="pistolet()">
+                      <md-input-container >
+                        <md-select  ng-model="pomp.nom_pompiste" placeholder="Pompiste" md-on-open="loadPompistes()", style="min-width: 200px;">
+                        <md-select-label></md-select-label>
+                        <md-option ng-value="pomp.nom_pompiste" ng-repeat="pomp in pompistes">{{pomp.nom_pompiste}}</md-option>
+                       </md-select>
+                        <p class="result">Pompiste</p>
+                      </md-input-container>
+                      <md-input-container >
+                          <md-select multiple ng-model="pist" placeholder="Pistolet">
+                          <md-select-label></md-select-label>
+                          <md-option ng-value="pis" ng-repeat="pis in pistolets">{{ pis.nom_pistolet }}</md-option>
+                         </md-select>
+                          <p> selectionner les pistolets correspondants</p>
+                      </md-input-container>
+               </div>
+               <div class="col-sm-6">
+                  <table  class="table table-bordered table-hover table-condensed bg-white-only">
+                    <tr style="font-weight: bold">
+                      <td >Nom Pompiste</td>
+                      <td >Nom Pistolet</td>
+                      <td style="width:25%">Edit</td>
+                    </tr>
+                    <tr  ng-repeat="pers in (app.quart.personnel) ? app.quart.personnel : personnel  ">
+                      <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="nom_pompiste" e-form="rowform" onbeforesave="checkName($data, pers.id)" e-required>
+                          {{ pers.nom_pompiste || 'empty' }}
+                        </span>
+                      </td>
+
+                      <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="capacite_cuve" e-form="rowform" onbeforesave="checkName($data, pers.id)" e-required>
+                          {{ pers.nom_pistolet || 'empty' }}
+                        </span>
+                      </td>
+                      
+                      <td style="white-space: nowrap">
+                        <!-- form -->
+                        <form editable-form name="rowform" onbeforesave="savePlaylist($data, cuve.id)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == cuve">
+                          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+                            save
+                          </button>
+                          <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+                            cancel
+                          </button>
+                        </form>
+                        <div class="buttons" ng-show="!rowform.$visible">
+                          
+                         <a class="btn btn-sm btn-info" ng-click="remove($index)">Retirer</a>
+                        </div>
+
+                      </td>
+                    </tr>
+                  </table> 
+               </div>
+              </div>
+           </div>
+         <div class="panel card wrapper">
+            <a class="btn btn-sm btn-info" ng-click="addItem()">Affecter</a>
+         </div>
+         <div class="panel card wrapper" >
+            <a class="btn btn-sm btn-primary" ng-click="saveQuart()">Enregistrer</a>
+            <div></div>
+         </div>
+      </div>   <!-- ENd TAB 1 INITIALISATION -->
+   
+       <div 
+           ng-controller="quart1Ctrl"
+           role="tabpanel"
+           id="tab2-content"
+           aria-labelledby="tab2"
+           ng-switch-when="1"
+           md-swipe-left="next()"
+           md-swipe-right="previous()"  class="wrapper">
+           <h5 class="font-bold">Stock Carburant</h5>
+           <div class="line line-dashed"></div>
+           <div class="panel card wrapper" ng-init=produit()>
+             <table  ng-init=" (app.quart.cuves) ? app.quart.cuves : cuve()"  class="table table-bordered table-hover table-condensed bg-white-only">
+                <tr style="font-weight: bold">
+                  <td >Nom Cuve</td>
+                  <td >Capacité (M3)</td>
+                  <td >Matricule</td>
+                  <td >Produit</td>
+                  <td >Station</td> 
+            <!--      <td style="width:20%">Jeauge Debut</td>
+                  <td >Jeauge FIn</td>  -->
+                  <td style="width:20%">Volume Debut</td>
+                  <td >Volume FIn</td>
+
+                  <td style="width:25%">Edit</td>
+                </tr>
+                <tr  ng-repeat="cuve in (app.quart.cuves) ? app.quart.cuves : cuves  track by $index">
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="nom_cuve" e-form="rowform" onbeforesave="checkName($data, cuve.id)" e-required>
+                      {{ cuve.nom_cuve || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="capacite_cuve" e-form="rowform" onbeforesave="checkName($data, cuve.id)" e-required>
+                      {{ cuve.capacite_cuve || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="mat_cuve" e-form="rowform" onbeforesave="checkName($data, cuve.id)" e-required>
+                      {{ cuve.mat_cuve || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="nom_produit" e-form="rowform" onbeforesave="checkName($data, cuve.id)" e-required>
+                      {{ cuve.nom_produit || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable group (select-remote) -->
+                    <span  e-name="nom_station" onshow="loadGroups()" e-form="rowform" e-ng-options="g.id as g.text for g in groups">
+                      {{ cuve.nom_station || 'empty' }}
+                    </span>
+
+
+                  </td>
+            <!--      <td class="v-middle">
+                    <span editable-text="cuve.jauge_debut"  e-name="jauge_debut" e-form="rowform" onbeforesave="checkName($data, cuve.id)" e-required>
+                      {{ cuve.jauge_debut || '0' }}
+                    </span>
+                  </td>
+
+                   <td class="v-middle">
+                    <span editable-text="cuve.jauge_fin"  e-name="jauge_fin" e-form="rowform" onbeforesave="checkName($data, cuve.id)" e-required>
+                      {{ cuve.jauge_fin || '0' }}
+                    </span>
+                  </td>  -->
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span >
+                      {{ cuve.volume_debut || '0' }}
+                    </span>
+                  </td>
+                   <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-number="cuve.volume_fin"  e-name="volume_fin" e-form="rowform" onbeforesave="checkName($data, cuve.id)" e-required>
+                      {{ cuve.volume_fin || '0' }}
+                    </span>
+                  </td>
+                  <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form editable-form name="rowform" onbeforesave="checkStock($data, cuve.id)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == cuve">
+                      <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+                        save
+                      </button>
+                      <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+                        cancel
+                      </button>
+                    </form>
+                    <div class="buttons" ng-show="!rowform.$visible">
+                      <button class="btn btn-sm btn-info" ng-click="rowform.$show()">edit</button>
+                <!--     <a class="btn btn-sm btn-info" ng-click="open(cuve)">  Modifier</a>  -->
+                    </div>
+
+                  </td>
+                </tr>
+              </table>   
+           </div>
+
+           <!---------------------------------------------------------------------------------------------------->
+
+           <div class="hbox hbox-auto-xs hbox-auto-sm" nv-file-drop="" uploader="uploader2" filters="queueLimit, customFilter">
+            <div class="col w-lg bg-light b-r bg-auto">
+              <div class="wrapper-md dker b-b">
+                <h3 class="m-n font-thin">Joindre Fichiers</h3>
+              </div>
+              <div class="wrapper-md">      
+                <div ng-show="uploader2.isHTML5" class="m-b-md">
+                    <!-- 3. nv-file-over uploader2="link" over-class="className" -->
+  
+                </div>
+  
+                <!-- Example: nv-file-select="" uploader2="{Object}" options="{Object}" filters="{String}" -->
+              
+                <p class="m-t-md">Choisir un fichier</p>
+                <input type="file" nv-file-select="" uploader="uploader2" />
+              </div>
+              </div>
+              <div class="col">
+                <div class="wrapper-md bg-light dk b-b">
+                  <span class="pull-right m-t-xs">Nbre fichiers: <b class="badge bg-info">{{ uploader2.queue.length }}</b></span>
+                  <h3 class="m-n font-thin">File d'attente</h3>      
+                </div>
+                <div class="wrapper-md">
+                  <table class="table bg-white-only b-a">
+                      <thead>
+                          <tr>
+                              <th width="50%">Nom</th>
+                              <th ng-show="uploader2.isHTML5">Taille</th>
+                              <th ng-show="uploader2.isHTML5">Progression</th>
+                              <th>Status</th>
+                              <th>Actions</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr ng-repeat="item in uploader2.queue">
+                              <td><strong>{{ item.file.name }}</strong></td>
+                              <td ng-show="uploader2.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                              <td ng-show="uploader2.isHTML5">
+                                  <div class="progress progress-sm m-b-none m-t-xs">
+                                      <div class="progress-bar bg-info" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                                  </div>
+                              </td>
+                              <td class="text-center">
+                                  <span ng-show="item.isSuccess" class="text-success"><i class="glyphicon glyphicon-ok"></i></span>
+                                  <span ng-show="item.isCancel" class="text-warning"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                                  <span ng-show="item.isError" class="text-danger"><i class="glyphicon glyphicon-remove"></i></span>
+                              </td>
+                              <td nowrap>
+                                  <button type="button" class="btn btn-default btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                                      Upload
+                                  </button>
+                                  <button type="button" class="btn btn-default btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
+                                      Annuler
+                                  </button>
+                                  <button type="button" class="btn btn-default btn-xs" ng-click="item.remove()">
+                                      Retirer
+                                  </button>
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
+                  <div>
+                    <div>
+                      <p>progression:</p>
+                      <div class="progress bg-light dker" style="">
+                          <div class="progress-bar progress-bar-striped bg-info" role="progressbar" ng-style="{ 'width': uploader2.progress + '%' }"></div>
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-addon btn-success" ng-click="uploader2.uploadAll()" ng-disabled="!uploader2.getNotUploadedItems().length">
+                      <i class="fa fa-arrow-circle-o-up"></i> Upload all
+                    </button>
+                    <button type="button" class="btn btn-addon btn-warning" ng-click="uploader2.cancelAll()" ng-disabled="!uploader2.isUploading">
+                      <i class="fa fa-ban"></i> Cancel all
+                    </button>
+                    <button type="button" class="btn btn-addon btn-danger" ng-click="uploader2.clearQueue()" ng-disabled="!uploader2.queue.length">
+                        <i class="fa fa-trash-o"></i> Remove all
+                    </button>
+                    <p class="text-muted m-t-xl">NB: la taille de votre fichier doit etre inferieur à 2 MO .</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+           
+
+           <h5 class="font-bold">Stock Lubrifiant</h5>
+           <!--
+           <div class="row">
+            <div class="col-sm-6">
+              <label>Produits</label>
+                <ui-select  ng-model="lubri.produit" theme="bootstrap">
+                  <ui-select-match placeholder="Selectionner un produit">{{$select.selected.nom_produit}}</ui-select-match>
+                  <ui-select-choices repeat="item as item in lubs | filter: $select.search">
+                    <div ng-bind-html="item.code_produit | highlight: $select.search"></div>
+                    <small ng-bind-html="item.nom_produit | highlight: $select.search"></small>
+                  </ui-select-choices>
+                </ui-select>
+             </div>
+           </div>
+
+
+           <div class="panel card wrapper" >
+            <a class="btn btn-sm btn-info" ng-disabled="carburant.$invalid" ng-click="add_stock_lub()">OK</a>
+          </div>
+          -->
+
+          <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="sr-only" for="Nom">Nom du produit</label>
+                    <input type="text" class="form-control" id="Nom_produit" placeholder="Nom du produit" ng-model="lubri.nom_produit">
+                  </div>
+            </div>
+          </div>
+
+           <div class="line line-dashed"></div>
+           <div class="panel card wrapper" >
+              <table  ng-init=" (app.quart.magasin) ? app.quart.magasin : produit_lub()"  class="table table-bordered table-hover table-condensed bg-white-only">
+                <tr style="font-weight: bold">
+                  <td >Reference</td>
+                  <td >Designation</td>
+                  <td >Conditionnement</td>
+                  <td >Stock Ouverture</td>
+                  <td >Stock Fermerture</td>
+                <!--
+                  <td >Qte Vendu</td>
+                -->
+
+                  <td >Edit</td>
+                </tr>
+                <tr  ng-repeat="mag in (app.quart.magasin) ? app.quart.magasin : produits_lub | filter : lubri.nom_produit  track by $index">
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="code_produit" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.id_produit || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="nom_produit" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.nom_produit || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="conditionnement" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.conditionnement || 'empty' }}
+                    </span>
+                  </td>
+
+                  
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   editable-number="mag.stock_ouverture" e-name="stock_ouverture"  e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.stock_ouverture || 0 }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  editable-number="mag.stock_fermerture" e-name="stock_fermerture"  e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.stock_fermerture || 0 }}
+                    </span>
+                  </td>
+                  <!--
+                   <td class="v-middle">
+                   
+                    <span editable-number="mag.stock_fermerture"  e-name="stock_fermerture" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.stock_fermerture || 0 }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                     
+                      <span editable-number="mag.qte_vendu"  e-name="qte_vendu" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                        {{ mag.qte_vendu || 0 }}
+                      </span>
+                    </td>
+                  -->
+                  <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form editable-form name="rowform" onbeforesave="savePlaylist($data, mag.id)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == mag">
+                      <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+                        save
+                      </button>
+                      <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+                        cancel
+                      </button>
+                    </form>
+                    <div class="buttons" ng-show="!rowform.$visible">
+                     <button class="btn btn-sm btn-info" ng-click="rowform.$show()">edit</button>
+                     <a class="btn btn-sm btn-danger" ng-click="removeLubrifiant($index)">Retirer</a>
+                    </div>
+                    
+
+                  </td>
+                </tr>
+              </table>     
+           </div>
+
+           <h5 class="font-bold">Stock Gaz</h5>
+           <div class="line line-dashed"></div>
+           <div class="panel card wrapper" >
+              <table  ng-init=" (app.quart.gaz) ? app.quart.gaz : produit_gaz()"  class="table table-bordered table-hover table-condensed bg-white-only">
+                <tr style="font-weight: bold">
+                  <td >Reference</td>
+                  <td >Designation</td>
+                  <td >Type Bouteille</td>
+                  <td >Stock Ouverture Bouteille Pleine</td>
+                  <td >Stock Ouverture Bouteille Vide</td>
+                  <td style="width:20%">Stock Fermerture Bouteille Pleine</td>
+                  <td >Stock Fermerture Bouteille Vide</td>
+
+                  <td style="width:25%">Edit</td>
+                </tr>
+                <tr  ng-repeat="mag in (app.quart.gaz) ? app.quart.gaz : produits_gaz  track by $index">
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="code_produit" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.code_produit || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="nom_produit" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.nom_produit || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="conditionnement" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.conditionnement || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="mag.so_bc"  e-name="so_bc" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.so_bc || '0' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="mag.so_bv" e-name="so_bv" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.so_bv || '0' }}
+                    </span>
+                  </td>
+                  
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="mag.sf_bc"  e-name="sf_bc" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.sf_bc || '0' }}
+                    </span>
+                  </td>
+
+                   <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="mag.sf_bv"  e-name="sf_bv" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.sf_bv || '0' }}
+                    </span>
+                  </td>
+                  
+                  <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form editable-form name="rowform" onbeforesave="savePlaylist($data, mag.id)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == mag">
+                      <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+                        save
+                      </button>
+                      <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+                        cancel
+                      </button>
+                    </form>
+                    <div class="buttons" ng-show="!rowform.$visible">
+                     <button class="btn btn-sm btn-info" ng-click="rowform.$show()">edit</button>
+                    </div>
+
+                  </td>
+                </tr>
+              </table>     
+           </div>
+
+           <div class="panel card wrapper" >
+              <a class="btn btn-sm btn-primary" ng-click="saveStock()">Enregistrer</a>
+              <div></div>
+           </div>
+       </div>  <!-- End TAB 2 STOCK   -->
+
+      <div 
+           ng-controller="quart1Ctrl"
+           role="tabpanel"
+           id="tab3-content"
+           aria-labelledby="tab3"
+           ng-switch-when="2"
+           md-swipe-left="next()"
+           md-swipe-right="previous()"  class="wrapper ">
+           <h5 class="font-bold">Livraisons Carburant</h5>
+           <div class="panel card wrapper" >
+             <div class="row">
+              <form name="carburant" class="form-validation" >
+                  <div class="col-sm-6" >
+                    <md-input-container>
+                      <label for="label"> <strong>N° BON</strong> </label>
+                      <input type="text" id="label" ng-model="livraison.num_bon" required>
+                    </md-input-container>
+                    <md-input-container>
+                      <label for="content"><strong>N° SCDP</strong> </label>
+                      <input type="text" id="content" ng-model="livraison.num_scdp" required>
+                    </md-input-container>
+                    <md-input-container>
+                      <label for="label"> <strong>Nom chaufeur</strong> </label>
+                      <input type="text" id="label" ng-model="livraison.nom_chauffeur" required>
+                    </md-input-container>
+                    <md-input-container>
+                      <label for="content"><strong>Mat Camion</strong> </label>
+                      <input type="text" id="content" ng-model="livraison.mat_camion" required>
+                    </md-input-container>
+                </div>
+                <div>
+                    
+                     
+                <!--    <md-select ng-model="livraison.produit" ng-init="produit()" placeholder="Produit">
+                      <md-option ng-repeat="produit in produits track by $index" value="{{produit.nom_produit}}">{{produit.nom_produit}}</md-option>
+                    </md-select>  -->
+                </div>
+                <div class="col-sm-6">
+
+                   
+                    <md-input-container>
+                      <label for="content"><strong>Qte Commande</strong> </label>
+                      <input type="number" id="content" ng-model="livraison.qte_commande" required>
+                    </md-input-container>
+                    <md-input-container>
+                      <label for="content"><strong>Qte Recu</strong> </label>
+                      <input type="number" id="content" ng-model="livraison.qte_recu" required>
+                    </md-input-container>
+                     <md-input-container>
+                       <md-select ng-model="livraison.transporteur" ng-init="transporteur()" placeholder="Transporteur" required>
+                      <md-option ng-repeat="transport in transporteurs track by $index" value="{{transport.nom_transporteur}}">{{transport.nom_transporteur}}</md-option>
+                      </md-select>
+                     </md-input-container>
+                     <md-input-container>
+                       <md-select ng-model="livraison.cuve" placeholder="Cuves" required>
+                        <md-option ng-repeat="cuve in app.quart.cuves track by $index" value="{{cuve.nom_cuve}}">{{cuve.nom_cuve}}</md-option>
+                       </md-select>
+                     </md-input-container>
+                </div>
+             </div>
+
+              <div class="line line-dashed"></div>
+
+              <div class="panel card wrapper" >
+                <a class="btn btn-sm btn-info" ng-disabled="carburant.$invalid" ng-click="addLivraison()">OK</a>
+              </div>
+              </form>
+                
+
+              <div class="line line-dashed"></div>
+                
+              <div class="panel card wrapper">
+              <table class="table table-bordered table-hover table-condensed bg-white-only" ng-init=" (app.quart.livraisons) ? app.quart.livraisons : livraisons">
+                <tr style="font-weight: bold">
+                  
+                  <td style="width:25%">N° BL</td>
+                  <td style="width:25%">N° SCDP</td>
+                  <td style="width:25%">Nom Chauffeur</td>
+                  <td style="width:25%">Mat Camion</td>
+                  <td style="width:25%">Produit</td>
+                  <td style="width:25%">Transporteur</td>
+                  <td style="width:25%">Qte Commande</td>
+                  <td style="width:25%">Qte Recu</td>
+                  <td style="width:25%">Cuve</td>
+
+                  <td style="width:25%">Edit</td>
+                </tr>
+                <tr  ng-repeat="liv in (app.quart.livraisons) ? app.quart.livraisons : livraisons  track by $index">
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="num_bon" e-form="rowform" onbeforesave="checkName($data, liv.id)" e-required>
+                      {{ liv.num_bon || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="num_scdp" e-form="rowform" onbeforesave="checkName($data, liv.id)" e-required>
+                      {{ liv.num_scdp || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="nom_chauffeur" e-form="rowform" onbeforesave="checkName($data, liv.id)" e-required>
+                      {{ liv.nom_chauffeur || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="mat_camion" e-form="rowform" onbeforesave="checkName($data, liv.id)" e-required>
+                      {{liv.mat_camion || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="produit" e-form="rowform" onbeforesave="checkName($data, liv.id)" e-required>
+                      {{liv.produit || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="transporteur" e-form="rowform" onbeforesave="checkName($data, liv.id)" e-required>
+                      {{liv.transporteur || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-number="liv.qte_commande"   e-name="qte_commande" e-form="rowform" e-required>
+                      {{liv.qte_commande || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-number="liv.qte_recu"   e-name="qte_recu" e-form="rowform"  e-required>
+                      {{liv.qte_recu || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="cuve" e-form="rowform" onbeforesave="checkName($data, liv.cuve)" e-required>
+                      {{liv.cuve || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form editable-form name="rowform" onbeforesave="checkQte($data, liv.cuve, $index, liv.mat_camion, liv.qte_recu, liv.qte_commande, liv.transporteur, liv.nom_chauffeur, liv.num_scdp, liv.num_bon)"  ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == liv">
+                      <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+                        save
+                      </button>
+                      <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+                        cancel
+                      </button>
+                    </form>
+                    <div class="buttons" ng-show="!rowform.$visible">
+                    <button class="btn btn-sm btn-info" ng-click="rowform.$show()">Editer</button>
+                    <a class="btn btn-sm btn-danger" ng-click="removeLivraison($index)">Retirer</a>
+                    </div>
+
+                  </td>
+                </tr>
+              </table>  
+              </div>
+           </div>
+           <div class="line line-dashed"></div>
+           
+           <h5 class="font-bold">Livraisons Lubrifiants</h5>
+            <div class="panel card wrapper" >
+            <div class="row">
+              <form name="lubrifiant" class="form-validation">
+                <div class="col-sm-6" >
+                  <md-input-container>
+                    <label for="label"> <strong>N° BON</strong> </label>
+                    <input type="text" id="label" ng-model="lubrifiant.num_bon" required>
+                  </md-input-container>
+                  <md-input-container>
+                    <label for="label"> <strong>Nom chaufeur</strong> </label>
+                    <input type="text" id="label" ng-model="lubrifiant.nom_chauffeur" required>
+                  </md-input-container>
+                  <md-input-container>
+                    <label for="content"><strong>Mat Camion</strong> </label>
+                    <input type="text" id="content" ng-model="lubrifiant.mat_camion" required>
+                  </md-input-container>
+                   <md-input-container>
+                     <md-select ng-model="lubrifiant.transporteur" placeholder="Transporteur" required>
+                    <md-option ng-repeat="transport in transporteurs track by $index" value="{{transport.nom_transporteur}}">{{transport.nom_transporteur}}</md-option>
+                    </md-select>
+                   </md-input-container>
+                </div>
+                <div class="col-sm-6" ng-init="produit_lub_all()">
+                    
+                  <ui-select  ng-model="lubrifiant.produit" theme="bootstrap">
+                    <ui-select-match placeholder="Selectionner un produit">{{$select.selected.nom_produit}}</ui-select-match>
+                    <ui-select-choices repeat="item as item in lubs | filter: $select.search">
+                      <div ng-bind-html="item.code_produit | highlight: $select.search"></div>
+                      <small ng-bind-html="item.nom_produit | highlight: $select.search"></small>
+                    </ui-select-choices>
+                   </ui-select>
+                    
+                    <md-input-container>
+                      <label for="content"><strong>Qte Commande</strong> </label>
+                      <input type="number" id="content" ng-model="lubrifiant.qte_commande" required>
+                    </md-input-container>
+                    <md-input-container>
+                      <label for="content"><strong>Qte Recu</strong> </label>
+                      <input type="number" id="content" ng-model="lubrifiant.qte_recu" required>
+                    </md-input-container>
+                </div>
+
+                 <div class="line line-dashed"></div>
+
+                  <div class="panel card wrapper" >
+                    <a class="btn btn-sm btn-info" ng-click="addLubrifiant()" ng-disabled="lubrifiant.$invalid">OK</a>
+                  </div>
+              </form>
+            </div>
+
+              
+
+              <div class="line line-dashed"></div>
+                
+              <table class="table table-bordered table-hover table-condensed bg-white-only" ng-init=" (app.quart.lubrifiants) ? app.quart.lubrifiants : lubrifiants">
+                <tr style="font-weight: bold">
+                  
+                  <td >N° BL</td>
+                  <td >Nom Chauffeur</td>
+                  <td >Mat Camion</td>
+                  <td >Produit</td>
+                  <td >Transporteur</td>
+                  <td >Qte Commande</td>
+                  <td >Qte Recu</td>
+                  <td style="width:25%">Edit</td>
+                </tr>
+                <tr  ng-repeat="lub in (app.quart.lubrifiants) ? app.quart.lubrifiants : lubrifiants  track by $index">
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="num_bon" e-form="rowform" onbeforesave="checkName($data, lub.id)" e-required>
+                      {{ lub.num_bon || 'empty' }}
+                    </span>
+                  </td>
+                  
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="nom_chauffeur" e-form="rowform" onbeforesave="checkName($data, lub.id)" e-required>
+                      {{ lub.nom_chauffeur || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="mat_camion" e-form="rowform" onbeforesave="checkName($data, lub.id)" e-required>
+                      {{lub.mat_camion || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="produit" e-form="rowform" onbeforesave="checkName($data, lub.id)" e-required>
+                      {{lub.produit.nom_produit || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="transporteur" e-form="rowform" onbeforesave="checkName($data, lub.id)" e-required>
+                      {{lub.transporteur || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-number="lub.qte_commande"   e-name="qte_commande" e-form="rowform" onbeforesave="checkName($data, lub.id)" e-required>
+                      {{lub.qte_commande || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-number="lub.qte_recu"   e-name="qte_recu" e-form="rowform" onbeforesave="checkName($data, lub.id)" e-required>
+                      {{lub.qte_recu || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form editable-form name="rowform" onbeforesave="checkqte" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == lub">
+                      <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+                        save
+                      </button>
+                      <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+                        cancel
+                      </button>
+                    </form>
+                    <div class="buttons" ng-show="!rowform.$visible">
+                        <button class="btn btn-sm btn-info" ng-click="rowform.$show()">Editer</button>
+                       <a class="btn btn-sm btn-danger" ng-click="remove_livraison_lub($index)">Retirer</a>
+                        
+                    </div>
+
+                  </td>
+                </tr>
+              </table>     
+            </div>
+            <div class="line line-dashed"></div>
+
+            <h5 class="font-bold">Livraisons Gaz</h5>
+            <div class="panel card wrapper" >
+             <div class="row">
+                <div class="col-sm-6" >
+                    <md-input-container>
+                      <label for="label"> <strong>N° BON</strong> </label>
+                      <input type="text" id="label" ng-model="gaz.num_bon">
+                    </md-input-container>
+                    <md-input-container>
+                      <label for="label"> <strong>Nom chaufeur</strong> </label>
+                      <input type="text" id="label" ng-model="gaz.nom_chauffeur">
+                    </md-input-container>
+                    <md-input-container>
+                      <label for="content"><strong>Mat Camion</strong> </label>
+                      <input type="text" id="content" ng-model="gaz.mat_camion">
+                    </md-input-container>
+                     <md-input-container>
+                       <md-select ng-model="gaz.transporteur" placeholder="Transporteur">
+                      <md-option ng-repeat="transport in transporteurs track by $index" value="{{transport.nom_transporteur}}">{{transport.nom_transporteur}}</md-option>
+                      </md-select>
+                     </md-input-container>
+                </div>
+                <div class="col-sm-6" >
+                    
+                    <md-select ng-model="gaz.produit" ng-init="produit_gaz()" placeholder="Produit">
+                      <md-option ng-repeat="produit_gaz in produits_gaz track by $index" value="{{produit_gaz.nom_produit}}">{{produit_gaz.nom_produit}}</md-option>
+                    </md-select>
+                    <md-input-container>
+                      <label for="content"><strong>Qte Commande</strong> </label>
+                      <input type="text" id="content" ng-model="gaz.qte_commande">
+                    </md-input-container>
+                    <md-input-container>
+                      <label for="content"><strong>Qte Recu</strong> </label>
+                      <input type="text" id="content" ng-model="gaz.qte_recu">
+                    </md-input-container>
+                    <md-input-container>
+                      <label for="content"><strong>Qte Bouteille Retourné</strong> </label>
+                      <input type="text" id="content" ng-model="gaz.qte_retour">
+                    </md-input-container>
+               </div>
+              </div>
+
+              <div class="line line-dashed"></div>
+
+              <div class="panel card wrapper" >
+                <a class="btn btn-sm btn-info" ng-click="addGaz()">OK</a>
+              </div>
+
+              <div class="line line-dashed"></div>
+                
+              <table class="table table-bordered table-hover table-condensed bg-white-only" ng-init=" (app.quart.gaz) ? app.quart.gaz : liv_gaz">
+                <tr style="font-weight: bold">
+                  
+                  <td >N° BL</td>
+                  <td >Nom Chauffeur</td>
+                  <td >Mat Camion</td>
+                  <td >Produit</td>
+                  <td >Transporteur</td>
+                  <td >Qte Commande</td>
+                  <td >Qte Recu</td>
+                  <td >Qte Retourné</td>
+
+                  <td style="width:25%">Edit</td>
+                </tr>
+                <tr  ng-repeat="ga in (app.quart.liv_gaz) ? app.quart.liv_gaz : liv_gaz  track by $index">
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="ga.num_bon" e-name="num_bon" e-form="rowform" onbeforesave="checkName($data, ga.id)" e-required>
+                      {{ ga.num_bon || 'empty' }}
+                    </span>
+                  </td>
+                  
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="ga.nom_chauffeur" e-name="nom_chauffeur" e-form="rowform" onbeforesave="checkName($data, ga.id)" e-required>
+                      {{ ga.nom_chauffeur || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="ga.mat_camion"   e-name="mat_camion" e-form="rowform" onbeforesave="checkName($data, ga.id)" e-required>
+                      {{ga.mat_camion || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="ga.produit"   e-name="produit" e-form="rowform" onbeforesave="checkName($data, ga.id)" e-required>
+                      {{ga.produit || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="ga.transporteur"   e-name="transporteur" e-form="rowform" onbeforesave="checkName($data, ga.id)" e-required>
+                      {{ga.transporteur || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="ga.qte_commande"   e-name="qte_commande" e-form="rowform" onbeforesave="checkName($data, ga.id)" e-required>
+                      {{ga.qte_commande || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="ga.qte_recu"   e-name="qte_recu" e-form="rowform" onbeforesave="checkName($data, ga.id)" e-required>
+                      {{ga.qte_recu || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="ga.qte_retour"   e-name="qte_retour" e-form="rowform" onbeforesave="checkName($data, ga.id)" e-required>
+                      {{ga.qte_retour || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form editable-form name="rowform" onbeforesave="saveLivraison($data, ga.id_cuve)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == ga">
+                      <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+                        save
+                      </button>
+                      <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+                        cancel
+                      </button>
+                    </form>
+                    <div class="buttons" ng-show="!rowform.$visible">
+                       <button class="btn btn-sm btn-info" ng-click="rowform.$show()">edit</button>
+                        
+                    </div>
+
+                  </td>
+                </tr>
+              </table>     
+            </div>
+            <div class="line line-dashed"></div>
+
+            <div class="panel card wrapper">
+              <a class="btn btn-sm btn-primary" ng-click="saveLivraison()">Enregistrer</a>
+            </div>
+      </div> <!-- End TAB 3 LIVRAISON  -->
+
+      <div  
+         ng-controller="quart1Ctrl"
+         role="tabpanel"
+         id="tab4-content"
+         aria-labelledby="tab4"
+         ng-switch-when="3"
+         md-swipe-left="next()"
+         md-swipe-right="previous()"  class="wrapper">
+         <h5 class="font-bold">Ventes Carburant</h5>
+          <div class="panel card wrapper" >
+              <table class="table table-bordered table-hover table-condensed bg-white-only">
+                <tr style="font-weight: bold">
+                  <td >Nom Pompiste</td>
+                  <td >Nom Pistolet</td>
+                  <td >Index Départ</td>
+                  <td >Index Fin</td>
+
+                  <td style="width:25%">Edit</td>
+                </tr>
+                <tr  ng-repeat="index in app.quart.personnel  track by $index">
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="nom_pompiste" e-form="rowform" onbeforesave="checkName($data, index.id)" e-required>
+                      {{ index.nom_pompiste || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="nom_pistolet" e-form="rowform" onbeforesave="checkName($data, index.id)" e-required>
+                      {{ index.nom_pistolet || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span >
+                      {{ index.index_depart || 0 }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-number="index.index_fin"   e-name="index_fin" e-form="rowform" onbeforesave="checkName($data, index.id)" e-required>
+                      {{index.index_fin || 0 }}
+                    </span>
+                  </td>
+
+                  <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form editable-form name="rowform" onaftersave="checkIndex($data, $index, index.nom_cuve, index.nom_pistolet, index.index_depart, index.index_fin)" ng-show="rowform.$visible"   class="form-buttons form-inline" shown="inserted == index">
+                      <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+                        save
+                      </button>
+                      <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+                        cancel
+                      </button>
+                    </form>
+                    <div class="buttons" ng-show="!rowform.$visible">
+                       <button class="btn btn-sm btn-info" ng-click="rowform.$show()">edit</button>
+                        
+                    </div>
+
+                  </td>
+                </tr>
+              </table>     
+          </div> 
+           <div class="line line-dashed"></div>
+
+           <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="sr-only" for="Nom">Nom du produit</label>
+                    <input type="text" class="form-control" id="Nom_produit" placeholder="Nom du produit" ng-model="lubri.nom_produit">
+                  </div>
+            </div>
+          </div>
+
+          <h5 class="font-bold">Ventes Lubrifiants</h5>
+          <div class="panel card wrapper">
+            <table  ng-init=" (app.quart.magasin) ? app.quart.magasin : produit_lub "  class="table table-bordered table-hover table-condensed bg-white-only">
+                <tr style="font-weight: bold">
+                  <td >Reference</td>
+                  <td >Designation</td>
+                  <td >Conditionnemment</td>
+                  <td >Type Produit</td>
+                  <td >Stock Ouverture</td>
+                  <td >Livraison</td>
+                  <td >Qte Vendu</td>
+                  <td >Stock Physique</td>
+                  <td >Prix</td>
+                  <td >Edit</td>
+                </tr>
+                
+                <tr  ng-repeat="mag in (app.quart.magasin) ? app.quart.magasin : produits_lub  | filter : lubri.nom_produit  track by $index">
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="code_produit" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.code_produit || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="nom_produit" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.nom_produit || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="conditionnement" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.conditionnement || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="type_produit" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.type_produit || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="stock_ouverture" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.stock_ouverture || 0 }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  editable-text="mag.livraison" e-name="livraison" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.livraison || 0 }}
+                    </span>
+                  </td>
+                  
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="mag.qte_vendu"  e-name="qte_vendu" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.qte_vendu || 0 }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span   e-name="stock_fermerture" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                        {{ mag.stock_fermerture || 0 }}
+                      </span>
+                    </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="mag.prix_produit"  e-name="prix_produit" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.prix_produit || 0 }}
+                    </span>
+                  </td>
+
+                  <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form editable-form name="rowform" onbeforesave="update_prix_produit(mag)"  onaftersave="update_stock(mag)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == mag">
+                      <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+                        save
+                      </button>
+                      <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+                        cancel
+                      </button>
+                    </form>
+                    <div class="buttons" ng-show="!rowform.$visible">
+                     <button class="btn btn-sm btn-info" ng-click="rowform.$show()">edit</button>
+                    </div>
+
+                  </td>
+                </tr>
+            </table> 
+          </div> 
+          <div class="line line-dashed"></div>
+
+          <h5 class="font-bold">Ventes Gaz</h5>
+          <div class="panel card wrapper" >
+              <table  ng-init=" (app.quart.gaz) ? app.quart.gaz : produits_gaz"  class="table table-bordered table-hover table-condensed bg-white-only">
+                <tr style="font-weight: bold">
+                  <td >Reference</td>
+                  <td >Designation</td>
+                  <td >Conditionnement</td>
+                  <td >Qte Vendu Avec Bouteille</td>
+                  <td >Qte Vendu Sans Bouteille</td>
+
+                  <td style="width:25%">Edit</td>
+                </tr>
+                <tr  ng-repeat="mag in (app.quart.gaz) ? app.quart.gaz : produits_gaz  track by $index">
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="code_produit" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.code_produit || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="nom_produit" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.nom_produit || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span   e-name="conditionnement" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.conditionnement || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="mag.qv_ab"  e-name="qv_ab" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.qv_ab || '0' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="mag.qv_sb" e-name="qv_sb" e-form="rowform" onbeforesave="checkName($data, mag.id)" e-required>
+                      {{ mag.qv_sb || '0' }}
+                    </span>
+                  </td>
+                  
+                  <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form editable-form name="rowform" onbeforesave="savePlaylist($data, mag.id)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == mag">
+                      <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+                        save
+                      </button>
+                      <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+                        cancel
+                      </button>
+                    </form>
+                    <div class="buttons" ng-show="!rowform.$visible">
+                     <button class="btn btn-sm btn-info" ng-click="rowform.$show()">edit</button>
+                    </div>
+
+                  </td>
+                </tr>
+              </table>     
+           </div> 
+          <div class="line line-dashed"></div>
+
+          
+
+
+          <div class="panel card wrapper" >
+              <a class="btn btn-sm btn-primary" ng-click="savePistolets()" >Enregistrer</a>
+              <div></div>
+           </div>
+      </div> <!-- End TAB 4 VENTES  -->
+
+      <div 
+           ng-controller="quart1Ctrl"
+           role="tabpanel"
+           id="tab5-content"
+           aria-labelledby="tab5"
+           ng-switch-when="4"
+           md-swipe-left="next()"
+           md-swipe-right="previous()"  class="wrapper">
+           <h5 class="font-bold">Remise en Cuves</h5>
+           <div class="panel card wrapper" >
+             
+              <table class="table table-bordered table-hover table-condensed bg-white-only">
+                <tr style="font-weight: bold">
+                  <td >Nom Pompiste</td>
+                  <td >Nom Pistolet</td>
+                  <td >Index Départ</td>
+                  <td >Index Fin</td>
+                  <td >Responsable</td>
+                  <td >Motif</td>
+
+                  <td style="width:25%">Edit</td>
+                </tr>
+                <tr  ng-repeat="remise in (app.quart.personnel) ? app.quart.personnel : remise_cuves track by $index">
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="nom_pompiste" e-form="rowform" onbeforesave="checkName($data, remise.id)" e-required>
+                      {{ remise.nom_pompiste || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="nom_pistolet" e-form="rowform" onbeforesave="checkName($data, remise.id)" e-required>
+                      {{ remise.nom_pistolet || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-number="remise.index_depart_remise" e-name="index_depart_remise" e-form="rowform" onbeforesave="checkName($data, remise.id)" e-required>
+                      {{ remise.index_depart_remise || '0' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-number="remise.index_fin_remise"   e-name="index_fin_remise" e-form="rowform" onbeforesave="checkName($data, remise.id)" e-required>
+                      {{remise.index_fin_remise || '0' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="remise.responsable"   e-name="responsable" e-form="rowform" onbeforesave="checkName($data, remise.id)" e-required>
+                      {{remise.responsable || '' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="remise.motif"   e-name="responsable" e-form="rowform" onbeforesave="checkName($data, remise.id)" e-required>
+                      {{remise.motif|| '' }}
+                    </span>
+                  </td>
+
+                  <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form editable-form name="rowform" onaftersave="checkRemise($data,$index,remise.nom_pistolet,remise.index_depart_remise,remise.index_fin_remise)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == remise">
+                      <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+                        save
+                      </button>
+                      <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+                        cancel
+                      </button>
+                    </form>
+                    <div class="buttons" ng-show="!rowform.$visible">
+                       <button class="btn btn-sm btn-info" ng-click="rowform.$show()">edit</button>
+                        
+                    </div>
+
+                  </td>
+                </tr>
+              </table>     
+             
+              <div class="panel card wrapper" >
+                  <a class="btn btn-sm btn-primary" ng-click="remiseCuves()">Enregistrer</a>
+              </div>
+           </div>
+      </div> <!-- End TAB 5 REMISE CUVES  -->
+
+      <div  
+         ng-controller="quart1Ctrl"
+         role="tabpanel"
+         id="tab6-content"
+         aria-labelledby="tab6"
+         ng-switch-when="5"
+         md-swipe-left="next()"
+         md-swipe-right="previous()"  class="wrapper">
+         <h5 class="font-bold">Ventes Carburant</h5>
+          <div class="panel card wrapper" >
+            <div class="col-sm-3" >
+              <div  ng-init="pompiste()"> 
+               <md-select  ng-model="carb.pompiste" placeholder="Pompiste" md-on-open="loadPompistes()", style="min-width: 200px;">
+                <md-select-label></md-select-label>
+                <md-option ng-value="pom" ng-repeat="pom in pompistes">{{pom.nom_pompiste}}</md-option>
+                </md-select>
+                <p class="result">Pompiste</p>
+              </div>
+            </div>
+
+            <div class="col-sm-3" >
+              <div  ng-init="produit()"> 
+               <md-select  ng-model="carb.produit" placeholder="Produit" , style="min-width: 200px;">
+                <md-select-label></md-select-label>
+                <md-option ng-value="pro" ng-repeat="pro in produits">{{pro.nom_produit}}</md-option>
+                </md-select>
+                <p class="result">Produit</p>
+              </div>
+            </div>
+
+            <div class="col-sm-3" >
+              <ui-select  ng-model="carb.client" theme="bootstrap"  ng-init=client()>
+                <ui-select-match placeholder="Selectionner un client">{{$select.selected.nom_client}}</ui-select-match>
+                <ui-select-choices repeat="item as item in clients | filter: $select.search">
+                  <div ng-bind-html="item.code_client | highlight: $select.search"></div>
+                  <small ng-bind-html="item.nom_client | highlight: $select.search"></small>
+                </ui-select-choices>
+               </ui-select>
+            </div>
+
+            
+
+            <div class="col-sm-3" >
+              <md-input-container>
+                <label for="label"> <strong>Montant</strong> </label>
+                <input type="number" id="label" ng-model="carb.montant">
+              </md-input-container>
+            </div>
+               
+            <div class="line line-dashed"></div>
+
+              <div class="panel card wrapper" >
+                <a class="btn btn-sm btn-info" ng-click="addVte_carb()">OK</a>
+              </div>
+
+              <div class="line line-dashed"></div>
+               
+
+              <table class="table table-bordered table-hover table-condensed bg-white-only" ng-init="(app.quart.vte_carburant) ? app.quart.vte_carburant : vte_carburant">
+                <tr style="font-weight: bold">
+                  <td >Nom Pompiste</td>
+                  <td >Nom Client</td>
+                  <td >Nom Produit</td>
+                  <td >Prix Client</td>
+                  <td >Quantite</td>
+                  <td >Montant</td>
+
+                  <td style="width:25%">Edit</td>
+                </tr>
+                <tr  ng-repeat="vte_carb in (app.quart.vte_carburant) ? app.quart.vte_carburant : vte_carburant  track by $index">
+                  
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="pompiste" e-form="rowform" onbeforesave="checkName($data, vte_carb.id)" e-required>
+                      {{ vte_carb.nom_pompiste || '' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="client" e-form="rowform" onbeforesave="checkName($data, vte_carb.id)" e-required>
+                      {{ vte_carb.nom_client || '' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="nom_produit" e-form="rowform" onbeforesave="checkName($data, vte_carb.id)" e-required>
+                      {{ vte_carb.nom_produit || '' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="prix_client" e-form="rowform" onbeforesave="checkName($data, vte_carb.id)" e-required>
+                      {{ vte_carb.prix_client || '0' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="qte" e-form="rowform" onbeforesave="checkName($data, vte_carb.id)" e-required>
+                      {{ vte_carb.qte || '0' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-number="vte_carb.montant"   e-name="montant" e-form="rowform" onbeforesave="checkName($data, vte_carb.id)" e-required>
+                      {{vte_carb.montant || '0' }}
+                    </span>
+                  </td>
+
+                  <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form editable-form name="rowform" onaftersave="checkVte_carb($data,$index,vte_carb.pistolet,vte_carb.index_depart,vte_carb.index_fin)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == vte_carb">
+                      <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+                        save
+                      </button>
+                      <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+                        cancel
+                      </button>
+                    </form>
+                    <div class="buttons" ng-show="!rowform.$visible">
+                       <button class="btn btn-sm btn-info" ng-click="rowform.$show()">edit</button>
+                          <button class="btn btn-sm btn-danger" ng-click="removeClient($index)">del</button>
+                    </div>
+
+                  </td>
+                </tr>
+              </table>     
+          </div> 
+           <div class="line line-dashed"></div>
+
+          <h5 class="font-bold">Ventes Lubrifiant</h5>
+          <div class="panel card wrapper" >
+
+            <div class="col-sm-3" >
+              <div> 
+               <md-select  ng-model="lubri.pompiste" placeholder="Pompiste" , style="min-width: 200px;">
+                <md-select-label></md-select-label>
+                <md-option ng-value="pom" ng-repeat="pom in pompistes">{{pom.nom_pompiste}}</md-option>
+                </md-select>
+                <p class="result">Pompiste</p>
+              </div>
+            </div>
+
+
+            <div class="col-sm-3"  ng-init="produit_lub()">
+              <ui-select  ng-model="lubri.produit" theme="bootstrap" >
+                <ui-select-match placeholder="Selectionner un produit">{{$select.selected.nom_produit}}</ui-select-match>
+                <ui-select-choices repeat="item as item in produits_lub | filter: $select.search">
+                  <div ng-bind-html="item.code_produit | highlight: $select.search"></div>
+                  <small ng-bind-html="item.nom_produit | highlight: $select.search"></small>
+                </ui-select-choices>
+               </ui-select>
+            </div>
+
+            <div class="col-sm-3" >
+              <ui-select  ng-model="lubri.client" theme="bootstrap"  ng-init=client()>
+                <ui-select-match placeholder="Selectionner un client">{{$select.selected.nom_client}}</ui-select-match>
+                <ui-select-choices repeat="item as item in clients | filter: $select.search">
+                  <div ng-bind-html="item.code_client | highlight: $select.search"></div>
+                  <small ng-bind-html="item.nom_client | highlight: $select.search"></small>
+                </ui-select-choices>
+               </ui-select>
+            </div>
+
+            <div class="col-sm-3">
+              <md-input-container>
+                <label for="label"> <strong>Montant</strong> </label>
+                <input type="number" id="label" ng-model="lubri.montant">
+              </md-input-container>
+            </div>
+               
+            <div class="line line-dashed"></div>
+
+              <div class="panel card wrapper" >
+                <a class="btn btn-sm btn-info" ng-click="addVte_lubri()">OK</a>
+              </div>
+
+              <div class="line line-dashed"></div>
+               
+              <table class="table table-bordered table-hover table-condensed bg-white-only" ng-init="(app.quart.vte_lubrifiant) ? app.quart.vte_lubrifiant : vte_lubrifiant">
+                <tr style="font-weight: bold">
+                  <td >Nom Pompiste</td>
+                  <td >Nom Client</td>
+                  <td >Nom Produit</td>
+                  <td >Prix Client</td>
+                  <td >Quantite</td>
+                  <td >Montant</td>
+
+                  <td style="width:25%">Edit</td>
+                </tr>
+                <tr  ng-repeat="vte_lub in (app.quart.vte_lubrifiant) ? app.quart.vte_lubrifiant : vte_lubrifiant  track by $index">
+                  
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="pompiste" e-form="rowform" onbeforesave="checkName($data, vte_carb.id)" e-required>
+                      {{ vte_lub.nom_pompiste || '' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="client" e-form="rowform" onbeforesave="checkName($data, vte_lub.id)" e-required>
+                      {{ vte_lub.client.nom_client || '' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="produit" e-form="rowform" onbeforesave="checkName($data, vte_lub.id)" e-required>
+                      {{ vte_lub.produit.nom_produit || 'empty' }}
+                    </span>
+                  </td>
+                   <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="vte_lub.prix_client " e-name="prix_client" e-form="rowform" onbeforesave="checkName($data, vte_lub.id)" e-required>
+                      {{ vte_lub.prix_client || 0 }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="vte_lub.qte" e-name="qte" e-form="rowform" onbeforesave="checkName($data, vte_lub.id)" e-required>
+                      {{ vte_lub.qte || 0 }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span editable-text="vte_lub.montant" e-name="qte" e-form="rowform" onbeforesave="checkName($data, vte_lub.id)" e-required>
+                      {{ vte_lub.montant || 0 }}
+                    </span>
+                  </td>
+                  <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form editable-form name="rowform"  ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == vte_lub">
+                      <button type="submit" ng-disabled="rowform.$waiting" ng-click="update_prix_client(vte_lub)" class="btn btn-sm btn-info">
+                        save
+                      </button>
+                      <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+                        cancel
+                      </button>
+                    </form>
+                    <div class="buttons" ng-show="!rowform.$visible">
+                       <button class="btn btn-sm btn-info" ng-click="rowform.$show()">edit</button>
+                        <button class="btn btn-sm btn-danger" ng-click="removeProduit($index)">del</button>
+                        
+                    </div>
+                  </td>
+                </tr>
+              </table>     
+          </div> 
+          <div class="line line-dashed"></div>
+
+          <div class="panel card wrapper" >
+              <a class="btn btn-sm btn-primary" ng-click="saveVentes()">Enregistrer</a>
+              <div></div>
+           </div>
+
+
+      </div> <!-- End TAB 6 VENTES A TERME -->
+
+       <div  
+         ng-controller="quart1Ctrl"
+         role="tabpanel"
+         id="tab7-content"
+         aria-labelledby="tab7"
+         ng-switch-when="6"
+         md-swipe-left="next()"
+         md-swipe-right="previous()"  class="wrapper">
+         <h5 class="font-bold">Boutique</h5>
+           <div class="panel card wrapper" >
+             <div class="row">
+                <div class="col-sm-6" >
+                    <md-input-container>
+                      <label for="label"> <strong>Ancien Solde</strong> </label>
+                      <input type="number" id="label" ng-model="boutique.ancien_solde">
+                    </md-input-container>
+                </div>
+                <div class="col-sm-6" >
+                   <md-input-container>
+                      <label for="content"> <strong>Montant Boutique</strong> </label>
+                      <input type="number" id="content" ng-model="boutique.montant">
+                    </md-input-container>
+                </div>
+             </div>
+
+
+             <div class="panel card wrapper" >
+              <a class="btn btn-sm btn-primary" ng-click="saveBoutique()">Enregistrer</a>
+            </div>
+          </div> 
+              
+      </div> <!-- End TAB 7 BOUTIQUE -->
+
+      <div  
+         ng-controller="quart1Ctrl"
+         role="tabpanel"
+         id="tab8-content"
+         aria-labelledby="tab8"
+         ng-switch-when="7"
+         md-swipe-left="next()"
+         md-swipe-right="previous()"  class="wrapper">
+         <h5 class="font-bold">Laverie</h5>
+            <div class="panel card wrapper" >
+             <div class="row">
+                <div class="col-sm-6" >
+                    <md-input-container>
+                      <label for="content"><strong>Montant</strong> </label>
+                      <input type="number" id="content" ng-model="laverie.montant">
+                    </md-input-container>
+                </div>
+              </div>
+              <div class="line line-dashed"></div>
+
+              <div class="panel card wrapper" >
+                <a class="btn btn-sm btn-primary" ng-click="saveLaverie()">Enregistrer</a>
+              </div>
+
+              <div class="line line-dashed"></div>
+           </div>
+      </div> <!-- End TAB 8 LAVERIE -->
+
+      <div  
+         ng-controller="quart1Ctrl"
+         role="tabpanel"
+         id="tab9-content"
+         aria-labelledby="tab9"
+         ng-switch-when="8"
+         md-swipe-left="next()"
+         md-swipe-right="previous()"  class="wrapper">
+         <h5 class="font-bold">Orange Money</h5>
+           <div class="panel card wrapper" >
+             <div class="row">
+                <div class="col-sm-6" >
+                    <md-input-container>
+                      <label for="label"> <strong>Ancien Solde</strong> </label>
+                      <input type="number" id="label" ng-model="om.ancien_solde">
+                    </md-input-container>
+                </div>
+                <div class="col-sm-6" >
+                    <md-input-container>
+                      <label for="content"><strong>Nouveau Solde</strong> </label>
+                      <input type="number" id="content" ng-model="om.nouveau_solde">
+                    </md-input-container>
+                </div>
+              </div>
+              <div class="line line-dashed"></div>
+
+              <div class="panel card wrapper" >
+                <a class="btn btn-sm btn-primary" ng-click="saveOm()">Enregistrer</a>
+              </div>
+
+              <div class="line line-dashed"></div>
+           </div>
+      </div> <!-- End TAB 9 ORANGE MONEY -->
+
+      <div  
+         ng-controller="quart1Ctrl"
+         role="tabpanel"
+         id="tab10-content"
+         aria-labelledby="tab10"
+         ng-switch-when="9"
+         md-swipe-left="next()"
+         md-swipe-right="previous()"  class="wrapper">
+         <h5 class="font-bold">Reglement Carburant</h5>
+         <div class="panel card wrapper">
+            <div class="row">
+             <div class="col-sm-6">
+              <div  ng-init="pompiste()"> 
+               <md-select  ng-model="pom.nom_pompiste" placeholder="Pompiste" md-on-open="loadPompistes()", style="min-width: 200px;">
+                <md-select-label></md-select-label>
+                <md-option ng-value="pom.nom_pompiste" ng-repeat="pom in pompistes">{{pom.nom_pompiste}}</md-option>
+                </md-select>
+                <p class="result">Pompiste</p>
+              </div>
+             </div>
+             <div class="col-sm-6" >
+              <md-input-container>
+                <label for="label"> <strong>Montant Versé</strong> </label>
+                <input type="number" id="label" ng-model="pom.montant">
+              </md-input-container>
+             </div>
+            </div>
+            <div class="line line-dashed"></div>
+            <div class="panel card wrapper" >
+              <a class="btn btn-sm btn-info" ng-click="addRgt_carb()">OK</a>
+            </div>
+            <div class="line line-dashed"></div>
+            <table  class="table table-bordered table-hover table-condensed bg-white-only"  ng-init="(app.quart.rgt_carburant) ? app.quart.rgt_carburant : rgt_carburant">
+              <tr style="font-weight: bold">
+                <td >Nom Pompiste</td>
+                <td >Montant Versé</td>
+                <td style="width:25%">Edit</td>
+              </tr>
+              <tr  ng-repeat="po in (app.quart.rgt_carburant) ? app.quart.rgt_carburant : rgt_carburant  ">
+                <td class="v-middle">
+                  <!-- editable username (text with validation) -->
+                  <span  e-name="nom_pompiste" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                    {{ po.nom_pompiste || 'empty' }}
+                  </span>
+                </td>
+
+                <td class="v-middle">
+                  <!-- editable username (text with validation) -->
+                  <span  e-name="montant" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                    {{ po.montant || 'empty' }}
+                  </span>
+                </td>
+                
+                <td style="white-space: nowrap">
+                  <!-- form -->
+                  <form editable-form name="rowform" onbeforesave="savePlaylist($data, cuve.id)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == cuve">
+                    <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+                      save
+                    </button>
+                    <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+                      cancel
+                    </button>
+                  </form>
+                  <div class="buttons" ng-show="!rowform.$visible">
+                    
+                   <a class="btn btn-sm btn-info" ng-click="removeRP($index)">Retirer</a>
+                  </div>
+
+                </td>
+              </tr>
+            </table> 
+
+           <div class="line line-dashed"></div>
+         </div>
+
+          <h5 class="font-bold">Reglement Client</h5>
+          <div class="panel card wrapper">
+
+            <div class="row">
+
+              <div class="col-sm-3" >
+                <ui-select  ng-model="rgt_cli.client" theme="bootstrap"  ng-init=client()>
+                  <ui-select-match placeholder="Selectionner un client">{{$select.selected.nom_client}}</ui-select-match>
+                  <ui-select-choices repeat="item as item in clients | filter: $select.search">
+                    <div ng-bind-html="item.code_client | highlight: $select.search"></div>
+                    <small ng-bind-html="item.nom_client | highlight: $select.search"></small>
+                  </ui-select-choices>
+                 </ui-select>
+              </div>
+
+              <div class="col-sm-3" >
+                <md-input-container>
+                  <label for="label"> <strong>Montant Versé</strong> </label>
+                  <input type="number" id="label" ng-model="rgt_cli.montant">
+                </md-input-container>
+              </div>
+              
+              <div class="col-sm-3" >
+                <md-select ng-model="rgt_cli.type_reglement" placeholder="Type de Reglement">
+                  <md-option ng-repeat="cli in reglements" value="{{cli.type_reglement}}">{{cli.type_reglement}}</md-option>
+                </md-select>
+              </div>
+             
+              <!--
+              <div class="col-sm-3" >
+                <md-select ng-model="rgt_cli.type_service" placeholder="Motif">
+                  <md-option ng-repeat="cli in services" value="{{cli.type_service}}">{{cli.type_service}}</md-option>
+                </md-select>
+              </div>
+               -->
+              <div class="col-sm-3" >
+                <md-select ng-model="rgt_cli.station" ng-init="station()" placeholder="Station" >
+                  <md-option ng-repeat="station in stations" value="{{station.nom_station}}">{{station.nom_station}}</md-option>
+                </md-select>
+              </div>
+
+            </div>
+
+            <div class="line line-dashed"></div>
+
+            <div class="panel card wrapper" >
+              <a class="btn btn-sm btn-info" ng-click="addRgt_cli()">OK</a>
+            </div>
+
+            <div class="line line-dashed"></div>
+            <table  class="table table-bordered table-hover table-condensed bg-white-only"  ng-init="(app.quart.rgt_client) ? app.quart.rgt_client : rgt_client">
+              <tr style="font-weight: bold">
+                <td >Client</td>
+                <td >Montant Versé</td>
+                <td >Type Reglement</td>
+              <!--  <td >Motif </td>  -->
+                <td >Station </td>
+                <td style="width:25%">Edit</td>
+              </tr>
+              <tr  ng-repeat="po in (app.quart.rgt_client) ? app.quart.rgt_client : rgt_client  ">
+                <td class="v-middle">
+                  <!-- editable username (text with validation) -->
+                  <span  e-name="client" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                    {{ po.client.nom_client || 'empty' }}
+                  </span>
+                </td>
+                <td class="v-middle">
+                  <!-- editable username (text with validation) -->
+                  <span  e-name="montant" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                    {{ po.montant || 'empty' }}
+                  </span>
+                </td>
+                <td class="v-middle">
+                  <!-- editable username (text with validation) -->
+                  <span  e-name="type_reglement" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                    {{ po.type_reglement || 'empty' }}
+                  </span>
+                </td>
+                <!--
+                 <td class="v-middle">
+                  <span  e-name="type_service" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                    {{ po.type_service || 'empty' }}
+                  </span>
+                </td>
+                -->
+                 <td class="v-middle">
+                  <!-- editable username (text with validation) -->
+                  <span  e-name="station" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                    {{ po.station || 'empty' }}
+                  </span>
+                </td>
+                 
+                 
+                
+                <td style="white-space: nowrap">
+                  <!-- form -->
+                  <form editable-form name="rowform" onbeforesave="savePlaylist($data, cuve.id)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == cuve">
+                    <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+                      save
+                    </button>
+                    <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+                      cancel
+                    </button>
+                  </form>
+                  <div class="buttons" ng-show="!rowform.$visible">
+                    
+                   <a class="btn btn-sm btn-info" ng-click="removeRC($index)">Retirer</a>
+                  </div>
+
+                </td>
+              </tr>
+            </table>
+
+            <div class="panel card wrapper" >
+              <a class="btn btn-sm btn-primary" ng-click="saveReglement()">Enregistrer</a>
+              <div></div>
+            </div>
+
+          </div>
+      </div> <!-- End TAB 10 REGLEMENTS -->
+
+      <div  
+         ng-controller="quart1Ctrl"
+         role="tabpanel"
+         id="tab11-content"
+         aria-labelledby="tab11"
+         ng-switch-when="10"
+         md-swipe-left="next()"
+         md-swipe-right="previous()"  class="wrapper">
+         <h5 class="font-bold">Versement Banque</h5>
+
+           <div class="panel card wrapper" >
+             <div class="row">
+                <div class="col-sm-6" >
+                    <md-input-container>
+                      <label for="label"> <strong>Nom Banque</strong> </label>
+                      <md-select id="label" ng-model="versement.num_banque">
+                        <md-option value="BICEC 2">BICEC 2</md-option>
+                        <md-option value="SGC 1">SGC 1</md-option>
+                        <md-option value="AFRILAND YDE">AFRILAND YDE</md-option>
+                        <md-option value="ECOBANK">ECOBANK</md-option>
+                        <md-option value="EXPRESS EXCHANGE">EXPRESS EXCHANGE</md-option>
+                      </md-select>
+                    <!--  <input type="text" id="label" ng-model="versement.num_banque"> -->
+                    </md-input-container>
+
+                    <md-input-container>
+                      <label for="content"><strong>N° Compte</strong> </label>
+                      <input type="text" id="content" ng-model="versement.num_compte">
+                    </md-input-container>
+                    
+                </div>
+                <div class="col-sm-6" >
+                    <md-input-container>
+                      <label for="content"><strong>Montant Versement</strong> </label>
+                      <input type="number" id="content" ng-model="versement.montant">
+                    </md-input-container>
+                     <md-input-container>
+                      <label for="content"><strong>N° Bordereau</strong> </label>
+                      <input type="text" id="content" ng-model="versement.num_bordereau">
+                    </md-input-container>
+                    
+                </div>
+              </div>
+              <div class="line line-dashed"></div>
+
+              
+
+              <div class="panel card wrapper" >
+                <a class="btn btn-sm btn-primary" ng-click="saveVersement()">Enregistrer</a>
+              </div>
+
+             
+
+              <div class="col-sm-4" ng-init="heure()">
+                <label>Selectionner la journée correspondante au fichier joint</label>
+                  <p class="input-group">
+                      <input type="text" ng-disabled="false"  class="form-control" datepicker-popup="{{format}}" ng-model="date.date_banque" is-open="opened"    datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                      <span class="input-group-btn">
+                      <button type="button" class="btn btn-default" ng-click="open_quart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                      </span>
+                  </p>
+              </div>
+
+              
+           </div>
+
+           <div class="hbox hbox-auto-xs hbox-auto-sm" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
+            <div class="col w-lg bg-light b-r bg-auto">
+              <div class="wrapper-md dker b-b">
+                <h3 class="m-n font-thin">Joindre Fichiers</h3>
+              </div>
+              <div class="wrapper-md">      
+                <div ng-show="uploader.isHTML5" class="m-b-md">
+                    <!-- 3. nv-file-over uploader="link" over-class="className" -->
+
+                </div>
+
+                <!-- Example: nv-file-select="" uploader="{Object}" options="{Object}" filters="{String}" -->
+              
+                <p class="m-t-md">Choisir un fichier</p>
+                <input type="file" nv-file-select="" uploader="uploader" />
+              </div>
+              </div>
+              <div class="col">
+                <div class="wrapper-md bg-light dk b-b">
+                  <span class="pull-right m-t-xs">Nbre fichiers: <b class="badge bg-info">{{ uploader.queue.length }}</b></span>
+                  <h3 class="m-n font-thin">File d'attente</h3>      
+                </div>
+                <div class="wrapper-md">
+                  <table class="table bg-white-only b-a">
+                      <thead>
+                          <tr>
+                              <th width="50%">Nom</th>
+                              <th ng-show="uploader.isHTML5">Taille</th>
+                              <th ng-show="uploader.isHTML5">Progression</th>
+                              <th>Status</th>
+                              <th>Actions</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr ng-repeat="item in uploader.queue">
+                              <td><strong>{{ item.file.name }}</strong></td>
+                              <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                              <td ng-show="uploader.isHTML5">
+                                  <div class="progress progress-sm m-b-none m-t-xs">
+                                      <div class="progress-bar bg-info" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                                  </div>
+                              </td>
+                              <td class="text-center">
+                                  <span ng-show="item.isSuccess" class="text-success"><i class="glyphicon glyphicon-ok"></i></span>
+                                  <span ng-show="item.isCancel" class="text-warning"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                                  <span ng-show="item.isError" class="text-danger"><i class="glyphicon glyphicon-remove"></i></span>
+                              </td>
+                              <td nowrap>
+                                  <button type="button" class="btn btn-default btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                                      Upload
+                                  </button>
+                                  <button type="button" class="btn btn-default btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
+                                      Annuler
+                                  </button>
+                                  <button type="button" class="btn btn-default btn-xs" ng-click="item.remove()">
+                                      Retirer
+                                  </button>
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
+                  <div>
+                    <div>
+                      <p>progression:</p>
+                      <div class="progress bg-light dker" style="">
+                          <div class="progress-bar progress-bar-striped bg-info" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-addon btn-success" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
+                      <i class="fa fa-arrow-circle-o-up"></i> Upload all
+                    </button>
+                    <button type="button" class="btn btn-addon btn-warning" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
+                      <i class="fa fa-ban"></i> Cancel all
+                    </button>
+                    <button type="button" class="btn btn-addon btn-danger" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
+                        <i class="fa fa-trash-o"></i> Remove all
+                    </button>
+                    <p class="text-muted m-t-xl">NB: la taille de votre fichier doit etre inferieur à 2 MO .</p>
+                  </div>
+                </div>
+              </div>
+           </div>
+
+          <div class="panel card wrapper">
+            
+          </div>
+      </div> <!-- End TAB 11 VERSEMENT -->
+
+      <div  
+         ng-controller="quart1Ctrl"
+         role="tabpanel"
+         id="tab12-content"
+         aria-labelledby="tab12"
+         ng-switch-when="11"
+         md-swipe-left="next()"
+         md-swipe-right="previous()"  class="wrapper">
+         <h5 class="font-bold">CAISSE</h5>
+         <div class="panel card wrapper">
+          <div class="row">
+           <div class="col-sm-6" >
+            <md-input-container>
+              <label for="label"> <strong>Ancien Solde</strong> </label>
+              <input type="number" id="label" ng-model="appro.ancien_solde">
+            </md-input-container>
+           </div>
+          
+          </div>
+         </div>
+         <div class="line line-dashed"></div>
+          <div class="panel card wrapper" >
+            <a class="btn btn-sm btn-primary" ng-click="saveAppro()">Enregistrer</a>
+          </div>
+      </div> <!-- End TAB 12 APPRO CAISSE -->
+
+      <div  
+         ng-controller="quart1Ctrl"
+         role="tabpanel"
+         id="tab13-content"
+         aria-labelledby="tab13"
+         ng-switch-when="12"
+         md-swipe-left="next()"
+         md-swipe-right="previous()"  class="wrapper">
+
+         <h5 class="font-bold">Depenses</h5>
+         <div class="panel card wrapper" >
+
+           <div class="row">
+            <div class="col-sm-3">
+              <md-input-container>
+                <label for="label"> <strong>Nature dépense</strong> </label>
+                <input type="text" id="label" ng-model="depense.nature">
+              </md-input-container>
+            </div>
+            <div class="col-sm-3">
+              <md-input-container>
+                <label for="label"> <strong>Responsable</strong> </label>
+                <input type="text" id="label" ng-model="depense.responsable">
+              </md-input-container>
+            </div>
+            <div class="col-sm-3">
+              <md-input-container>
+                <label for="label"> <strong>Montant</strong> </label>
+                <input type="number" id="label" ng-model="depense.montant">
+              </md-input-container>
+            </div>
+            <div class="col-sm-3">
+                <md-select ng-model="depense.recette" placeholder="Sur Recette">
+                <md-option ng-repeat="dep in depen" value="{{dep.nom_depense}}">{{dep.nom_depense}}</md-option>
+              </md-select>
+            </div>
+           </div>
+
+         </div>
+
+         <div class="panel card wrapper" >
+          <a class="btn btn-sm btn-info" ng-click="addDepense()">Ajouter</a>
+         </div>
+
+         <div class="line line-dashed"></div>
+
+          <table  class="table table-bordered table-hover table-condensed bg-white-only"  ng-init="(app.quart.depense) ? app.quart.depense : depenses">
+                <tr style="font-weight: bold">
+                  <td >Nature</td>
+                  <td >Responsable</td>
+                  <td >montant</td>
+                  <td >Recette</td>
+                  <td style="width:25%">Edit</td>
+                </tr>
+                <tr  ng-repeat="po in (app.quart.depense) ? app.quart.depense : depenses  ">
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="nature" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                      {{ po.nature || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="responsable" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                      {{ po.responsable || 'empty' }}
+                    </span>
+                  </td>
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="montant" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                      {{ po.montant || 'empty' }}
+                    </span>
+                  </td>
+
+                  <td class="v-middle">
+                    <!-- editable username (text with validation) -->
+                    <span  e-name="recette" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                      {{ po.recette || 'empty' }}
+                    </span>
+                  </td>
+                  
+                  <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form editable-form name="rowform" onbeforesave="savePlaylist($data, cuve.id)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == cuve">
+                      <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+                        save
+                      </button>
+                      <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+                        cancel
+                      </button>
+                    </form>
+                    <div class="buttons" ng-show="!rowform.$visible">
+                      
+                     <a class="btn btn-sm btn-info" ng-click="removeDepense($index)">Retirer</a>
+                    </div>
+
+                  </td>
+                </tr>
+          </table> 
+
+         <div class="line line-dashed"></div>
+          <div class="panel card wrapper" >
+            <a class="btn btn-sm btn-primary" ng-click="saveDepense()">Enregistrer</a>
+          </div>
+        
+      </div> <!-- End TAB 13 DEPENSES -->
+
+      <div  
+         ng-controller="quart1Ctrl"
+         role="tabpanel"
+         id="tab14-content"
+         aria-labelledby="tab14"
+         ng-switch-when="13"
+         md-swipe-left="next()"
+         md-swipe-right="previous()"  class="wrapper">
+
+         <h5 class="font-bold">Commentaire</h5>
+         
+         <div class="row">
+          <div class="col-sm-6" >
+              <md-input-container>
+                <label for="label"> <strong>Commentaires Ventes</strong> </label>
+                <textarea  ng-model="commentaire.ventes" >Enter text here...</textarea>
+              </md-input-container>
+          </div>
+          <div class="col-sm-6" >
+            <md-input-container>
+              <label for="label"> <strong>Commentaires Pannes</strong> </label>
+              <textarea  ng-model="commentaire.pannes" >Enter text here...</textarea>
+            </md-input-container>
+        </div>
+         </div>
+
+         <div class="line line-dashed"></div>
+          <div class="panel card wrapper" >
+            <a class="btn btn-sm btn-primary" ng-click="saveCommentaire()">Enregistrer</a>
+          </div>
+
+         
+      </div> <!-- End TAB 14 COMMENTAIRE -->
+
+      <div  
+         ng-controller="quart1Ctrl"
+         role="tabpanel"
+         id="tab15-content"
+         aria-labelledby="tab15"
+         ng-switch-when="14"
+         md-swipe-left="next()"
+         md-swipe-right="previous()"  class="wrapper">
+
+         <h5 class="font-bold text-danger">AFFECTATION PISTOLET</h5>
+         <div class="panel card wrapper">
+            <div class="row">
+              <div class="col-sm-12">
+                  <p><b>RECAP AFFECTATION PISTOLET</b></p>
+                <table  class="table table-bordered table-hover table-striped bg-white-only"  ng-init="recapLivraison_carb()">
+                  <tr style="font-weight: bold">
+                    
+                    <td >POMPISTE</td>
+                    <td >PISTOLET</td>
+                    <td >PRODUIT</td>
+                    <td >INDEX DEPART</td>
+                    <td >INDEX FIN</td>
+                    <td >INDEX DEPART REMISE</td>
+                    <td >INDEX FIN REMISE</td>
+                    
+                  </tr>
+                  <tr  ng-repeat="rl in app.quart.personnel track by $index">
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="produit" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                        {{ rl.nom_pompiste || '0' }}
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="qte_commande" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      <strong>{{ rl.nom_pistolet || '0' }}</strong>  
+                      </span>
+                    </td>
+
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="qte_commande" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      <strong>{{ rl.nom_produit || '0' }}</strong>  
+                      </span>
+                    </td>
+
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="qte_recu" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      <strong>{{ rl.index_depart || '0' }}</strong>  
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="manquant" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      <strong>{{ rl.index_fin || '0' }}</strong>  
+                      </span>
+                    </td>
+
+                    <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="qte_recu" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                        <strong>{{ rl.index_depart_remise || '0' }}</strong>  
+                        </span>
+                    </td>
+
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="manquant" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      <strong>{{ rl.index_fin_remise || '0' }}</strong>  
+                      </span>
+                    </td>
+                    
+                    
+                  </tr>
+                </table>
+              </div>
+            </div>
+         </div>
+
+         <h5 class="font-bold text-danger">RECAP LIVRAISON</h5>
+         <div class="panel card wrapper">
+            <div class="row">
+              <div class="col-sm-6">
+                  <p><b>LIVRAISON CARBURANT</b></p>
+                <table  class="table table-bordered table-hover table-striped bg-white-only"  ng-init="recapLivraison_carb()">
+                  <tr style="font-weight: bold">
+                    
+                    <td >Produit</td>
+                    <td >Qte Commande</td>
+                    <td >Qte Recu</td>
+                    <td >Manquant</td>
+                    
+                  </tr>
+                  <tr  ng-repeat="rl in recap.livraison_carb track by $index">
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="produit" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                        {{ rl.produit || '0' }}
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="qte_commande" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      <strong>{{ rl.qte_commande || '0' }}</strong>  
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="qte_recu" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      <strong>{{ rl.qte_recu || '0' }}</strong>  
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="manquant" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      <strong>{{ rl.manquant || '0' }}</strong>  
+                      </span>
+                    </td>
+                    
+                  </tr>
+                </table>
+              </div>
+
+              <div class="col-sm-6">
+                  <p><b>LIVRAISON LUBRIFIANT</b></p>
+                  <table  class="table table-bordered table-hover table-striped bg-white-only"  ng-init="recapLivraison_lub()">
+                    <tr style="font-weight: bold">
+                      
+                      <td >Produit</td>
+                      <td >Qte Commande</td>
+                      <td >Qte Recu</td>
+                      <td >Manquant</td>
+                      
+                    </tr>
+                    <tr  ng-repeat="rl in recap.livraison_lub track by $index">
+                      <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="produit" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                          {{ rl.produit.nom_produit || '0' }}
+                        </span>
+                      </td>
+                      <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="qte_commande" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                        <strong>{{ rl.qte_commande || '0' }}</strong>  
+                        </span>
+                      </td>
+                      <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="qte_recu" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                        <strong>{{ rl.qte_recu || '0' }}</strong>  
+                        </span>
+                      </td>
+                      <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="manquant" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                        <strong>{{ rl.manquant || '0' }}</strong>  
+                        </span>
+                      </td>
+                      
+                    </tr>
+                  </table>
+              </div>
+            </div>
+         </div>
+
+         <h5 class="font-bold text-danger">RECAP VENTES CARBURANT </h5>
+         <div class="panel card wrapper" ng-init="produit()">
+            <div class="row">
+              <div class="col-sm-6">
+                  <p><b>VENTES CARBURANT</b></p>
+                  <table class="table table-bordered table-hover table-striped bg-white-only"  ng-init="recapCarb()">
+                      <tr style="font-weight: bold">
+                        <td >Produit</td>
+                        <td >Quantite</td>
+                        <td >Prix Unitaire</td>
+                        <td >Montant</td>
+                        
+                      </tr>
+                      <tr  ng-repeat="po in recap.Carburant track by $index">
+                        <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span  e-name="produit" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                            {{ po.produit || 'empty' }}
+                          </span>
+                        </td>
+      
+                        <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span  e-name="quantite" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                            {{ po.quantite || '0' }}
+                          </span>
+                        </td>
+                        <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span  e-name="prix_unitaire" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                            {{ po.prix_unitaire || '0' }}
+                          </span>
+                        </td>
+      
+                        <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span  e-name="montant" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                          <strong>{{ po.montant || '0' }}</strong>  
+                          </span>
+                        </td>
+                        
+                      </tr>
+                    </table>
+              </div>
+              <div class="col-sm-6">
+                  <p><b>VENTES LUBRIFIANT</b></p>
+                  <table class="table table-bordered table-hover table-striped bg-white-only"  ng-init="recapLub()">
+                    <tr style="font-weight: bold">
+                      <td >Produit</td>
+                      <td >Quantite</td>
+                      <td >Prix Unitaire</td>
+                      <td >Montant</td>
+                      
+                    </tr>
+                    <tr  ng-repeat="rl in recap.Lubrifiant track by $index">
+                      <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="nom_produit" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                          {{ rl.nom_produit || 'empty' }}
+                        </span>
+                      </td>
+    
+                      <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="qte_vendu" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                          {{ rl.qte_vendu || '0' }}
+                        </span>
+                      </td>
+                      <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="prix_unitaire" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                          {{ rl.prix_unitaire || '0' }}
+                        </span>
+                      </td>
+    
+                      <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="montant" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                        <strong>{{ rl.montant || '0' }}</strong>  
+                        </span>
+                      </td>
+                      
+                    </tr>
+                  </table>
+                  
+              </div>
+            <!--
+              <div class="col-sm-4">
+                  <p><b>VENTES GAZ</b></p>
+                  <table  class="table table-bordered table-hover table-condensed bg-white-only"  ng-init="recapGaz_AB()">
+                    <tr style="font-weight: bold">
+                      <td style="width:35%">Produit</td>
+                      <td style="width:35%">Quantite</td>
+                      <td style="width:35%">Prix Unitaire</td>
+                      <td style="width:35%">Montant</td>
+                      
+                    </tr>
+                    <tr  ng-repeat="rl in recap.Gaz_AB track by $index">
+                      <td class="v-middle">
+                        <span  e-name="nom_produit" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                          {{ rl.nom_produit || 'empty' }}
+                        </span>
+                      </td>
+  
+                      <td class="v-middle">
+                        <span  e-name="qv_ab" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                          {{ rl.qv_ab || '0' }}
+                        </span>
+                      </td>
+                      <td class="v-middle">
+                        <span  e-name="prix_unitaire_ab" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                          {{ rl.prix_unitaire_ab || '0' }}
+                        </span>
+                      </td>
+  
+                      <td class="v-middle">
+                        <span  e-name="montant_ab" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                        <strong>{{ rl.montant_ab || '0' }}</strong>  
+                        </span>
+                      </td>
+                      
+                    </tr>
+                  </table>
+                  
+              </div>
+            -->
+            </div>
+         </div>
+          
+
+           <h5  class="font-bold text-danger">RECAP VENTES A TERME </h5>
+           <div class="panel card wrapper">
+            <div class="row">
+              <div class="col-sm-6">
+                  <p><b>VENTES A TERME CARBURANT</b></p>
+                <table  class="table table-bordered table-hover table-striped bg-white-only" ng-init="recapClient_Car()">
+                  <tr style="font-weight: bold">
+                    <td style="width:35%">Client</td>
+                    <td style="width:35%">Produit</td>
+                    <td style="width:35%">Quantite</td>
+                    <td style="width:35%">Prix Unitaire</td>
+                    <td style="width:35%">Montant</td>
+                    
+                  </tr>
+                  <tr  ng-repeat="rl in recap.Client_Carburant track by $index">
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="client" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                        {{ rl.client || '' }}
+                      </span>
+                    </td>
+
+                     <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="nom_produit" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                        {{ rl.nom_produit || '' }}
+                      </span>
+                    </td>
+
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="quantite" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                        {{ rl.quantite || '0' }}
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="prix_client" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                        {{ rl.prix_client || '0' }}
+                      </span>
+                    </td>
+
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="montant" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      <strong>{{ rl.montant || '0' }}</strong>  
+                      </span>
+                    </td>
+                    
+                  </tr>
+                </table>
+              </div>
+              <div class="col-sm-6">
+                  <p><b>VENTES A TERME LUBRIFIANT</b></p>
+                <table  class="table table-bordered table-hover table-striped bg-white-only"  ng-init="recapClient_Lub()">
+                  <tr style="font-weight: bold">
+                    <td style="width:35%">Client</td>
+                    <td style="width:35%">Produit</td>
+                    <td style="width:35%">Quantite</td>
+                    <td style="width:35%">Prix Unitaire</td>
+                    <td style="width:35%">Montant</td>
+                    
+                  </tr>
+                  <tr  ng-repeat="rl in recap.Client_Lubrifiant track by $index">
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="client" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                        {{ rl.client.nom_client || '' }}
+                      </span>
+                    </td>
+
+                     <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="produit" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                        {{ rl.produit.nom_produit || '' }}
+                      </span>
+                    </td>
+
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="quantite" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                        {{ rl.quantite || '0' }}
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="prix_client" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                        {{ rl.prix_client || '0' }}
+                      </span>
+                    </td>
+
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="montant" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      <strong>{{ rl.montant || '0' }}</strong>  
+                      </span>
+                    </td>
+                    
+                  </tr>
+                </table>
+              </div>
+            </div>
+           </div>
+           
+          <div>
+            <div class="panel card wrapper">
+              <div class="row">
+                <div class="col-sm-6">
+                  <h5 class="font-bold text-danger">RECAP VERSEMENT POMPISTES</h5>
+                  <table  class="table table-bordered table-hover table-striped bg-white-only"  ng-init="recapVers_pomp()">
+                    <tr style="font-weight: bold">
+                      
+                      <td >Nom Pompiste</td>
+                      <td >Montant</td>
+                      
+                    </tr>
+                    <tr  ng-repeat="rl in recap.vers_pomp track by $index">
+                      <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="nom_pompiste" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                          {{ rl.nom_pompiste || '0' }}
+                        </span>
+                      </td>
+
+                      <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="montant" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                        <strong>{{ rl.montant || '0' }}</strong>  
+                        </span>
+                      </td>
+                      
+                    </tr>
+                  </table>
+                </div>
+                <div class="col-sm-6">
+                  <h5 class="font-bold text-danger">RECAP VERSEMENT CLIENTS  </h5>
+                  <table  class="table table-bordered table-hover table-striped bg-white-only"  ng-init="recapVers_client()">
+                    <tr style="font-weight: bold">
+                      <td >Client</td>
+                      <td >Type Reglement</td>
+                      <td >Type Service</td>
+                      <td >Montant</td>
+                    </tr>
+                    <tr  ng-repeat="rl in recap.vers_client track by $index">
+                      <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="client" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                          {{ rl.client.nom_client || '' }}
+                        </span>
+                      </td>
+
+                      <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="type_reglement" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                          {{ rl.type_reglement || '' }}
+                        </span>
+                      </td>
+
+                      <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="type_service" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                          {{ rl.type_service || '' }}
+                        </span>
+                      </td>
+                      <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="montant" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                        <strong>{{ rl.montant || '0' }}</strong>  
+                        </span>
+                      </td>
+                      
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+         <h5 class="font-bold text-danger">RECAP VERSEMENT BANQUE  </h5>
+         <div class="panel card wrapper">
+            <div class="row">
+              <div class="col-sm-6">
+                <table  class="table table-bordered table-hover table-striped bg-white-only"  ng-init="">
+                  <tr style="font-weight: bold">
+                    <td >Banque</td>
+                    <td >Compte</td>
+                    <td >Bordereau</td>
+                    <td >Montant</td>
+                  </tr>
+                  <tr>
+                     <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="num_banque" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                        {{ app.quart.versement.num_banque || '' }}
+                      </span>
+                    </td>
+
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="num_compte" e-form="rowform" onbeforesave="checkName($data, ver.id)" e-required>
+                        {{ app.quart.versement.num_compte || '0' }}
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="num_bordereau" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                        {{ app.quart.versement.num_bordereau || '0' }}
+                      </span>
+                    </td>
+
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="montant" e-form="rowform" onbeforesave="checkName($data, ver.id)" e-required>
+                      <strong>{{ app.quart.versement.montant || '0' }}</strong>  
+                      </span>
+                    </td>
+                    
+                  </tr>
+                </table>
+              </div>
+            </div>
+         </div>
+
+         <h5 class="font-bold text-danger">MANQUANTS POMPISTES</h5>
+         <div class="panel card wrapper">
+            <div class="row">
+              <div class="">
+                <table  class="table table-bordered table-hover table-striped bg-white-only"  ng-init="manquant()">
+                  <tr style="font-weight: bold">
+                    
+                    <td >Pompiste</td>
+                    <td >Montant</td>
+                    <td >Client</td>
+                    <td >Versement</td>
+                    <td >Manquant</td>
+                    
+                  </tr>
+                  <tr  ng-repeat="rl in manquants track by $index">
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="produit" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                        {{ rl.pompiste || '0' }}
+                      </span>
+                    </td>
+                   
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="qte_commande" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      {{ rl.montant || '0' }}  
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="qte_recu" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      {{ rl.client || '0' }}  
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="manquant" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      {{ rl.versement || '0' }}  
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="ventes" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      {{ rl.manquant || '0' }}  
+                      </span>
+                    </td>
+                    
+                    
+                  </tr>
+                </table>
+              </div>
+            </div>
+         </div>
+
+         <h5 class="font-bold text-danger">TOTAL STOCK</h5>
+         <div class="panel card wrapper">
+            <div class="row">
+              <div class="">
+                <table  class="table table-bordered table-hover table-striped bg-white-only"  ng-init="recapStock_carb()">
+                  <tr style="font-weight: bold">
+                    
+                    <td >Produit</td>
+                    <td >Stock Ouverture</td>
+                    <td >Qte Commande</td>
+                    <td >Qte Recu</td>
+                    <td >Manquant</td>
+                    <td >Ventes</td>
+                    <td >Stock Theorique</td>
+                    <td >Stock Physique</td>
+                    <td >Ecart</td>
+                    
+                  </tr>
+                  <tr  ng-repeat="rl in recap.stock_carb track by $index">
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="produit" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                        {{ rl.produit || '0' }}
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="stock_ouverture" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                        {{ rl.stock_ouverture || '0' }}
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="qte_commande" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      {{ rl.qte_commande || '0' }}  
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="qte_recu" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      {{ rl.qte_recu || '0' }}  
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="manquant" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      {{ rl.manquant || '0' }}  
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="ventes" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      {{ rl.ventes || '0' }}  
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="stock_theorique" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      {{ rl.stock_theorique || '0' }}  
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="stock_physique" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      {{ rl.stock_physique || '0' }}  
+                      </span>
+                    </td>
+                    <td class="v-middle">
+                      <!-- editable username (text with validation) -->
+                      <span  e-name="ecart" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                      <strong>{{ rl.ecart || '0' }}</strong>  
+                      </span>
+                    </td>
+                    
+                  </tr>
+                </table>
+              </div>
+            </div>
+         </div>
+          
+      <div class="hbox hbox-auto-xs hbox-auto-sm">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="wrapper-md">
+             <h5 class="font-bold text-danger">ECART</h5>
+             <div class="panel card wrapper">
+                <div class="row">
+                  <div style=" overflow: scroll; " >
+                    <table style="position: sticky; top: 0" class="table table-bordered table-hover table-striped bg-white-only"  ng-init="ecart_gerant()">
+                      <tr  ng-repeat="rl in datas track by $index">
+                        <td class="v-middle">
+                          <span  e-name="date" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                           <b> {{ rl.date || '' }} </b>
+                          </span>
+                        </td>
+                        <td class="v-middle">
+                          <span  e-name="quart" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                            <b> {{ rl.quart || '' }} </b>
+                          </span>
+                        </td>
+                        <td class="v-middle">
+                          <span  e-name="super" e-form="rowform" onbeforesave="checkName($data, po.id)" e-required>
+                            {{ rl.super || 0 }}
+                          </span>
+                        </td>
+                        <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span  e-name="gasoil" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                          {{ rl.gasoil || 0 }}  
+                          </span>
+                        </td>
+                        <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span  e-name="qte_recu" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                          {{ rl.petrole || 0 }}  
+                          </span>
+                        </td>
+                        <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span  e-name="tpc" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                          {{ rl.tpc || 0 }}  
+                          </span>
+                        </td>
+                        <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span  e-name="total_carb" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                          {{ rl.total_carb || 0 }}  
+                          </span>
+                        </td>
+                        <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span  e-name="total_lub" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                          {{ rl.total_lub || 0 }}  
+                          </span>
+                        </td>
+                        <td class="v-middle" ng-repeat="rle in rl.vers_clients track by $index">
+                          <!-- editable username (text with validation) -->
+                          <span  e-name="nom_client" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                          {{ rle || '' }}  
+                          </span>
+                        </td>
+                        <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span  e-name="total_attendu" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                          <strong>{{ rl.total_attendu || 0 }}</strong>  
+                          </span>
+                        </td>
+                        <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span  e-name="versement" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                          <strong>{{ rl.versement || 0 }}</strong>  
+                          </span>
+                        </td>
+                        <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span  e-name="ecart" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                          <strong>{{ rl.ecart || 0 }}</strong>  
+                          </span>
+                        </td>
+                        <td class="v-middle" ng-repeat="rle in rl.clients track by $index">
+                          <!-- editable username (text with validation) -->
+                          <span  e-name="nom_client" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                          {{ rle || 0 }}  
+                          </span>
+                        </td>
+                        <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span  e-name="manquant_pompiste" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                          <strong>{{ rl.manquant_pompiste || 0 }}</strong>  
+                          </span>
+                        </td>
+                        <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span  e-name="depense" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                          <strong>{{ rl.depense || 0 }}</strong>  
+                          </span>
+                        </td>
+                       
+                        <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span  e-name="ecart_gerant" e-form="rowform" onbeforesave="checkName($data, rl.id)" e-required>
+                          <strong>{{ rl.ecart_gerant || 0 }}</strong>  
+                          </span>
+                        </td>
+                        
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+             </div>
+            </div>
+          </div> 
+        </div>
+       </div>
+
+         <div ng-show="vue" class="panel card wrapper" >
+            <a class="btn btn-sm btn-primary" ng-click="Envoyer()">Envoyer</a>
+
+            <button onclick="window.print()">Imprimer</button>
+         </div>
+         
+      </div> <!-- End TAB 14 RECAPITULATIF -->
+      
+ </ng-switch> <!-- ENd Ng-switch  -->
+</div>  <!-- ENd PAnel -->
+
+
+
+   
+
+
+
+
+
+
+
+
+

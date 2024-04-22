@@ -1,0 +1,155 @@
+<script type="text/ng-template" id="deleteContent.html">
+    <div ng-include="'tpl/modal/modal_delete.html'"></div>
+</script>
+<script type="text/ng-template" id="successContent.html">
+    <div ng-include="'tpl/modal/modal_success.html'"></div>
+</script>
+<script type="text/ng-template" id="rejectContent.html">
+    <div ng-include="'tpl/modal/modal_reject.html'"></div>
+</script>
+<div class="bg-light lter b-b wrapper-md" >
+  <h1 class="m-n font-bold title ">Gestion des Lubrifiants</h1>
+</div>
+<div ng-show="vue" class="panel panel-default">
+    <div class="panel-heading font-bold">
+      Ajouter un lubrifiant
+    </div>
+    <div class="panel-body">
+      <form ng-init="initLubrifiants()" class="form-inline" role="form"  ng-submit="add_lubrifiant()" >
+
+        <div class="form-group">
+          <label class="sr-only" for="matricule">Code Produit</label>
+          <input type="number" class="form-control" id="code" placeholder="Code" ng-model="pro.code_produit">
+        </div>
+
+        <div class="form-group">
+                <label class="sr-only" for="Nom">Nom</label>
+                <input type="text" class="form-control" id="Nom" placeholder="Nom" ng-model="pro.nom_produit">
+              </div>
+
+
+        <div class="form-group">
+          <label class="sr-only" for="Prenom">Conditionnement</label>
+          <input type="text" class="form-control" id="Conditionnement" placeholder="Conditionnement" ng-model="pro.conditionnement">
+        </div>
+
+    
+        <button type="submit" class="btn btn-primary ">Enregistrer</button>
+
+      </form>
+    </div>
+  </div>
+<div  class="panel panel-default">
+<div ng-show="vue">
+    <div class="panel-heading font-bold">
+      Rechercher un produit
+    </div>
+    <div class="panel-body">
+      <form  class="form-inline" role="form"  ng-submit="" >
+
+        <div class="form-group">
+            <label class="sr-only" for="Code">Code</label>
+            <input type="text" class="form-control" id="Code" placeholder="Code" ng-model="pr.code_produit">
+        </div>
+
+        <div class="form-group">
+          <label class="sr-only" for="Nom">Nom</label>
+          <input type="text" class="form-control" id="Nom" placeholder="Nom" ng-model="pr.nom_produit">
+        </div>
+
+        <div class="form-group">
+            <label class="sr-only" for="Station">Conditionnement</label>
+            <input type="text" class="form-control" id="Station" placeholder="Conditionnement" ng-model="pr.conditionnement">
+        </div>
+      </form>
+    </div>
+</div>
+<div ng-show="vue" class="panel panel-default">
+    <div class="panel-heading font-bold">
+      Liste des Lubrifiant
+    </div>
+  <table  ng-init="initLubrifiants()"  class="table table-bordered table-hover table-condensed bg-white-only">
+    <tr style="font-weight: bold">
+      <td >Code Produit</td>
+      <td >Nom</td>
+      <td >Conditionnement</td>
+      <td >Type</td>
+      <td >Prix</td>
+
+      <td >Edit</td>
+    </tr>
+    <tr  ng-repeat="produit in produits  track by produit.id_produit">
+      <td class="v-middle">
+        <!-- editable username (text with validation) -->
+        <span  e-name="code_produit"  e-form="rowform"  e-required>
+          {{produit.code_produit|| 'empty' }}
+        </span>
+      </td>
+
+      <td class="v-middle">
+        <!-- editable username (text with validation) -->
+        <span editable-text="produit.nom_produit"  e-name="nom_produit" e-form="rowform"  e-required>
+          {{produit.nom_produit || 'empty' }}
+        </span>
+      </td>
+
+      <td class="v-middle">
+        <!-- editable username (text with validation) -->
+        <span editable-text="produit.conditionnement"  e-name="conditionnement" e-form="rowform"  e-required>
+          {{produit.conditionnement || 'empty' }}
+        </span>
+      </td>
+
+      <td class="v-middle">
+        <!-- editable username (text with validation) -->
+        <span   e-name="produit.type_produit"   e-required>
+          {{produit.type_produit || 'empty' }}
+        </span>
+      </td>
+      <td class="v-middle">
+        <!-- editable username (text with validation) -->
+        <span editable-text="produit.prix_produit"  e-name="prix_produit">
+          {{produit.prix_produit|| 'empty' }}
+        </span>
+      </td>
+
+<!-- 
+      <td class="v-middle">
+          editable group (select-remote)
+            <span editable-select="pompiste.station" e-name="station" onshow="loadStation()" e-form="rowform" e-ng-options="g.nom_station as g.nom_station for g in stations">
+              {{ pompiste.station }}
+            </span>
+    
+          </td> -->
+
+      <td style="white-space: nowrap">
+        <!-- form -->
+        <form editable-form name="rowform" onbeforesave="edit_lubrifiant(produit)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == produit">
+          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+            save
+          </button>
+          <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+            cancel
+          </button>
+        </form>
+        <div class="buttons" ng-show="!rowform.$visible">
+          <button class="btn btn-sm btn-info" ng-click="rowform.$show()">edit</button>
+          <button class="btn btn-sm btn-danger" ng-click="open(pompiste)">del</button>
+        </div>
+
+      </td>
+    </tr>
+  </table>     
+</div>
+    <div class="text-center" ng-show="spinner">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+<!--***************************************************************************************-->
+
+<!--************************************************************************************-->
+
+<!--******************************************************************-->
+
+</div>
+

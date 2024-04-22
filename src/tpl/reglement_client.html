@@ -1,0 +1,281 @@
+<script type="text/ng-template" id="deleteContent.html">
+    <div ng-include="'tpl/modal/modal_delete.html'"></div>
+</script>
+<script type="text/ng-template" id="successContent.html">
+    <div ng-include="'tpl/modal/modal_success.html'"></div>
+</script>
+<script type="text/ng-template" id="rejectContent.html">
+    <div ng-include="'tpl/modal/modal_reject.html'"></div>
+</script>
+<div class="bg-light lter b-b wrapper-md" >
+  <h1 class="m-n font-bold h2 title">Reglements Clients</h1>
+</div>
+
+
+<div class="panel panel-card">
+    <md-tabs class="md -primary tab-header" md-selected="data.selectedIndex">
+  
+      <md-tab class="tab-title" id="tab1" aria-controls="tab1-content">
+        <span class="tab-title">AJOUTER REGLEMENTS</span>
+      </md-tab>
+  
+      <md-tab id="tab2" aria-controls="tab2-content">
+         <span class="tab-title">LISTE REGLEMENTS</span>
+      </md-tab>
+     
+    </md-tabs>
+
+    <ng-switch on="data.selectedIndex">
+   
+        <div 
+            
+           ng-controller="reglementClientCtrl"
+           role="tabpanel"
+           id="tab1-content"
+           aria-labelledby="tab1"
+           ng-switch-when="0"
+           md-swipe-left="next()"
+           md-swipe-right="previous()"  class="wrapper">
+           <!-- <h3>AJOUTER REGLEMENT</h3> -->
+            <div class="panel card wrapper"  >
+                <div class="row"  ng-init="(role.user == 'ADMINISTRATEUR') ? station(): station_courante() ">
+
+                    <div class="col-sm-12">
+                        <div class="panel-heading font-bold">
+                        Ajouter un reglement
+                        </div>
+                        <div class="panel-body">
+                            <div class="panel card wrapper" >
+                                
+                                <div class="row">
+                            
+                                        <div>
+                                            <label>Date</label>
+                                            <p class="input-group">
+                                                <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_fin" is-open="opened2"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                                <span class="input-group-btn">
+                                                <button type="button" class="btn btn-default" ng-click="open2($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                                
+                                        </div>
+
+                                        <div>
+                                            <ui-select  ng-model="dt.client" theme="bootstrap"  ng-init=client()>
+                                              <ui-select-match placeholder="Selectionner un client">{{$select.selected.nom_client}}</ui-select-match>
+                                              <ui-select-choices repeat="item as item in clients | filter: $select.search">
+                                                <div ng-bind-html="item.code_client | highlight: $select.search"></div>
+                                                <small ng-bind-html="item.nom_client | highlight: $select.search"></small>
+                                              </ui-select-choices>
+                                             </ui-select>
+                                          </div>
+                          
+                                          <div>
+                                            <md-input-container>
+                                              <label for="label"> <strong>Montant Versé</strong> </label>
+                                              <input type="number" id="label" ng-model="dt.montant">
+                                            </md-input-container>
+                                          </div>
+                                          
+                                          <div>
+                                            <md-select ng-model="dt.type_reglement" placeholder="Type de Reglement">
+                                              <md-option value="ESPECES">ESPECES</md-option>
+                                              <md-option value="CHEQUES">CHEQUES</md-option>
+                                              <md-option value="AUTRES">AUTRES</md-option>
+                                            </md-select>
+                                          </div>
+
+                                          <div>
+                                            <md-input-container>
+                                              <label for="label"> <strong>Libellé reglement</strong> </label>
+                                              <input type="text" id="label" ng-model="dt.libelle_reglement">
+                                            </md-input-container>
+                                          </div>
+
+                                          <div>
+                                            <label>Station</label>
+                                            <md-input-container>
+                                                <md-select  ng-model="dt.station" placeholder="Station">
+                                                  <md-option ng-repeat="station in stations" value="{{station.nom_station}}">{{station.nom_station}}</md-option>
+                                                </md-select>
+                                              </md-input-container>
+                                        </div>
+                                         
+
+                                </div>
+                                
+                                <div class="m-t m-b">
+                                <button class="btn btn-primary btn-rounded" ng-click="addRgt_cli()">ENVOYER</button>
+                                </div>
+                            
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>   <!-- ENd TAB 1  -->
+
+        <div 
+           class="tab-container"
+           ng-controller="reglementClientCtrl"
+           role="tabpanel"
+           id="tab2-content"
+           aria-labelledby="tab2"
+           ng-switch-when="1"
+           md-swipe-left="next()"
+           md-swipe-right="previous()"  class="wrapper">
+           <!-- <h3>Etat par clients</h3> -->
+           <div class="panel card wrapper"   ng-init="(role.user == 'ADMINISTRATEUR') ? station(): station_courante() ">
+
+              <div class="row"  ng-init="(role.user == 'ADMINISTRATEUR') ? client_all(): client() ">
+
+                <div>
+                    <ui-select  ng-model="dt.client" theme="bootstrap"  ng-init=client()>
+                      <ui-select-match placeholder="Selectionner un client">{{$select.selected.nom_client}}</ui-select-match>
+                      <ui-select-choices repeat="item as item in clients | filter: $select.search">
+                        <div ng-bind-html="item.code_client | highlight: $select.search"></div>
+                        <small ng-bind-html="item.nom_client | highlight: $select.search"></small>
+                      </ui-select-choices>
+                     </ui-select>
+                </div>
+
+                
+
+                <div>
+                    <label>Date Debut</label>
+                    <p class="input-group">
+                        <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_debut" is-open="opened"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                        <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </p>
+                        
+                </div>
+
+                <div>
+                    <label>Date Fin</label>
+                    <p class="input-group">
+                        <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_fin" is-open="opened2"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                        <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="open2($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </p>
+                        
+                </div>
+
+                <div>
+                    <label>station</label>
+                    <md-input-container>
+                        <md-select  ng-model="dt.station" placeholder="Station">
+                            <md-option ng-repeat="station in stations" value="{{station.nom_station}}">{{station.nom_station}}</md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+
+                <div class="m-t m-b">
+                    <button class="btn btn-primary btn-rounded" ng-click="getRgt_cli()">ENVOYER</button>
+                </div>
+                
+              </div>
+              
+              <div class="row" >
+                <div class="wrapper-md">
+
+                    <table  class="table table-bordered table-hover  bg-white-only">
+                    <tr >
+                        <td ><b>DATE</b></td>
+                        <td ><b>CODE CLIENT</b></td>
+                        <td ><b>NOM CLIENT</b></td>
+                        <td ><b>MONTANT</b></td>
+                        <td ><b>TYPE REGLEMENT</b></td>
+                        <td ><b>LIBELLE REGLEMENT</b></td>
+                        <td ><b>STATION</b></td>
+                        <td ><b>SAISIE</b></td>
+            
+            
+                    </tr>  
+                    <tr  ng-repeat="rec in recap_reglement  track by $index">
+
+                        
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="code_produit" e-form="rowform"  e-required>
+                            {{ rec.date || '' }}
+                        </span>
+                        </td>
+
+                        <td class="v-middle">
+                            <!-- editable username (text with validation) -->
+                            <span   e-name="code_produit" e-form="rowform"  e-required>
+                                {{ rec.code_client || '' }}
+                            </span>
+                            </td>
+
+                        <td class="v-middle">
+                            <!-- editable username (text with validation) -->
+                            <span   e-name="code_produit" e-form="rowform"  e-required>
+                                {{ rec.nom_client || '' }}
+                            </span>
+                            </td>
+            
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span  e-name="produit.station" e-form="rowform"  e-required>
+                            {{ rec.montant || 0 }}
+                        </span>
+                        </td>
+                        
+                        <td class="v-middle">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="prix_produit" e-form="rowform"  e-required>
+                            {{ rec.type_reglement || '' }}
+                        </span>
+                        </td>
+
+                        <td class="v-middle">
+                            <!-- editable username (text with validation) -->
+                            <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                {{ rec.libelle || '' }}
+                            </span>
+                            </td>
+    
+    
+                        <td class="text-center text-danger">
+                        <!-- editable username (text with validation) -->
+                        <span   e-name="prix_produit" e-form="rowform"  e-required>
+                            <b>{{ rec.nom_station || '' }}</b>
+                        </span>
+                        </td>
+
+                        <td class="text-center text-danger">
+                            <!-- editable username (text with validation) -->
+                            <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                <b>{{ rec.userName || '' }}</b>
+                            </span>
+                            </td>
+                        
+                    </tr>
+                    </table>
+
+                    <div class="line line-dashed"></div>
+            
+                    
+                </div>
+              </div>
+              
+           </div>
+           
+        </div>   <!-- ENd TAB 2  -->
+
+    </ng-switch> <!-- ENd Ng-switch  -->
+
+</div>
+
+
+    
+
+    

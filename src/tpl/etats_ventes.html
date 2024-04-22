@@ -1,0 +1,482 @@
+<script type="text/ng-template" id="deleteContent.html">
+  <div ng-include="'tpl/modal/modal_delete.html'"></div>
+</script>
+<script type="text/ng-template" id="successContent.html">
+  <div ng-include="'tpl/modal/modal_success.html'"></div>
+</script>
+<script type="text/ng-template" id="rejectContent.html">
+  <div ng-include="'tpl/modal/modal_reject.html'"></div>
+</script>
+
+
+
+<script>
+
+  function printPage(id) {
+      var html = "<html>";
+      html += document.getElementById(id).innerHTML;
+
+      html += "</html>";
+
+      var printWin = window.open('', '', 'left=0,top=0,width=1000,height=1000,toolbar=0,scrollbars=0,status  =0');
+      printWin.document.write(html);
+      printWin.document.close();
+      printWin.focus();
+      printWin.print();
+      printWin.close();
+  }
+
+</script>
+<div class="bg-light lter b-b wrapper-md" >
+<h1 class="m-n font-bold h2 title">Etats des ventes</h1>
+</div>
+
+<div class="hbox hbox-auto-xs hbox-auto-sm"   ng-init="(role.user == 'ADMINISTRATEUR') ? station(): station_courante() ">
+<div class="col">
+
+    <div class="panel-heading font-bold">
+    Selectionner la période
+    </div>
+    <div class="panel-body">
+      <div class="panel card wrapper" >
+         
+          <div class="row">
+                  <div class="col-sm-6">
+                          <label>Date Debut</label>
+                          <p class="input-group">
+                              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_debut" is-open="opened"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                              <span class="input-group-btn">
+                              <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                              </span>
+                          </p>
+                  </div>
+      
+                  <div class="col-sm-6">
+                          <label>Date Fin</label>
+                          <p class="input-group">
+                              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_fin" is-open="opened2"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                              <span class="input-group-btn">
+                              <button type="button" class="btn btn-default" ng-click="open2($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                              </span>
+                          </p>
+                  </div>
+          </div>
+          
+          <div class="row">
+              <md-input-container>
+                  <md-select  ng-model="dt.quart"   placeholder="Quart">
+                    <md-option ng-repeat="quart in quarts" value="{{quart.quart}}">{{quart.quart}}</md-option>
+                  </md-select>
+                </md-input-container>
+               
+                <md-input-container>
+                  <md-select  ng-model="dt.station" placeholder="Station">
+                    <md-option ng-repeat="station in stations" value="{{station.nom_station}}">{{station.nom_station}}</md-option>
+                  </md-select>
+                </md-input-container>
+          </div>
+
+          <div class="m-t m-b">
+            <button class="btn btn-primary btn-rounded" ng-click="ventes()">VALIDER</button>
+          </div>
+
+          <div class="row" >
+
+              <div class="col-sm-12">
+                  <div class="wrapper-md">
+                    <h4>Tableau des Ventes</h4>
+                    <div id="block1">
+
+                   
+                    <div style=" overflow: scroll; " >
+                      <table style="position: sticky; top: 0"  class="table table-bordered table-hover table-striped bg-white-only">
+                        
+                            <thead style="background-color:#a7a8a7;" >
+                              <tr  ng-repeat="rec in recap_ventesCarb.entete  track by $index">
+                                  <th  class="v-middle"   style="position: sticky;  top: 0;" >
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="produit.nom_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.date }}</b>
+                                    </span>
+                                  </th>
+                                  <th class="v-middle" style="position: sticky;  top: 0;">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="code_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.super || 0 }}</b>
+                                    </span>
+                                  </th>
+                                  <th class="v-middle" style="position: sticky;  top: 0;">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="type_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.gasoil || 0 }}</b>
+                                    </span>
+                                  </th>
+                                  
+                      
+                                    <th class="v-middle" style="position: sticky;  top: 0;">
+                                    <!-- editable username (text with validation) -->
+                                    <span  e-name="produit.station" e-form="rowform"  e-required>
+                                      <b>{{ rec.petrole || 0 }}</b>
+                                    </span>
+                                  </th>
+                                  
+                                  <th class="v-middle" style="position: sticky;  top: 0;">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.tpc || 0 }}</b>
+                                    </span>
+                                  </th>
+                
+                                  <th class="v-middle" style="position: sticky;  top: 0;">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.total_carb || 0 }}</b>
+                                    </span>
+                                  </th>
+                
+                                  <th class="v-middle" style="position: sticky;  top: 0;">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.total_lub || 0 }}</b>
+                                    </span>
+                                  </th>
+
+                                  <th class="v-middle"  ng-repeat="val in rec.vers_clients track by $index">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      {{ val }}
+                                    </span>
+                                  </th>
+                
+                                  <th class="v-middle" style="position: sticky;  top: 0;">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.total_attendu || 0 }}</b>
+                                    </span>
+                                  </th>
+
+                                  
+                
+                                  <th class="v-middle" style="position: sticky;  top: 0;">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.versement || 0 }}</b>
+                                    </span>
+                                  </th>
+                
+                                  <th class="v-middle" style="position: sticky;  top: 0;">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.ecart || 0 }}</b>
+                                    </span>
+                                  </th>
+                
+                                  <th class="v-middle" style="position: sticky;  top: 0;">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.manquant_pompiste || 0 }}</b>
+                                    </span>
+                                  </th>
+                
+                                  
+                
+                                  <th ng-init="rec.clients" class="v-middle" ng-repeat="re in rec.clients  track by $index" style="position: sticky;  top: 0;">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ re || 0}}</b>
+                                    </span>
+                                  </th>
+                
+                                  <th class="v-middle" style="position: sticky;  top: 0;">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                    <b> {{ rec.depense || 0 }}</b>
+                                    </span>
+                                  </th>
+                
+                                  <th class="text-center text-danger" style="position: sticky;  top: 0;">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.ecart_gerant || 0 }}</b>
+                                    </span>
+                                  </th>
+                      
+                                  
+                              </tr>
+                            </thead>
+
+                            <tbody>
+                              <tr  ng-repeat="rec in recap_ventesCarb.corps  track by $index">
+                                <td  class="v-middle"  >
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="produit.nom_produit" e-form="rowform"  e-required>
+                                    {{ rec.date }}
+                                  </span>
+                                </td>
+                                <td class="v-middle">
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="code_produit" e-form="rowform"  e-required>
+                                    {{ rec.super | number}}
+                                  </span>
+                                </td>
+                                <td class="v-middle">
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="type_produit" e-form="rowform"  e-required>
+                                    {{ rec.gasoil | number }}
+                                  </span>
+                                </td>
+                                
+                    
+                                  <td class="v-middle">
+                                  <!-- editable username (text with validation) -->
+                                  <span  e-name="produit.station" e-form="rowform"  e-required>
+                                    {{ rec.petrole | number }}
+                                  </span>
+                                </td>
+                                
+                                <td class="v-middle">
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                    {{ rec.tpc | number }}
+                                  </span>
+                                </td>
+              
+                                <td class="v-middle">
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                    {{ rec.total_carb | number }}
+                                  </span>
+                                </td>
+              
+                                <td class="v-middle">
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                    {{ rec.total_lub | number }}
+                                  </span>
+                                </td>
+
+                                <td class="v-middle"  ng-repeat="val in rec.vers_clients track by $index">
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                    {{ val | number }}
+                                  </span>
+                                </td>
+              
+                                <td class="v-middle">
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                    {{ rec.total_attendu | number }}
+                                  </span>
+                                </td>
+
+                                <td class="v-middle">
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                    {{ rec.versement | number }}
+                                  </span>
+                                </td>
+              
+                                <td class="v-middle">
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                    <b>{{ rec.ecart | number }}</b>
+                                  </span>
+                                </td>
+              
+                                <td class="v-middle">
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                    {{ rec.manquant_pompiste | number }}
+                                  </span>
+                                </td>
+              
+                                
+              
+                                <td ng-init="rec.clients" class="v-middle" ng-repeat="re in rec.clients  track by $index">
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                    {{ re | number}}
+                                  </span>
+                                </td>
+              
+                                <td class="v-middle">
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                    {{ rec.depense | number }}
+                                  </span>
+                                </td>
+              
+                                <td class="text-center text-danger">
+                                  <!-- editable username (text with validation) -->
+                                  <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                    <b>{{ rec.ecart_gerant | number }}</b>
+                                  </span>
+                                </td>
+                    
+                                
+                              </tr>
+  
+                              <tr  ng-repeat="rec in recap_ventesCarb.pied  track by $index">
+                                  <td  class="v-middle"  >
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="produit.nom_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.date }}</b>
+                                    </span>
+                                  </td>
+                                  <td class="v-middle">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="code_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.super | number }}</b>
+                                    </span>
+                                  </td>
+                                  <td class="v-middle">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="type_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.gasoil | number }}</b>
+                                    </span>
+                                  </td>
+                                  
+                      
+                                    <td class="v-middle">
+                                    <!-- editable username (text with validation) -->
+                                    <span  e-name="produit.station" e-form="rowform"  e-required>
+                                      <b>{{ rec.petrole | number }}</b>
+                                    </span>
+                                  </td>
+                                  
+                                  <td class="v-middle">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.tpc | number }}</b>
+                                    </span>
+                                  </td>
+                
+                                  <td class="v-middle">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.total_carb | number }}</b>
+                                    </span>
+                                  </td>
+                
+                                  <td class="v-middle">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.total_lub | number }}</b>
+                                    </span>
+                                  </td>
+
+                                  <td class="v-middle"  ng-repeat="val in rec.vers_clients track by $index">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      {{ val | number }}
+                                    </span>
+                                  </td>
+                
+                                  <td class="v-middle">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.total_attendu | number }}</b>
+                                    </span>
+                                  </td>
+
+                                 
+                
+                                  <td class="v-middle">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.versement | number }}</b>
+                                    </span>
+                                  </td>
+                
+                                  <td class="v-middle">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.ecart | number }}</b>
+                                    </span>
+                                  </td>
+                
+                                  <td class="v-middle">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.manquant_pompiste | number }}</b>
+                                    </span>
+                                  </td>
+                
+                                  
+                
+                                  <td ng-init="rec.clients" class="v-middle" ng-repeat="re in rec.clients  track by $index">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ re | number}}</b>
+                                    </span>
+                                  </td>
+                
+                                  <td class="v-middle">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                    <b> {{ rec.depense | number }}</b>
+                                    </span>
+                                  </td>
+                
+                                  <td class="text-center text-danger">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.ecart_gerant | number }}</b>
+                                    </span>
+                                  </td>
+
+                                  <td class="text-center " ng-if="rec.lien_banque != '' ">
+                                    <!-- editable username (text with validation) -->
+                                    <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                      <b>{{ rec.lien_banque }}</b>
+                                    </span>
+                                  </td>
+                      
+                                  
+                              </tr>
+                            </tbody>
+                            
+                      </table>
+
+                      
+          
+                    <div class="line line-dashed"></div>
+
+                 
+
+                  <!--     <p>Selectionner le format d'export</p>
+
+                    <div class="row">
+                        <md-input-container>
+                            <md-select  ng-model="dt.format"   placeholder="Selectionner le format d\'export">
+                                <md-option ng-repeat="format in formats_export" value="{{format.format}}">{{format.nom_format}}</md-option>
+                              </md-select>
+                        </md-input-container>
+                    </div>
+                    
+                    <div class="m-t m-b">
+                      <button class="btn btn-primary btn-rounded" ng-click="export()">EXPORTER</button>
+                    </div> -->
+                    
+
+                    <button class="btn btn-primary btn-rounded"
+                      onclick="printPage('block1');">Imprimer</button>
+                    </div>
+                  </div>
+
+
+                  </div>
+          
+          </div>
+        </div>
+        
+      </div>
+    </div>
+</div>
+
+</div>
+
+
+  
+
+  

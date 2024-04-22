@@ -1,0 +1,132 @@
+ <script type="text/ng-template" id="deleteContent.html">
+    <div ng-include="'tpl/modal/modal_delete.html'"></div>
+</script>
+<script type="text/ng-template" id="successContent.html">
+    <div ng-include="'tpl/modal/modal_success.html'"></div>
+</script>
+<script type="text/ng-template" id="rejectContent.html">
+    <div ng-include="'tpl/modal/modal_reject.html'"></div>
+</script>
+<div class="bg-light lter b-b wrapper-md" >
+  <h1 class="m-n font-bold h2 title">Gestion des Produits </h1>
+</div>
+
+<div class="row">
+  <div class="col-sm-6">
+      <div class="panel-heading font-bold">
+      Ajouter un Produit
+      </div>
+      <div class="panel-body">
+        <div class="panel card wrapper">
+          <form name="step1" class="form-validation" >
+            <md-input-container>
+              <label for="content"><strong>Nom Produit</strong> </label>
+              <input type="text" id="content" name="produit.nom_produit" ng-model="produit.nom_produit " required>
+            </md-input-container>
+            <md-input-container>
+              <label for="content"><strong>Code Produit</strong> </label>
+              <input type="text" id="content" name="produit.code_produit"  ng-model="produit.code_produit" required>
+            </md-input-container>
+            <md-input-container>
+              <md-select  ng-model="produit.type_produit" required ng-init="regions" placeholder="Type de produit">
+                <md-option ng-repeat="produit in type_produits" value="{{produit.type_produit}}">{{produit.type_produit}}</md-option>
+              </md-select>
+            </md-input-container>
+            <md-input-container>
+              <label for="content"><strong>Conditionnement</strong> </label>
+              <input type="text" id="content" name="produit.conditionnement" ng-model="produit.conditionnement" required >
+            </md-input-container>
+            <md-input-container>
+              <md-select  ng-model="produit.station" required ng-init="station()" placeholder="Station">
+                <md-option ng-repeat="station in stations" value="{{station.nom_station}}">{{station.nom_station}}</md-option>
+              </md-select>
+            </md-input-container>
+            <md-input-container>
+              <label for="content"><strong>Prix Produit</strong> </label>
+              <input type="number" id="content"  name="produit.prix_produit"  ng-model="produit.prix_produit" required>
+            </md-input-container>
+          
+            <div class="m-t m-b">
+              <button type="submit" ng-disabled="step1.$invalid" class="btn btn-default btn-rounded" ng-click="addProduit()">Ajouter</button>
+            </div>
+          </form>
+        </div>
+        
+      </div>
+  </div>
+  <div class="col-sm-6">
+      <div class="wrapper-md">
+        <h4>Liste des Produits</h4>
+        <table  ng-init="produits"  class="table table-bordered table-hover  bg-white-only">
+          <tr style="font-weight: bold">
+            <td style="width:35%">Nom Produit</td>
+            <td style="width:35%">Code Produit</td>
+            <td style="width:35%">Type Produit</td>
+            <td style="width:35%">conditionnement</td>
+            <td style="width:35%">station</td>
+            <td style="width:35%">Prix Produit</td>
+
+          </tr>
+          <tr  ng-repeat="produit in produits  track by $index">
+            <td class="v-middle">
+              <!-- editable username (text with validation) -->
+              <span   e-name="produit.nom_produit" e-form="rowform"  e-required>
+                {{ produit.nom_produit | uppercase  }}
+              </span>
+            </td>
+            <td class="v-middle">
+              <!-- editable username (text with validation) -->
+              <span   e-name="code_produit" e-form="rowform"  e-required>
+                {{ produit.code_produit | uppercase }}
+              </span>
+            </td>
+            <td class="v-middle">
+              <!-- editable username (text with validation) -->
+              <span   e-name="type_produit" e-form="rowform"  e-required>
+                {{ produit.type_produit | uppercase  }}
+              </span>
+            </td>
+            <td class="v-middle">
+              <!-- editable username (text with validation) -->
+              <span  e-name="produit.conditionnement" e-form="rowform"  e-required>
+                {{ produit.conditionnement | uppercase  }}
+              </span>
+            </td>
+
+             <td class="v-middle">
+              <!-- editable username (text with validation) -->
+              <span  e-name="produit.station" e-form="rowform"  e-required>
+                {{ produit.station | uppercase  }}
+              </span>
+            </td>
+            
+            <td class="v-middle">
+              <!-- editable username (text with validation) -->
+              <span   e-name="prix_produit" e-form="rowform"  e-required>
+                {{ produit.prix_produit | uppercase  }}
+              </span>
+            </td>
+
+            <td style="white-space: nowrap">
+              <!-- form -->
+              <form editable-form name="rowform"  ng-show="rowform.$visible" onbeforesave="savePatient($data, patient.id_patient)" class="form-buttons form-inline" shown="inserted == patient">
+               
+              </form>
+              <div class="buttons" ng-show="!rowform.$visible">
+               
+                <button class="btn btn-sm btn-danger" ng-click="">del</button>
+              </div>
+            </td>
+          </tr>
+        </table>
+          <div class="line line-dashed"></div>
+
+          <div class="" >
+            <a class="btn  btn-primary" ng-click="Envoyer()">ENVOYER</a>
+          </div>
+      </div>
+  </div>
+</div>
+    
+
+    

@@ -1,0 +1,51 @@
+
+<script>
+
+    function printPage(id)
+    {
+        var html="<html>";
+        html+= document.getElementById(id).innerHTML;
+
+        html+="</html>";
+
+        var printWin = window.open('','','left=0,top=0,width=1,height=1,toolbar=0,scrollbars=0,status  =0');
+        printWin.document.write(html);
+        printWin.document.close();
+        printWin.focus();
+        printWin.print();
+        printWin.close();
+    }
+
+</script>
+
+<div class="bg-light lter b-b wrapper-md" >
+  <h1 class="m-n font-bold h3 title">Analyse des Ventes</h1>
+</div>
+
+<!---------------------------------------------------------------------------------------------------->
+
+<div ng-controller="analyse-ventesCtrl"  class="panel card wrapper">
+
+    <div class="row">
+
+        <div id="block1" class="col-sm-12">
+
+            <iframe width="1024" height="612" src="https://app.powerbi.com/view?r=eyJrIjoiOWIxNjgwYTMtZjU3Yi00Y2E3LTliZDctMWNjMDA1NzNlZjMyIiwidCI6ImRiNzczYzYzLWE4YmItNDNiOC04ZDI3LTI0MDZhNWYzZGQyOSJ9&pageName=ReportSectionfb63b5b2b3fb4f25665d" frameborder="0" allowFullScreen="true"></iframe>
+
+        </div>
+
+
+        <button id="theClick" onclick="printPage('block1');">Print Report</button>
+
+
+    </div>
+
+   
+    
+</div>
+
+
+
+
+
+

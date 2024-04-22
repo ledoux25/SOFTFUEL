@@ -1,0 +1,247 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-init="
+    app.settings.asideFolded = false; 
+    app.settings.asideDock = false;
+  ">
+  <!-- main -->
+  <div class="col">
+    <!-- main header -->
+    <div class="bg-light lter b-b wrapper-md">
+      <div class="row">
+        <div class="col-sm-6 col-xs-12">
+          <h1 class="m-n font-thin h3 text-black">Dashboard</h1>
+          <small class="text-muted">Welcome to BimStr Admin</small>
+        </div>
+        <div class="col-sm-6 text-right hidden-xs">
+        </div>
+      </div>
+    </div>
+    <!-- / main header -->
+    <div class="wrapper-md" ng-controller="FlotChartDemoCtrl">
+      <!-- stats -->
+      <div class="row">
+        <div class="col-md-5">
+          <div class="row row-sm text-center">
+            <div class="col-xs-6">
+              <a ui-sref="manage.users" class="block panel padder-v item">
+                <div class="h1 text-info font-thin h1"><i class="icon-users"></i> </div>
+                <span class="text-muted text-xs">2399 users</span>
+                <div class="top text-right w-full">
+                  <i class="fa fa-caret-down text-warning m-r-sm"></i>
+                </div>
+              </a>
+            </div>
+            <div class="col-xs-6">
+              <a href class="block panel padder-v bg-primary item">
+                <span class="text-white font-thin h1 block"><i class="icon-playlist"></i> </span>
+                <span class="text-muted text-xs">99 playlists</span>
+                <span class="bottom text-right w-full">
+                  <i class="fa fa-cloud-upload text-muted m-r-sm"></i>
+                </span>
+              </a>
+            </div>
+            <div class="col-xs-6">
+              <a href class="block panel padder-v bg-info item">
+                <span class="text-white font-thin h1 block"><i class="icon-note"></i> </span>
+                <span class="text-muted text-xs">25 articles</span>
+                <span class="top">
+                  <i class="fa fa-caret-up text-warning m-l-sm m-r-sm"></i>
+                </span>
+              </a>
+            </div>
+            <div class="col-xs-6">
+              <a href class="block panel padder-v item">
+                <div class="font-thin h1"><i class="icon-disc"></i></div>
+                <span class="text-muted text-xs">122 Albums</span>
+                <div class="bottom">
+                  <i class="fa fa-caret-up text-warning m-l-sm m-r-sm"></i>
+                </div>
+              </a>
+            </div>
+            <div class="col-xs-12 m-b-md">
+              <div class="r bg-light dker item hbox no-border">
+                <div class="col dk padder-v r-r">
+                  <a href >
+                  <div class="text-primary-dk font-thin h1"><i class=" icon-lock"></i></div>
+                  <span class="text-muted text-xs">Homepage Configuration</span>
+                </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-7">
+          <div class="panel wrapper">
+            <a href> <button class="btn btn-xs pull-right btn-default"><i class="icon-pencil"></i> Edit</button></a>
+            <h4 class="font-thin m-t-none m-b text-muted">BimStr Playlist</h4>
+        <table class="table table-striped m-b-none">
+          <tbody>
+            <tr>
+              <td><i class="icon-arrow-right"></i> 1. Maalhox : Tuer pour Tuer</td>
+            </tr>
+            <tr>                    
+              <td><i class="icon-arrow-up"></i> 2. Reniss : Dans la sauce</td>
+            </tr>
+            <tr>                    
+              <td><i class="icon-arrow-down"></i> fa-arrow-down</div> 3. Locko : Sawa Romance</td>
+            </tr>
+            <tr>                    
+              <td><i class="icon-arrow-up"></i> 4. Stanley Enow & Locko : Bounce</td>
+            </tr>
+            <tr>                    
+              <td> <i class="icon-arrow-up"></i> 5. Dynastie Le tigre : Dingue de toi</td>
+            </tr>
+            <tr>                    
+              <td><i class="icon-arrow-down"></i> 6. Communaute Urbaine : Untitled</td>
+            </tr>
+            <tr>                    
+              <td><i class="icon-arrow-down"></i> 7. TNK : Encore</td>
+            </tr>
+          </tbody>
+        </table>
+          </div>
+        </div>
+      </div>
+      <!-- / stats -->
+
+      <!-- service -->
+      <div class="panel hbox hbox-auto-xs no-border">
+          <div class="bg-light lter b-b wrapper-md">
+            <h2 class="m-n font-thin h3">Top 10 albums 
+            <a href> <button class="btn btn-xs pull-right btn-default "><i class="icon-pencil"></i> Edit</button></a> </h2> 
+          </div>
+          <div class="wrapper-md" ng-controller="AlbumController">
+              <div class="table-responsive m-b-lg">
+                <div ui-grid="gridOptionsSimple"></div>
+              </div>
+          </div>
+      </div>
+      <!-- / service -->
+    </div>
+  </div>
+  <!-- / main -->
+  <!-- right col -->
+  <div class="col w-md bg-white-only b-l bg-auto no-border-xs">
+    <div class="nav-tabs-alt" >
+      <ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+          <a data-target="#tab-1" role="tab" data-toggle="tab">
+            <i class="glyphicon glyphicon-time text-md text-muted wrapper-sm"></i>
+          </a>
+        </li>
+        <li>
+          <a data-target="#tab-2" role="tab" data-toggle="tab">
+            <i class="glyphicon glyphicon-comment text-md text-muted wrapper-sm"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="tab-1">
+        <div class="wrapper-md">
+          <div class="m-b text-md">Activite Recente</div>
+      <div class="streamline b-l m-b">
+        <div class="sl-item">
+          <div class="m-l">
+            <div class="text-muted">5 minutes ago</div>
+            <p><a href class="text-info">Jessi</a> commented your post.</p>
+          </div>
+        </div>
+        <div class="sl-item">
+          <div class="m-l">
+            <div class="text-muted">11:30</div>
+            <p>Join comference</p>
+          </div>
+        </div>
+        <div class="sl-item b-success b-l">
+          <div class="m-l">
+            <div class="text-muted">10:30</div>
+            <p>Call to customer <a href class="text-info">Jacob</a> and discuss the detail.</p>
+          </div>
+        </div>
+        <div class="bg-info wrapper-sm m-l-n m-r-n m-b r r-2x">
+          Create tasks for the team
+        </div>
+        <div class="sl-item b-primary b-l">
+          <div class="m-l">
+            <div class="text-muted">Wed, 25 Mar</div>
+            <p>Finished task <a href class="text-info">Testing</a>.</p>
+          </div>
+        </div>
+        <div class="sl-item b-warning b-l">
+          <div class="m-l">
+            <div class="text-muted">Thu, 10 Mar</div>
+            <p>Trip to the moon</p>
+          </div>
+        </div>
+        <div class="sl-item b-info b-l">
+          <div class="m-l">
+            <div class="text-muted">Sat, 5 Mar</div>
+            <p>Prepare for presentation</p>
+          </div>
+        </div>
+        <div class="sl-item b-l">
+          <div class="m-l">
+            <div class="text-muted">Sun, 11 Feb</div>
+            <p><a href class="text-info">Jessi</a> assign you a task <a href class="text-info">Mockup Design</a>.</p>
+          </div>
+        </div>
+        <div class="sl-item b-l">
+          <div class="m-l">
+            <div class="text-muted">Thu, 17 Jan</div>
+            <p>Follow up to close deal</p>
+          </div>
+        </div>
+      </div>
+        </div>
+      </div>
+      <div role="tabpanel" class="tab-pane tab-2" id="tab-2">
+        <div class="wrapper-md">
+          <div class="m-b-sm text-md">Messages</div>
+          <ul class="list-group no-borders pull-in auto">
+            <li class="list-group-item">
+              <span class="pull-left thumb-sm m-r"><img src="img/a1.jpg" alt="..." class="img-circle"></span>
+              <a href="#" class="text-muted" ui-toggle-class="show" target=".app-aside-right"><i class="fa fa-comment-o pull-right m-t-sm text-sm"></i></a>
+              <div class="clear">
+                <div><a href="">Chris Fox</a></div>
+                <small class="text-muted">about 2 minutes ago</small>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <span class="pull-left thumb-sm m-r"><img src="img/a2.jpg" alt="..." class="img-circle"></span>
+              <a href="#" class="text-muted" ui-toggle-class="show" target=".app-aside-right"><i class="fa fa-comment-o pull-right m-t-sm text-sm"></i></a>
+              <div class="clear">
+                <div><a href="">Amanda Conlan</a></div>
+                <small class="text-muted">about 2 hours ago</small>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <span class="pull-left thumb-sm m-r"><img src="img/a3.jpg" alt="..." class="img-circle"></span>
+              <a href class="text-muted" ui-toggle-class="show" target=".app-aside-right"><i class="fa fa-comment-o pull-right m-t-sm text-sm"></i></a>
+              <div class="clear">
+                <div><a href="">Dan Doorack</a></div>
+                <small class="text-muted">3 days ago</small>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <span class="pull-left thumb-sm m-r"><img src="img/a4.jpg" alt="..." class="img-circle"></span>
+              <a href class="text-muted" ui-toggle-class="show" target=".app-aside-right"><i class="fa fa-comment-o pull-right m-t-sm text-sm"></i></a>
+              <div class="clear">
+                <div><a href="">Lauren Taylor</a></div>
+                <small class="text-muted">about 2 minutes ago</small>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="padder-md">      
+      <!-- streamline -->
+      
+      <!-- / streamline -->
+    </div>
+    <div data-ng-include=" 'tpl/blocks/aside.right.html' ">
+      {% include '../tpl/blocks/aside.right.html' %}
+    </div>
+  </div>
+  <!-- / right col -->
+</div>

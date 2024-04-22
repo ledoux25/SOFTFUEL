@@ -1,0 +1,261 @@
+      <!-- navbar header -->
+      <div class="navbar-header">
+        <!-- brand -->
+        <a href="#/" class="navbar-brand text-lt">
+          
+          <img src="img/gaz.png" alt="." class="hide">
+          <span class=""></span>
+        </a>
+        <!-- / brand -->
+      </div>
+      <!-- / navbar header -->
+
+      <!-- navbar collapse -->
+      <img src="img/gaz.png" alt="GAZ" class="nav-gaz">
+
+      <div class=" navbar">
+
+        <!-- link and dropdown -->
+
+        <ul class="nav navbar-nav hidden-sm">
+
+          <li class="dropdown pos-stc" dropdown>
+            <a href class="dropdown-toggle" dropdown-toggle>
+              <span>Admin</span> 
+              <span class="caret"></span>
+            </a>
+            <div class="dropdown-menu wrapper w-full bg-white">
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="m-l-xs m-t-xs m-b-xs font-bold">Stations <span class="badge badge-sm bg-success">10</span></div>
+                  <div class="row">
+                    <div class="col-xs-6">
+                      <ul class="list-unstyled l-h-2x">
+                        <li>
+                          <a href><i class="fa fa-fw fa-angle-right text-muted m-r-xs"></i>Cuves</a>
+                        </li>
+                        <li>
+                          <a href><i class="fa fa-fw fa-angle-right text-muted m-r-xs"></i>Pompes</a>
+                        </li>
+                        <li>
+                          <a href><i class="fa fa-fw fa-angle-right text-muted m-r-xs"></i>Pistolets</a>
+                        </li>
+                        <li>
+                          <a href><i class="fa fa-fw fa-angle-right text-muted m-r-xs"></i>Clients</a>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="col-xs-6">
+                      <ul class="list-unstyled l-h-2x">
+                        <li>
+                          <a href><i class="fa fa-fw fa-angle-right text-muted m-r-xs"></i>Ventes</a>
+                        </li>
+                        <li>
+                          <a href><i class="fa fa-fw fa-angle-right text-muted m-r-xs"></i>Versements</a>
+                        </li>
+                        <li>
+                          <a href><i class="fa fa-fw fa-angle-right text-muted m-r-xs"></i>Depenses</a>
+                        </li>
+                        <li>
+                          <a href><i class="fa fa-fw fa-angle-right text-muted m-r-xs"></i>Coulages</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-4 b-l b-light">
+                  <div class="m-l-xs m-t-xs m-b-xs font-bold">Personnel<span class="label label-sm bg-primary">12</span></div>
+                  <div class="row">
+                    <div class="col-xs-6">
+                      <ul class="list-unstyled l-h-2x">
+                        <li>
+                          <a href><i class="fa fa-fw fa-angle-right text-muted m-r-xs"></i>Rotation</a>
+                        </li>
+                        <li>
+                          <a href><i class="fa fa-fw fa-angle-right text-muted m-r-xs"></i>Gerants <span class="badge badge-sm bg-warning">1000+</span></a>
+                        </li>
+                        <li>
+                          <a href><i class="fa fa-fw fa-angle-right text-muted m-r-xs"></i>Chef piste</a>
+                        </li>
+                        <li>
+                          <a ui-sref="app.pompistes"><i class="fa fa-fw fa-angle-right text-muted m-r-xs"></i>Pompistes</a>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="col-xs-6">
+                      <ul class="list-unstyled l-h-2x">
+                        <li>
+                          <a href><i class="fa fa-fw fa-angle-right text-muted m-r-xs"></i>manquants</a>
+                        </li>
+                        <li>
+                          <a href><i class="fa fa-fw fa-angle-right text-muted m-r-xs"></i>status</a>
+                        </li>
+                        <li>
+                          <a href><i class="fa fa-fw fa-angle-right text-muted m-r-xs"></i></a>
+                        </li>
+                        <li>
+                          <a href><i class="fa fa-fw fa-angle-right text-muted m-r-xs"></i></a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-4 b-l b-light">
+                  <div class="m-l-xs m-t-xs m-b-sm font-bold">Ventes</div>
+                  <div class="text-center">
+                    <div class="inline">
+                      <div ui-jq="easyPieChart" ui-options="{
+                          percent: 65,
+                          lineWidth: 50,
+                          trackColor: '{{app.color.light}}',
+                          barColor: '{{app.color.info}}',
+                          scaleColor: false,
+                          size: 100,
+                          rotate: 90,
+                          lineCap: 'butt',
+                          animate: 2000
+                        }">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li class="dropdown" dropdown>
+            <a href class="dropdown-toggle" dropdown-toggle>
+              <i class="fa fa-fw fa-plus visible-xs-inline-block"></i>
+              <span>Initialisation</span> <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="#/app/station" >Stations</a></li>
+              
+              <li class="divider"></li>
+
+              <li><a href="#/app/produit" >Produits</a></li>
+
+              <li class="divider"></li>
+
+              <li><a href="#/app/client" >Clients</a></li>
+
+              <li class="divider"></li>
+
+              <li><a href="#/app/transporteur" >Transporteur</a></li>
+
+            </ul>
+          </li>
+        </ul>
+
+        <!-- / link and dropdown -->
+
+        <!-- search form -->
+        <form class="navbar-form navbar-form-sm navbar-left shift" ui-shift="prependTo" target=".navbar-collapse" role="search" ng-controller="TypeaheadDemoCtrl">
+          <div class="form-group">
+            <div class="input-group">
+              <input type="text" ng-model="selected" typeahead="state for state in states | filter:$viewValue | limitTo:8" class="form-control input-sm bg-light no-border rounded padder" placeholder="Rechercher...">
+              <span class="input-group-btn">
+                <button type="submit" class="btn btn-sm bg-light rounded"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+          </div>
+        </form>
+        <!-- / search form -->
+
+        <!-- nabar right -->
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown hidden-sm" is-open="lang.isopen" dropdown>
+          <!--  <a href class="dropdown-toggle" dropdown-toggle>
+              {{selectLang}} <b class="caret"></b>
+            </a>  -->
+            <!-- dropdown -->
+            <ul class="dropdown-menu animated fadeInRight w">
+              <li ng-repeat="(langKey, label) in langs">
+                <a ng-click="setLang(langKey, $event)" href>{{label}}</a>
+              </li>
+            </ul>
+            <!-- / dropdown -->
+          </li>
+          <li class="hidden-xs">
+            <a ui-fullscreen></a>
+          </li>
+          <li class="dropdown" dropdown>
+            <a href class="dropdown-toggle" dropdown-toggle>
+              <i class="icon-bell fa-fw"></i>
+              <span class="visible-xs-inline">Notifications</span>
+              <span class="badge badge-sm up bg-danger pull-right-xs">2</span>
+            </a>
+            <!-- dropdown -->
+            <div class="dropdown-menu w-xl animated fadeInUp">
+              <div class="panel bg-white">
+                <div class="panel-heading b-light bg-light">
+                  <strong>You have <span>2</span> notifications</strong>
+                </div>
+                <div class="list-group">
+                  <a href class="list-group-item">
+                    <span class="pull-left m-r thumb-sm">
+                      <img src="img/a0.jpg" alt="..." class="img-circle">
+                    </span>
+                    <span class="clear block m-b-none">
+                      Use awesome animate.css<br>
+                      <small class="text-muted">10 minutes ago</small>
+                    </span>
+                  </a>
+                  <a href class="list-group-item">
+                    <span class="clear block m-b-none">
+                      1.0 initial released<br>
+                      <small class="text-muted">1 hour ago</small>
+                    </span>
+                  </a>
+                </div>
+                <div class="panel-footer text-sm">
+                  <a href class="pull-right"><i class="fa fa-cog"></i></a>
+                  <a href="#notes" data-toggle="class:show animated fadeInRight">See all the notifications</a>
+                </div>
+              </div>
+            </div>
+            <!-- / dropdown -->
+          </li>
+          <li class="dropdown" dropdown>
+            <a href class="dropdown-toggle clear" dropdown-toggle>
+              <span class="thumb-sm avatar pull-right m-t-n-sm m-b-n-sm m-l-sm">
+                <img src="img/a0.jpg" alt="...">
+                <i class="on md b-white bottom"></i>
+              </span>
+              <span class="hidden-sm hidden-md">{{app.user.nom}}</span> <b class="caret"></b>
+            </a>
+            <!-- dropdown -->
+            <ul class="dropdown-menu animated fadeInRight w">
+              <li class="wrapper b-b m-b-sm bg-light m-t-n-xs">
+                <div>
+                  <p>300mb of 500mb used</p>
+                </div>
+                <progressbar value="60" class="progress-xs m-b-none bg-white"></progressbar>
+              </li>
+              <li>
+                <a href>
+                  <span class="badge bg-danger pull-right">30%</span>
+                  <span>Settings</span>
+                </a>
+              </li>
+              <li>
+                <a ui-sref="app.page.profile">Profile</a>
+              </li>
+              <li>
+                <a ui-sref="app.docs">
+                  <span class="label bg-info pull-right">new</span>
+                  Help
+                </a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a ui-sref="access.signin">Logout</a>
+              </li>
+            </ul>
+            <!-- / dropdown -->
+          </li>
+        </ul>
+        <!-- / navbar right -->
+
+      </div>
+      <!-- / navbar collapse -->

@@ -1,0 +1,66 @@
+<script type="text/ng-template" id="deleteContent.html">
+    <div ng-include="'tpl/modal/modal_delete.html'"></div>
+</script>
+<script type="text/ng-template" id="successContent.html">
+    <div ng-include="'tpl/modal/modal_success.html'"></div>
+</script>
+<script type="text/ng-template" id="rejectContent.html">
+    <div ng-include="'tpl/modal/modal_reject.html'"></div>
+</script>
+<div class="bg-light lter b-b wrapper-md" >
+  <h1 class="m-n font-bold h2 title">Suppression du dernier Quart</h1>
+</div>
+
+<!---------------------------------------------------------------------------------------------------->
+
+<div ng-controller="suppression-quartCtrl"  ng-init="(role.user == 'ADMINISTRATEUR') ? station(): station_courante() " class="panel card wrapper">
+
+    <form  role="form"  ng-submit="supprimer_quart()" >
+
+      <div class="form-group">
+        <div class="col-sm-4" ng-init="heure_suppression()">
+            <label>Date</label>
+            <p class="input-group">
+                <input type="text" ng-disabled="true"  class="form-control" datepicker-popup="{{format}}" ng-model="date.date_ouverture2" is-open="opened"    datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ><i class="glyphicon glyphicon-calendar"></i></button>
+                </span>
+            </p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-4">
+
+                <md-select disabled ng-model="date.quart" placeholder="Quart" >
+                <md-select-label></md-select-label>
+                <md-option value="quart 1" >QUART 1</md-option>
+                <md-option value="quart 2" >QUART 2</md-option>
+                </md-select>
+
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-4">
+
+                <md-select disabled ng-model="date.station" placeholder="Station">
+                <md-option ng-repeat="station in stations" value="{{station.nom_station}}">{{station.nom_station}}</md-option>
+                </md-select>
+
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-danger ">SUPPRIMER LE DERNIER QUART</button>
+     
+    </form>
+
+    
+    
+</div>
+
+
+
+
+</div>
+

@@ -1,0 +1,178 @@
+<script type="text/ng-template" id="deleteContent.html">
+    <div ng-include="'tpl/modal/modal_delete.html'"></div>
+</script>
+<script type="text/ng-template" id="successContent.html">
+    <div ng-include="'tpl/modal/modal_success.html'"></div>
+</script>
+<script type="text/ng-template" id="rejectContent.html">
+    <div ng-include="'tpl/modal/modal_reject.html'"></div>
+</script>
+<div class="bg-light lter b-b wrapper-md" >
+  <h1 class="m-n font-bold h2 title">Controle Versement</h1>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading font-bold">
+      Periode
+    </div>
+    <div class="panel-body">
+      <form ng-init="station()" class="form-inline" role="form"  ng-submit="add_pompiste()" >
+
+
+        <div class="form-group">
+                <label>Date Debut</label>
+                <p class="input-group">
+                    <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="pom.date_debut" is-open="opened"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                    <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="open_date($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </p>
+    
+                
+        </div>
+        
+        <div class="form-group">
+                <label>Date FIn</label>
+                <p class="input-group">
+                    <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="pom.date_fin" is-open="opened2"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                    <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="open2_date($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </p>
+    
+                
+        </div>
+
+        <!--
+        <div class="form-group" >
+          <md-select ng-model="pom.station" ng-init="station()" placeholder="Station" >
+            <md-option ng-repeat="station in stations" value="{{station.nom_station}}">{{station.nom_station}}</md-option>
+          </md-select>
+        </div>
+        -->
+
+        <button type="submit" class="btn btn-primary ">Enregistrer</button>
+
+      </form>
+    </div>
+  </div>
+<div  class="panel panel-default">
+
+    <div class="panel-heading font-bold">
+      Rechercher un versement
+    </div>
+    <div class="panel-body">
+      <form  class="form-inline" role="form"  ng-submit="" >
+
+        <div class="form-group">
+            <label class="sr-only" for="Nom">N° Bordereau</label>
+            <input type="text" class="form-control" id="Nom" placeholder="N° Bordereau" ng-model="pl.matricule">
+        </div>
+
+        <div class="form-group">
+          <label class="sr-only" for="Nom">Banque</label>
+          <input type="text" class="form-control" id="Nom" placeholder="Nom Banque" ng-model="pl.nom_pompiste">
+        </div>
+
+        <div class="form-group">
+            <label class="sr-only" for="Station">Station</label>
+            <input type="text" class="form-control" id="Station" placeholder="Station" ng-model="pl.station">
+        </div>
+      </form>
+    </div>
+</div>
+<div  class="panel panel-default">
+    <div class="panel-heading font-bold">
+      Liste des Versements
+    </div>
+  <table  ng-init="initPompistes()"  class="table table-bordered table-hover table-condensed bg-white-only">
+    <tr style="font-weight: bold">
+      <td >Nom Banque</td>
+      <td >Numero Compte</td>
+      <td >Numero Bordereau</td>
+      <td >Montant Versement</td>
+      <td >Station</td>
+
+      <td >Edit</td>
+    </tr>
+    <tr  ng-repeat="pompiste in pompistes | filter: pl.station | filter: pl.matricule | filter: pl.nom_pompiste  track by pompiste.matricule">
+      <td class="v-middle">
+        <!-- editable username (text with validation) -->
+        <span  e-name="matricule"  e-form="rowform"  e-required>
+          {{ pompiste.matricule || 'empty' }}
+        </span>
+      </td>
+
+      <td class="v-middle">
+        <!-- editable username (text with validation) -->
+        <span editable-text="pompiste.nom_pompiste"  e-name="nom" e-form="rowform"  e-required>
+          {{ pompiste.nom_pompiste || 'empty' }}
+        </span>
+      </td>
+
+      <td class="v-middle">
+        <!-- editable username (text with validation) -->
+        <span editable-text="pompiste.prenom"  e-name="prenom" e-form="rowform"  e-required>
+          {{ pompiste.prenom || 'empty' }}
+        </span>
+      </td>
+
+      <td class="v-middle">
+        <!-- editable username (text with validation) -->
+        <span   e-name="date_naissance" e-form="rowform"  e-required>
+          {{ pompiste.date_naissance || 'empty' }}
+        </span>
+      </td>
+
+      <td class="v-middle">
+        <!-- editable username (text with validation) -->
+        <span editable-select="pompiste.sexe"  e-name="sexe" e-form="rowform" onshow="loadSexe()" e-ng-options="g.nom as g.nom for g in sexes">
+          {{ pompiste.sexe || 'empty' }}
+        </span>
+      </td>
+
+      <td class="v-middle">
+        <!-- editable group (select-remote) -->
+        <span editable-select="pompiste.station" e-name="station" onshow="loadStation()" e-form="rowform" e-ng-options="g.nom_station as g.nom_station for g in stations">
+            {{ pompiste.station }}
+        </span>
+
+      </td>
+
+      <td class="v-middle">
+        <!-- editable username (text with validation) -->
+        <span editable-select="pompiste.sexe"  e-name="sexe" e-form="rowform" onshow="loadSexe()" e-ng-options="g.nom as g.nom for g in sexes">
+          {{ pompiste.sexe || 'empty' }}
+        </span>
+      </td>
+
+      <td style="white-space: nowrap">
+        <!-- form -->
+        <form editable-form name="rowform" onbeforesave="edit_pompiste(pompiste)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == pompiste">
+          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-sm btn-info">
+            save
+          </button>
+          <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-sm btn-default">
+            cancel
+          </button>
+        </form>
+        <div class="buttons" ng-show="!rowform.$visible">
+          <button class="btn btn-sm btn-info" ng-click="rowform.$show()">edit</button>
+          <button class="btn btn-sm btn-danger" ng-click="open(pompiste)">del</button>
+        </div>
+
+      </td>
+    </tr>
+  </table>     
+</div>
+    <div class="text-center" ng-show="spinner">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+      <span class="sr-only">Loading...</span>
+    </div>
+<!--***************************************************************************************-->
+
+<!--************************************************************************************-->
+
+<!--******************************************************************-->
+
+</div>
+

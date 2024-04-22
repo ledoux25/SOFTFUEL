@@ -1,0 +1,483 @@
+
+
+
+<script type="text/ng-template" id="deleteContent.html">
+  <div ng-include="'tpl/modal/modal_delete.html'"></div>
+</script>
+<script type="text/ng-template" id="successContent.html">
+  <div ng-include="'tpl/modal/modal_success.html'"></div>
+</script>
+<script type="text/ng-template" id="rejectContent.html">
+  <div ng-include="'tpl/modal/modal_reject.html'"></div>
+</script>
+<script>
+
+  function printPage(id)
+  {
+      var html="<html>";
+      html+= document.getElementById(id).innerHTML;
+
+      html+="</html>";
+
+      var printWin = window.open('','','left=0,top=0,width=1000,height=1000,toolbar=0,scrollbars=0,status  =0');
+      printWin.document.write(html);
+      printWin.document.close();
+      printWin.focus();
+      printWin.print();
+      printWin.close();
+  }
+
+</script>
+<div class="bg-light lter b-b wrapper-md" >
+<h1 class="m-n font-bold h2 title">Etats des Manquants Pompistes</h1>
+</div>
+
+<div class="panel panel-card"  ng-controller="etatManquantsCtrl" > 
+
+  <md-tabs class="md-primary" md-selected="data.selectedIndex">
+
+    <md-tab id="tab1" aria-controls="tab1-content">
+      STATION
+    </md-tab>
+
+    <md-tab id="tab2" aria-controls="tab2-content">
+       POMPISTE
+    </md-tab>
+   
+    <md-tab id="tab3" aria-controls="tab3-content">
+       CONSOLIDE
+    </md-tab>
+
+  </md-tabs>
+
+  <ng-switch on="data.selectedIndex">
+ 
+      <div 
+         ng-controller="etatManquantsCtrl"
+         role="tabpanel"
+         id="tab1-content"
+         aria-labelledby="tab1"
+         ng-switch-when="0"
+         md-swipe-left="next()"
+         md-swipe-right="previous()"  class="wrapper">
+        
+          <div class="hbox hbox-auto-xs hbox-auto-sm">
+                  <div class="col"   ng-init="(role.user == 'ADMINISTRATEUR') ? station(): station_courante() ">
+
+                      <div class="wrapper-md" >
+                          <div class="panel-heading font-bold">
+                          Selectionner la période
+                          </div>
+                          <div class="panel-body">
+                            <div class="panel card wrapper" >
+                                
+                                <div class="row">
+                                        <div class="col-sm-6">
+                                                <label>Date Debut</label>
+                                                <p class="input-group">
+                                                    <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_debut" is-open="opened"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                                    <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                    </span>
+                                                </p>
+                                    
+                                                
+                                        </div>
+                            
+                                        <div class="col-sm-6">
+                                                <label>Date Fin</label>
+                                                <p class="input-group">
+                                                    <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_fin" is-open="opened2"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                                    <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" ng-click="open2($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                    </span>
+                                                </p>
+                                    
+                                                
+                                        </div>
+                                </div>
+                                
+                    
+                                <md-input-container>
+                                  <md-select  ng-model="dt.quart"   placeholder="Quart" ng-click="date()">
+                                    <md-option ng-repeat="quart in quarts" value="{{quart.quart}}">{{quart.quart}}</md-option>
+                                  </md-select>
+                                </md-input-container>
+                                
+                                <md-input-container>
+                                  <md-select  ng-model="dt.station" placeholder="Station" >
+                                    <md-option ng-repeat="station in stations" value="{{station.nom_station}}">{{station.nom_station}}</md-option>
+                                  </md-select>
+                                </md-input-container>
+                                
+                              
+                                <div class="m-t m-b">
+                                  <button class="btn btn-primary btn-rounded" ng-click="manquant()">VALIDER</button>
+                                </div>
+                              
+                            </div>
+                          </div>
+                      </div>
+                        
+                      <div class="wrapper-md">
+                        <div class="panel wrapper">
+                              
+                            <table   class="table table-bordered table-hover table-condensed bg-white-only"  ng-init="recap_manquant" >
+                    
+                                <tr>
+
+                                    <td class="v-middle">
+                                        <span style="position:absolute; height:22px;" ><b>DATES</b></span>
+                                    </td>
+
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                    
+                                    <td class="v-middle"  ng-repeat="date in dates  track by $index">
+                                        <span>
+                                        {{ date }}
+                                        </span>
+                                    </td>
+                    
+                                    <td class="v-middle">
+                                        <span>
+                                        <b>TOTAL</b>
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+                                <tr ng-repeat="rec in recap_manquant  track by $index">
+                    
+                                    <td class="v-middle">
+                                        <span style="position:absolute; height:22px;" ><b>  {{rec.pompiste}} </b></span>
+                                    </td>
+
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                    
+                                    <td class="v-middle"  ng-repeat="manq in rec.manquant  track by $index">
+                                        <span>
+                                        {{ manq }}
+                                        </span>
+                                    </td>
+                    
+                                    <td class="v-middle">
+                                        <span>
+                                        <b>{{ rec.total }}</b>
+                                        </span>
+                                    </td>
+                    
+                                </tr>
+
+                                
+                                
+                            </table>
+
+                            <div class="line line-dashed"></div>
+                            
+                            <button class="btn btn-primary btn-rounded" onclick="printPage('block2');">Imprimer</button> 
+                            <button class="btn btn-primary btn-rounded" ng-click="export_manquant_station_pdf();">Exporter PDF</button> 
+                            <button class="btn btn-primary btn-rounded" ng-click="export_manquant_station_excel();">Exporter Excel</button> 
+
+                                  
+                        </div>
+                      </div>
+
+                  </div>
+          </div>
+          
+      </div>   <!-- ENd TAB 1 STATION -->
+
+      <div 
+      ng-controller="etatManquantsCtrl"
+      role="tabpanel"
+      id="tab2-content"
+      aria-labelledby="tab2"
+      ng-switch-when="1"
+      md-swipe-left="next()"
+      md-swipe-right="previous()"  class="wrapper">
+
+      <div class="panel card wrapper"  >
+         <div class="row" >
+                 <div class="col-sm-12">
+                     <div class="panel-heading font-bold">
+                     Selectionner la période
+                     </div>
+                     <div class="panel-body">
+                       <div class="panel card wrapper">
+                          
+                           <div class="row"  ng-init="(role.user == 'ADMINISTRATEUR') ? pompiste_all(): pompiste() ">
+                                   <div class="col-sm-6">
+                                           <label>Date Debut</label>
+                                           <p class="input-group">
+                                               <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_debut" is-open="opened"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                               <span class="input-group-btn">
+                                               <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                               </span>
+                                           </p>
+                               
+                                           
+                                   </div>
+                       
+                                   <div class="col-sm-6">
+                                           <label>Date Fin</label>
+                                           <p class="input-group">
+                                               <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_fin" is-open="opened2"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                               <span class="input-group-btn">
+                                               <button type="button" class="btn btn-default" ng-click="open2($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                               </span>
+                                           </p>
+                               
+                                           
+                                   </div>
+                           </div>
+                           
+               
+                           <md-input-container>
+                             <md-select  ng-model="dt.quart"   placeholder="Quart">
+                               <md-option ng-repeat="quart in quarts" value="{{quart.quart}}">{{quart.quart}}</md-option>
+                             </md-select>
+                           </md-input-container>
+                          
+                         
+
+                           <md-input-container>
+                               <md-select  ng-model="dt.pompiste" placeholder="pompiste">
+                                 <md-option ng-repeat="pompiste in pompistes" value="{{pompiste.nom_pompiste}}">{{pompiste.nom_pompiste}}</md-option>
+                               </md-select>
+                             </md-input-container>
+                           
+                         
+                           <div class="m-t m-b">
+                             <button class="btn btn-primary btn-rounded" ng-click="manquant_pompiste()">VALIDER</button>
+                           </div>
+                         
+                       </div>
+                     </div>
+                 </div>
+                
+             </div>
+               
+             <div class="row" >
+             
+                     <div class="col-sm-12">
+                             <div class="wrapper-md">
+                             <h4>Tableau des Manquants par pompistes</h4>
+
+                             <table  ng-init="recap_manquant" class="table table-bordered table-hover  bg-white-only">
+                                 <tr >
+                                 <td ><b>DATE</b></td>
+                                 <td ><b>POMPISTE</b></td>
+                                 <td ><b>VENTES</b></td>
+                                 <td ><b>VENTES A TERME</b></td>
+                                 <td ><b>VERSEMENT</b></td>
+                                 <td ><b>MANQUANT</b></td>
+                                 
+                     
+                                 </tr>
+                                 <tr  ng-repeat="rec in recap_manquant  track by $index">
+                                 <td class="v-middle">
+                                     <!-- editable username (text with validation) -->
+                                     <span   e-name="produit.nom_produit" e-form="rowform"  e-required>
+                                     <b>{{ rec.date || '' }}</b>
+                                     </span>
+                                 </td>
+                                 <td class="v-middle">
+                                     <!-- editable username (text with validation) -->
+                                     <span   e-name="code_produit" e-form="rowform"  e-required>
+                                     {{ rec.pompiste || ''}}
+                                     </span>
+                                 </td>
+                                 <td class="v-middle">
+                                     <!-- editable username (text with validation) -->
+                                     <span   e-name="type_produit" e-form="rowform"  e-required>
+                                     {{ rec.ventes || 0 }}
+                                     </span>
+                                 </td>
+                                 
+                     
+                                     <td class="v-middle">
+                                     <!-- editable username (text with validation) -->
+                                     <span  e-name="produit.station" e-form="rowform"  e-required>
+                                     {{ rec.ventes_client || 0 }}
+                                     </span>
+                                 </td>
+                                 
+                                 <td class="v-middle">
+                                     <!-- editable username (text with validation) -->
+                                     <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                     {{ rec.versement || 0 }}
+                                     </span>
+                                 </td>
+             
+                                 <td class="v-middle">
+                                     <!-- editable username (text with validation) -->
+                                     <span   e-name="prix_produit" e-form="rowform"  e-required>
+                                     <b>{{ rec.manquant || 0 }}</b>
+                                     </span>
+                                 </td>
+                     
+                                 
+                                 </tr>
+                                 
+                             </table>
+                                 
+                             <div class="line line-dashed"></div>
+
+                             <button class="btn btn-primary btn-rounded" onclick="printPage('block2');">Imprimer</button> 
+                             <button class="btn btn-primary btn-rounded" ng-click="export_manquant_pompiste_pdf();">Exporter PDF</button> 
+                             <button class="btn btn-primary btn-rounded" ng-click="export_manquant_pompiste_excel();">Exporter Excel</button> 
+
+                     
+                                 
+                             </div>
+                         </div>
+             
+             </div>
+      </div>
+       
+      
+      </div>   <!-- ENd TAB 2 POMPISTE -->
+
+      <div 
+         ng-controller="etatManquantsCtrl"
+         role="tabpanel"
+         id="tab2-content"
+         aria-labelledby="tab2"
+         ng-switch-when="2"
+         md-swipe-left="next()"
+         md-swipe-right="previous()"  class="wrapper">
+          
+         <div class="hbox hbox-auto-xs hbox-auto-sm">
+          <div class="col"   ng-init="(role.user == 'ADMINISTRATEUR') ? station(): station_courante() ">
+
+              <div class="wrapper-md" >
+                  <div class="panel-heading font-bold">
+                  Selectionner la période
+                  </div>
+                  <div class="panel-body">
+                    <div class="panel card wrapper" >
+                        
+                        <div class="row">
+                                <div class="col-sm-6">
+                                        <label>Date Debut</label>
+                                        <p class="input-group">
+                                            <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_debut" is-open="opened"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                            <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                            </span>
+                                        </p>
+                                </div>
+                    
+                                <div class="col-sm-6">
+                                        <label>Date Fin</label>
+                                        <p class="input-group">
+                                            <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt.date_fin" is-open="opened2"  datepicker-options="dateOptions"  ng-required="true" close-text="Close" />
+                                            <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" ng-click="open2($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                            </span>
+                                        </p>
+                                </div>
+                        </div>
+                        
+                      
+                        <div class="m-t m-b">
+                          <button class="btn btn-primary btn-rounded" ng-click="manquant_conso()">VALIDER</button>
+                        </div>
+                      
+                    </div>
+                  </div>
+              </div>
+                
+              <div class="wrapper-md">
+                <div class="panel wrapper">
+                      
+                    <table  ng-init="recap_manquant" class="table table-bordered table-hover  bg-white-only">
+                      <tr >
+                      <td ><b>DATE</b></td>
+                      <td ><b>POMPISTE</b></td>
+                      <td ><b>VENTES</b></td>
+                      <td ><b>VENTES A TERME</b></td>
+                      <td ><b>VERSEMENT</b></td>
+                      <td ><b>MANQUANT</b></td>
+                      
+          
+                      </tr>
+                      <tr  ng-repeat="rec in recap_manquant  track by $index">
+                      <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span   e-name="produit.nom_produit" e-form="rowform"  e-required>
+                          <b>{{ rec.date || '' }}</b>
+                          </span>
+                      </td>
+                      <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span   e-name="code_produit" e-form="rowform"  e-required>
+                          {{ rec.pompiste || ''}}
+                          </span>
+                      </td>
+                      <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span   e-name="type_produit" e-form="rowform"  e-required>
+                          {{ rec.ventes || 0 }}
+                          </span>
+                      </td>
+                      
+          
+                          <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span  e-name="produit.station" e-form="rowform"  e-required>
+                          {{ rec.ventes_client || 0 }}
+                          </span>
+                      </td>
+                      
+                      <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span   e-name="prix_produit" e-form="rowform"  e-required>
+                          {{ rec.versement || 0 }}
+                          </span>
+                      </td>
+
+                      <td class="v-middle">
+                          <!-- editable username (text with validation) -->
+                          <span   e-name="prix_produit" e-form="rowform"  e-required>
+                          <b>{{ rec.manquant || 0 }}</b>
+                          </span>
+                      </td>
+          
+                      
+                      </tr>
+                      
+                    </table>
+
+                    <div class="line line-dashed"></div>
+                    
+                    <button class="btn btn-primary btn-rounded" onclick="printPage('block2');">Imprimer</button> 
+                    <button class="btn btn-primary btn-rounded" ng-click="export_manquant_conso_pdf();">Exporter PDF</button> 
+                    <button class="btn btn-primary btn-rounded" ng-click="export_manquant_conso_excel();">Exporter Excel</button> 
+
+                          
+                </div>
+              </div>
+
+          </div>
+         </div>
+      
+      </div>   <!-- ENd TAB 3 CONSOLIDE -->
+
+
+  </ng-switch> <!-- ENd Ng-switch  -->
+
+  
+
+</div>
+
+
+
+
+  

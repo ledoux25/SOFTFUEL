@@ -1,0 +1,133 @@
+ <script type="text/ng-template" id="deleteContent.html">
+    <div ng-include="'tpl/modal/modal_delete.html'"></div>
+</script>
+<script type="text/ng-template" id="successContent.html">
+    <div ng-include="'tpl/modal/modal_success.html'"></div>
+</script>
+<script type="text/ng-template" id="rejectContent.html">
+    <div ng-include="'tpl/modal/modal_reject.html'"></div>
+</script>
+<div class="bg-light lter b-b wrapper-md" >
+  <h1 class="m-n font-bold h2 title">Gestion des Clients </h1>
+</div>
+
+<div class="row">
+  <div class="col-sm-6">
+      <div class="panel-heading font-bold">
+      Ajouter un Client
+      </div>
+      <div class="panel-body">
+        <div class="panel card wrapper">
+          <form name="step1" class="form-validation" >
+            <md-input-container>
+              <label for="content"><strong>Nom Client</strong> </label>
+              <input type="text" id="content" name="client.nom_client" ng-model="client.nom_client " required>
+            </md-input-container>
+            <md-input-container>
+              <label for="content"><strong>Code Client</strong> </label>
+              <input type="text" id="content" name="client.code_client"  ng-model="client.code_client" required>
+            </md-input-container>
+            <md-input-container>
+              <md-select  ng-model="client.type_client" required ng-init="type_clients" placeholder="Type de client">
+                <md-option ng-repeat="client in type_clients" value="{{client.type_client}}">{{client.type_client}}</md-option>
+              </md-select>
+            </md-input-container>
+            <md-input-container>
+              <md-select  ng-model="client.station" required ng-init="station()" placeholder="Station">
+                <md-option ng-repeat="station in stations track by $index" value="{{station.nom_station}}">{{station.nom_station}}</md-option>
+              </md-select>
+            </md-input-container>
+             <md-input-container>
+              <md-select  ng-model="client.produit" required ng-init="produit()" placeholder="Produit">
+                <md-option ng-repeat="produit in produits track by $index" value="{{produit.nom_produit}}">{{produit.nom_produit}}</md-option>
+              </md-select>
+            </md-input-container>
+            <md-input-container>
+              <label for="content"><strong>Prix Client</strong> </label>
+              <input type="number" id="content"  name="client.prix_client"  ng-model="client.prix_client" required>
+            </md-input-container>
+          
+            <div class="m-t m-b">
+              <button type="submit" ng-disabled="step1.$invalid" class="btn btn-default btn-rounded" ng-click="addClient()">Ajouter</button>
+            </div>
+          </form>
+        </div>
+        
+      </div>
+  </div>
+  <div class="col-sm-6">
+      <div class="wrapper-md">
+        <h4>Liste des Clients</h4>
+        <table  ng-init="clients"  class="table table-bordered table-hover  bg-white-only">
+          <tr style="font-weight: bold">
+            <td style="width:35%">Nom Client</td>
+            <td style="width:35%">Code Client</td>
+            <td style="width:35%">Type Client</td>
+            <td style="width:35%">station</td>
+            <td style="width:35%">Produit</td>
+            <td style="width:35%">Prix Client</td>
+
+          </tr>
+          <tr  ng-repeat="client in clients  track by $index">
+            <td class="v-middle">
+              <!-- editable username (text with validation) -->
+              <span   e-name="client.nom_client" e-form="rowform"  e-required>
+                {{ client.nom_client | uppercase  }}
+              </span>
+            </td>
+            <td class="v-middle">
+              <!-- editable username (text with validation) -->
+              <span   e-name="code_client" e-form="rowform"  e-required>
+                {{ client.code_client | uppercase }}
+              </span>
+            </td>
+            <td class="v-middle">
+              <!-- editable username (text with validation) -->
+              <span   e-name="type_client" e-form="rowform"  e-required>
+                {{ client.type_client | uppercase  }}
+              </span>
+            </td>
+            
+             <td class="v-middle">
+              <!-- editable username (text with validation) -->
+              <span  e-name="client.station" e-form="rowform"  e-required>
+                {{ client.station | uppercase  }}
+              </span>
+            </td>
+            <td class="v-middle">
+              <!-- editable username (text with validation) -->
+              <span  e-name="client.produit" e-form="rowform"  e-required>
+                {{ client.produit | uppercase  }}
+              </span>
+            </td>
+            
+            <td class="v-middle">
+              <!-- editable username (text with validation) -->
+              <span   e-name="prix_client" e-form="rowform"  e-required>
+                {{ client.prix_client | uppercase  }}
+              </span>
+            </td>
+
+            <td style="white-space: nowrap">
+              <!-- form -->
+              <form editable-form name="rowform"  ng-show="rowform.$visible" onbeforesave="savePatient($data, patient.id_patient)" class="form-buttons form-inline" shown="inserted == patient">
+               
+              </form>
+              <div class="buttons" ng-show="!rowform.$visible">
+               
+                <button class="btn btn-sm btn-danger" ng-click="">del</button>
+              </div>
+            </td>
+          </tr>
+        </table>
+          <div class="line line-dashed"></div>
+
+          <div class="" >
+            <a class="btn  btn-primary" ng-click="Envoyer()">ENVOYER</a>
+          </div>
+      </div>
+  </div>
+</div>
+    
+
+    
